@@ -54,19 +54,19 @@ Profissionais autônomos que oferecem aulas particulares de direção.
 
 
 
-\- Encontrar instrutores por região.
+\* Encontrar instrutores por região.
 
-\- Comparar perfis e avaliações.
+\* Comparar perfis e avaliações.
 
-\- Consultar preços.
+\* Consultar preços.
 
-\- Consultar disponibilidade.
+\* Consultar disponibilidade.
 
-\- Encontrar instrutores compatíveis com suas necessidades.
+\* Encontrar instrutores compatíveis com suas necessidades.
 
-\- Solicitar aulas diretamente pela plataforma.
+\* Solicitar aulas diretamente pela plataforma.
 
-\- Acompanhar seus agendamentos e histórico de aulas.
+\* Acompanhar seus agendamentos e histórico de aulas.
 
 
 
@@ -74,19 +74,19 @@ Profissionais autônomos que oferecem aulas particulares de direção.
 
 
 
-\- Divulgar seus serviços.
+\* Divulgar seus serviços.
 
-\- Gerenciar disponibilidade.
+\* Gerenciar disponibilidade.
 
-\- Gerenciar agenda.
+\* Gerenciar agenda.
 
-\- Receber solicitações de aulas.
+\* Receber solicitações de aulas.
 
-\- Gerenciar alunos.
+\* Gerenciar alunos.
 
-\- Registrar aulas realizadas.
+\* Registrar aulas realizadas.
 
-\- Receber avaliações.
+\* Receber avaliações.
 
 
 
@@ -110,19 +110,19 @@ Entre os critérios considerados poderão estar:
 
 
 
-\- Região de atendimento.
+\* Região de atendimento.
 
-\- Disponibilidade.
+\* Disponibilidade.
 
-\- Nível de experiência do aluno.
+\* Nível de experiência do aluno.
 
-\- Necessidade de aulas para iniciantes.
+\* Necessidade de aulas para iniciantes.
 
-\- Aceitação de alunos que já sabem dirigir.
+\* Aceitação de alunos que já sabem dirigir.
 
-\- Utilização de carro próprio.
+\* Utilização de carro próprio.
 
-\- Características específicas das aulas.
+\* Características específicas das aulas.
 
 
 
@@ -228,13 +228,13 @@ Após a validação:
 
 
 
-\- a presença do aluno será registrada;
+\* a presença do aluno será registrada;
 
-\- a aula será marcada como iniciada;
+\* a aula será marcada como iniciada;
 
-\- o horário ficará registrado;
+\* o horário ficará registrado;
 
-\- a aula poderá posteriormente ser encerrada pelo instrutor.
+\* a aula poderá posteriormente ser encerrada pelo instrutor.
 
 
 
@@ -274,37 +274,37 @@ O MVP deverá contemplar:
 
 
 
-\- Autenticação.
+\* Autenticação.
 
-\- Cadastro de alunos.
+\* Cadastro de alunos.
 
-\- Cadastro de instrutores.
+\* Cadastro de instrutores.
 
-\- Perfil profissional.
+\* Perfil profissional.
 
-\- Configuração de disponibilidade.
+\* Configuração de disponibilidade.
 
-\- Busca de instrutores.
+\* Busca de instrutores.
 
-\- Filtros.
+\* Filtros.
 
-\- Visualização de perfil.
+\* Visualização de perfil.
 
-\- Solicitação de aulas.
+\* Solicitação de aulas.
 
-\- Aceite e recusa de solicitações.
+\* Aceite e recusa de solicitações.
 
-\- Gerenciamento de agenda.
+\* Gerenciamento de agenda.
 
-\- Registro de aulas.
+\* Registro de aulas.
 
-\- Validação de presença através de QR Code.
+\* Validação de presença através de QR Code.
 
-\- Histórico de aulas.
+\* Histórico de aulas.
 
-\- Avaliações.
+\* Avaliações.
 
-\- Mecanismo inicial de compatibilidade entre aluno e instrutor.
+\* Mecanismo inicial de compatibilidade entre aluno e instrutor.
 
 
 
@@ -320,27 +320,27 @@ As seguintes funcionalidades não fazem parte da primeira versão:
 
 
 
-\- Processamento de pagamentos.
+\* Processamento de pagamentos.
 
-\- Carteira digital.
+\* Carteira digital.
 
-\- Reembolsos.
+\* Reembolsos.
 
-\- Split de pagamentos.
+\* Split de pagamentos.
 
-\- Chat em tempo real.
+\* Chat em tempo real.
 
-\- Videochamadas.
+\* Videochamadas.
 
-\- Assinaturas.
+\* Assinaturas.
 
-\- Aplicativo mobile nativo.
+\* Aplicativo mobile nativo.
 
-\- Integrações com órgãos de trânsito.
+\* Integrações com órgãos de trânsito.
 
-\- Emissão de documentos oficiais.
+\* Emissão de documentos oficiais.
 
-\- Funcionalidades baseadas em IA generativa.
+\* Funcionalidades baseadas em IA generativa.
 
 
 
@@ -360,29 +360,29 @@ Além de solucionar o problema proposto, o DriveMatch será utilizado como proje
 
 
 
-\- Arquitetura de software.
+\* Arquitetura de software.
 
-\- Desenvolvimento de APIs REST.
+\* Desenvolvimento de APIs REST.
 
-\- Desenvolvimento frontend.
+\* Desenvolvimento frontend.
 
-\- Modelagem de dados.
+\* Modelagem de dados.
 
-\- Regras de negócio.
+\* Regras de negócio.
 
-\- Testes automatizados.
+\* Testes automatizados.
 
-\- Qualidade de código.
+\* Qualidade de código.
 
-\- Documentação técnica.
+\* Documentação técnica.
 
-\- Controle de versão.
+\* Controle de versão.
 
-\- CI/CD.
+\* CI/CD.
 
-\- Containerização.
+\* Containerização.
 
-\- Observabilidade.
+\* Observabilidade.
 
-\- Segurança.
+\* Segurança.
 

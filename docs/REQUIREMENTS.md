@@ -166,15 +166,15 @@ Exemplos:
 
 
 
-\- Nível de experiência.
+\* Nível de experiência.
 
-\- Se já possui experiência dirigindo.
+\* Se já possui experiência dirigindo.
 
-\- Necessidade de aulas para iniciantes.
+\* Necessidade de aulas para iniciantes.
 
-\- Utilização de veículo próprio.
+\* Utilização de veículo próprio.
 
-\- Preferências de disponibilidade.
+\* Preferências de disponibilidade.
 
 
 
@@ -234,17 +234,17 @@ Entre elas:
 
 
 
-\- Regiões atendidas.
+\* Regiões atendidas.
 
-\- Preço das aulas.
+\* Preço das aulas.
 
-\- Descrição profissional.
+\* Descrição profissional.
 
-\- Experiência.
+\* Experiência.
 
-\- Tipos de alunos atendidos.
+\* Tipos de alunos atendidos.
 
-\- Condições para utilização de veículo próprio.
+\* Condições para utilização de veículo próprio.
 
 
 
@@ -264,11 +264,11 @@ O instrutor deve poder informar se aceita:
 
 
 
-\- Alunos iniciantes.
+\* Alunos iniciantes.
 
-\- Alunos que já sabem dirigir.
+\* Alunos que já sabem dirigir.
 
-\- Alunos utilizando veículo próprio.
+\* Alunos utilizando veículo próprio.
 
 
 
@@ -496,17 +496,17 @@ Entre elas:
 
 
 
-\- Data.
+\* Data.
 
-\- Horário.
+\* Horário.
 
-\- Duração.
+\* Duração.
 
-\- Local.
+\* Local.
 
-\- Utilização de veículo próprio.
+\* Utilização de veículo próprio.
 
-\- Observações adicionais.
+\* Observações adicionais.
 
 
 
@@ -1078,9 +1078,9 @@ O sistema deverá diferenciar usuários do tipo:
 
 
 
-\- Aluno.
+\* Aluno.
 
-\- Instrutor.
+\* Instrutor.
 
 
 
@@ -1236,7 +1236,7 @@ Somente informações definidas como públicas pelo sistema deverão ser exibida
 
 
 
-O índice de compatibilidade deverá ser calculado utilizando critérios definidos pelo sistema e deverá possuir comportamento determinístico para os mesmos dados de entrada.
+O índice de compatibilidade deverá ser calculated utilizando critérios definidos pelo sistema e deverá possuir comportamento determinístico para os mesmos dados de entrada.
 
 
 
@@ -1297,6 +1297,4 @@ API Endpoint / UI Flow
 &#x20;   ↓
 
 Automated Tests
-
-```
 

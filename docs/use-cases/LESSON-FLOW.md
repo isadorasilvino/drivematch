@@ -6,11 +6,7 @@
 
 
 
-Este documento define o ciclo de vida de uma aula no DriveMatch.
-
-
-
-O controle de estados é utilizado para garantir que as operações ocorram em uma ordem válida.
+Este documento define o ciclo de vida de uma aula no DriveMatch. O controle de estados é utilizado para garantir que as operações ocorram em uma ordem válida.
 
 
 
@@ -28,7 +24,7 @@ Uma aula pode possuir os seguintes estados:
 
 | Estado | Descrição |
 
-|---|---|
+| --- | --- |
 
 | `SCHEDULED` | Aula confirmada e aguardando início |
 
@@ -66,7 +62,7 @@ Uma aula pode possuir os seguintes estados:
 
 &#x20;                ▼          ▼          ▼
 
-&#x20;           CANCELLED   CHECK\_IN   NOT\_ATTENDED
+&#x20;            CANCELLED   CHECK\_IN   NOT\_ATTENDED
 
 &#x20;                           │
 
@@ -80,6 +76,8 @@ Uma aula pode possuir os seguintes estados:
 
 &#x20;                       COMPLETED
 
+
+
 ```
 
 
@@ -92,7 +90,7 @@ Uma aula pode possuir os seguintes estados:
 
 
 
-\### SCHEDULED → CHECK\_IN
+\### `SCHEDULED` → `CHECK\_IN`
 
 
 
@@ -100,33 +98,15 @@ Permitido quando:
 
 
 
-\- A aula está confirmada.
+\* A aula está confirmada.
 
-\- O horário de início está dentro da janela permitida.
+\* O horário de início está dentro da janela permitida.
 
-\- O instrutor autenticado é o responsável pela aula.
-
-
-
-\### CHECK\_IN → IN\_PROGRESS
+\* O instrutor autenticado é o responsável pela aula.
 
 
 
-Permitido quando:
-
-
-
-\- O QR Code é válido.
-
-\- O QR Code não expirou.
-
-\- O aluno pertence à aula.
-
-\- A aula ainda não foi iniciada.
-
-
-
-\### IN\_PROGRESS → COMPLETED
+\### `CHECK\_IN` → `IN\_PROGRESS`
 
 
 
@@ -134,25 +114,43 @@ Permitido quando:
 
 
 
-\- A aula está em andamento.
+\* O QR Code é válido.
 
-\- O instrutor responsável solicita o encerramento.
+\* O QR Code não expirou.
 
+\* O aluno pertence à aula.
 
-
-\### SCHEDULED → CANCELLED
-
-
-
-Permitido enquanto a aula ainda não tiver sido iniciada.
+\* A aula ainda não foi iniciada.
 
 
 
-\### SCHEDULED → NOT\_ATTENDED
+\### `IN\_PROGRESS` → `COMPLETED`
 
 
 
-Permitido quando a aula não foi realizada e a ausência é registrada pelo instrutor.
+Permitido quando:
+
+
+
+\* A aula está em andamento.
+
+\* O instrutor responsável solicita o encerramento.
+
+
+
+\### `SCHEDULED` → `CANCELLED`
+
+
+
+\* Permitido enquanto a aula ainda não tiver sido iniciada.
+
+
+
+\### `SCHEDULED` → `NOT\_ATTENDED`
+
+
+
+\* Permitido quando a aula não foi realizada e a ausência é registrada pelo instrutor.
 
 
 
@@ -168,21 +166,21 @@ O sistema não deve permitir:
 
 
 
-\- `SCHEDULED → COMPLETED`
+\* `SCHEDULED` → `COMPLETED`
 
-\- `SCHEDULED → IN\_PROGRESS`
+\* `SCHEDULED` → `IN\_PROGRESS`
 
-\- `COMPLETED → IN\_PROGRESS`
+\* `COMPLETED` → `IN\_PROGRESS`
 
-\- `COMPLETED → SCHEDULED`
+\* `COMPLETED` → `SCHEDULED`
 
-\- `CANCELLED → IN\_PROGRESS`
+\* `CANCELLED` → `IN\_PROGRESS`
 
-\- `NOT\_ATTENDED → IN\_PROGRESS`
+\* `NOT\_ATTENDED` → `IN\_PROGRESS`
 
 
 
-Essas restrições devem ser garantidas pela camada responsável pelas regras de negócio.
+> \*\*Nota:\*\* Essas restrições devem ser garantidas pela camada responsável pelas regras de negócio.
 
 
 
@@ -194,43 +192,15 @@ Essas restrições devem ser garantidas pela camada responsável pelas regras de
 
 
 
-\### Invariante 1
+\* \*\*Invariante 1:\*\* Uma aula `COMPLETED` deve ter sido previamente iniciada.
 
+\* \*\*Invariante 2:\*\* Uma aula `IN\_PROGRESS` deve possuir registro de check-in válido.
 
+\* \*\*Invariante 3:\*\* Uma aula `CANCELLED` não pode ser iniciada.
 
-Uma aula COMPLETED deve ter sido previamente iniciada.
+\* \*\*Invariante 4:\*\* Uma aula `NOT\_ATTENDED` não pode ser iniciada.
 
-
-
-\### Invariante 2
-
-
-
-Uma aula IN\_PROGRESS deve possuir registro de check-in válido.
-
-
-
-\### Invariante 3
-
-
-
-Uma aula CANCELLED não pode ser iniciada.
-
-
-
-\### Invariante 4
-
-
-
-Uma aula NOT\_ATTENDED não pode ser iniciada.
-
-
-
-\### Invariante 5
-
-
-
-Uma aula concluída não pode ser modificada para um estado anterior.
+\* \*\*Invariante 5:\*\* Uma aula concluída não pode ser modificada para um estado anterior.
 
 
 
@@ -242,11 +212,7 @@ Uma aula concluída não pode ser modificada para um estado anterior.
 
 
 
-O check-in possui como objetivo validar a presença do aluno.
-
-
-
-O processo utiliza um QR Code temporário.
+O check-in possui como objetivo validar a presença do aluno. O processo utiliza um QR Code temporário.
 
 
 
@@ -278,11 +244,13 @@ Presença registrada
 
 IN\_PROGRESS
 
+
+
 ```
 
 
 
-O QR Code deverá possuir validade limitada para reduzir riscos de reutilização.
+> \*\*Atenção:\*\* O QR Code deverá possuir validade limitada para reduzir riscos de reutilização.
 
 
 
@@ -302,9 +270,11 @@ Após a conclusão da aula:
 
 IN\_PROGRESS
 
-&#x20;     ↓
+&#x20;   ↓
 
 COMPLETED
+
+
 
 ```
 
@@ -314,13 +284,13 @@ O sistema deverá registrar:
 
 
 
-\- Data/hora de início.
+\* Data/hora de início.
 
-\- Data/hora do check-in.
+\* Data/hora do check-in.
 
-\- Data/hora de encerramento.
+\* Data/hora de encerramento.
 
-\- Instrutor.
+\* Instrutor.
 
-\- Aluno.
+\* Aluno.
 

@@ -26,9 +26,9 @@ O sistema possui dois tipos principais de usuário:
 
 
 
-\- `STUDENT`
+\* `STUDENT`
 
-\- `INSTRUCTOR`
+\* `INSTRUCTOR`
 
 
 
@@ -144,13 +144,13 @@ O QR Code deverá:
 
 
 
-\- Pertencer à aula correta.
+\* Pertencer à aula correta.
 
-\- Estar dentro da validade.
+\* Estar dentro da validade.
 
-\- Não ter sido invalidado.
+\* Não ter sido invalidado.
 
-\- Ser utilizado pelo aluno correto.
+\* Ser utilizado pelo aluno correto.
 
 
 
@@ -294,15 +294,13 @@ As regras de negócio devem ser:
 
 
 
-\- Independentes da interface.
+\* Independentes da interface.
 
-\- Testáveis.
+\* Testáveis.
 
-\- Centralizadas quando possível.
+\* Centralizadas quando possível.
 
-\- Explicitamente documentadas.
+\* Explicitamente documentadas.
 
-\- Protegidas no backend.
-
-```
+\* Protegidas no backend.
 

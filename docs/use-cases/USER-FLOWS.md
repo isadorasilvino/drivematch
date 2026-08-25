@@ -22,13 +22,13 @@ Os fluxos são utilizados como referência para definição de casos de uso, reg
 
 
 
-O sistema possui dois atores principais:
+O sistema possui dois atores principales:
 
 
 
-\- \*\*Aluno\*\*
+\* \*\*Aluno\*\*
 
-\- \*\*Instrutor\*\*
+\* \*\*Instrutor\*\*
 
 
 
@@ -72,11 +72,11 @@ Permitir que uma pessoa crie uma conta na plataforma.
 
 
 
-\- E-mail já cadastrado.
+\* E-mail já cadastrado.
 
-\- Dados inválidos.
+\* Dados inválidos.
 
-\- Credenciais incompatíveis com as regras de segurança.
+\* Credenciais incompatíveis com as regras de segurança.
 
 
 
@@ -176,25 +176,25 @@ Permitir que o aluno analise um instrutor antes de realizar uma solicitação.
 
 
 
-\- Nome.
+\* Nome.
 
-\- Foto.
+\* Foto.
 
-\- Descrição.
+\* Descrição.
 
-\- Experiência.
+\* Experiência.
 
-\- Regiões atendidas.
+\* Regiões atendidas.
 
-\- Preço.
+\* Preço.
 
-\- Disponibilidade.
+\* Disponibilidade.
 
-\- Características das aulas.
+\* Características das aulas.
 
-\- Avaliações.
+\* Avaliações.
 
-\- Índice de compatibilidade.
+\* Índice de compatibilidade.
 
 
 
@@ -258,17 +258,17 @@ O aluno poderá consultar o status de suas solicitações.
 
 
 
-\- `PENDING`
+\* `PENDING`
 
-\- `ACCEPTED`
+\* `ACCEPTED`
 
-\- `CONFIRMED`
+\* `CONFIRMED`
 
-\- `REJECTED`
+\* `REJECTED`
 
-\- `CANCELLED`
+\* `CANCELLED`
 
-\- `EXPIRED`
+\* `EXPIRED`
 
 
 
@@ -296,19 +296,19 @@ Permitir que o instrutor configure seus serviços.
 
 
 
-\- Descrição profissional.
+\* Descrição profissional.
 
-\- Experiência.
+\* Experiência.
 
-\- Regiões atendidas.
+\* Regiões atendidas.
 
-\- Preço.
+\* Preço.
 
-\- Tipos de alunos aceitos.
+\* Tipos de alunos aceitos.
 
-\- Aceitação de veículo próprio.
+\* Aceitação de veículo próprio.
 
-\- Disponibilidade.
+\* Disponibilidade.
 
 
 
@@ -336,9 +336,9 @@ Permitir que o instrutor defina os horários em que aceita aulas.
 
 
 
-\- 08:00 — 12:00
+\* 08:00 — 12:00
 
-\- 14:00 — 18:00
+\* 14:00 — 18:00
 
 
 
@@ -346,7 +346,7 @@ Permitir que o instrutor defina os horários em que aceita aulas.
 
 
 
-\- 08:00 — 12:00
+\* 08:00 — 12:00
 
 
 
@@ -444,17 +444,17 @@ O instrutor poderá visualizar suas aulas futuras e históricas.
 
 
 
-\- Data.
+\* Data.
 
-\- Horário.
+\* Horário.
 
-\- Aluno.
+\* Aluno.
 
-\- Status.
+\* Status.
 
-\- Duração.
+\* Duração.
 
-\- Local.
+\* Local.
 
 
 
@@ -572,139 +572,137 @@ O instrutor poderá visualizar suas aulas futuras e históricas.
 
 ```text
 
-&#x20;                           ALUNO
+&#x20;                   ALUNO
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                         Cadastro
+&#x20;                  Cadastro
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                           Perfil
+&#x20;                  Perfil
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                 Busca de instrutores
+&#x20;           Busca de instrutores
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                      Compatibilidade
+&#x20;              Compatibilidade
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                Visualização do perfil
+&#x20;           Visualização do perfil
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                   Escolha de horário
+&#x20;            Escolha de horário
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                        Solicitação
+&#x20;                Solicitação
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             ▼
+&#x20;                     ▼
 
-&#x20;                         PENDING
+&#x20;                  PENDING
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;                             │
+&#x20;                     │
 
-&#x20;             ┌───────────────┴───────────────┐
+&#x20;           ┌─────────┴─────────┐
 
-&#x20;             │                               │
+&#x20;           │                   │
 
-&#x20;             │          INSTRUTOR            │
+&#x20;           │     INSTRUTOR     │
 
-&#x20;             │                               │
+&#x20;           │                   │
 
-&#x20;             │                               ▼
+&#x20;           │                   ▼
 
-&#x20;             │                    Recebe solicitação
+&#x20;           │          Recebe solicitação
 
-&#x20;             │                               │
+&#x20;           │                   │
 
-&#x20;             │                               ▼
+&#x20;           │                   ▼
 
-&#x20;             │                      Aceitar / Recusar
+&#x20;           │           Aceitar / Recusar
 
-&#x20;             │                               │
+&#x20;           │                   │
 
-&#x20;             │                    ┌──────────┴──────────┐
+&#x20;           │         ┌─────────┴─────────┐
 
-&#x20;             │                    │                     │
+&#x20;           │         │                   │
 
-&#x20;             │                    ▼                     ▼
+&#x20;           │         ▼                   ▼
 
-&#x20;             │                REJECTED              CONFIRMED
+&#x20;           │      REJECTED           CONFIRMED
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                        Agenda
+&#x20;           │                           Agenda
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                    Início da aula
+&#x20;           │                      Início da aula
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                       QR Code
+&#x20;           │                          QR Code
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                       Check-in
+&#x20;           │                         Check-in
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                     IN\_PROGRESS
+&#x20;           │                        IN\_PROGRESS
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                   Encerramento
+&#x20;           │                       Encerramento
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                      COMPLETED
+&#x20;           │                         COMPLETED
 
-&#x20;             │                                          │
+&#x20;           │                             │
 
-&#x20;             │                                          ▼
+&#x20;           │                             ▼
 
-&#x20;             │                                      Avaliação
+&#x20;           │                         Avaliação
 
-&#x20;             │
+&#x20;           │
 
-&#x20;             └──────────────────────────────────────────┘
-
-```
+&#x20;           └───────────────────────────────────┘
 

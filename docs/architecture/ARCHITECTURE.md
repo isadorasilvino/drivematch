@@ -18,23 +18,23 @@ A arquitetura foi definida buscando equilíbrio entre:
 
 
 
-\- Manutenibilidade.
+\* Manutenibilidade.
 
-\- Testabilidade.
+\* Testabilidade.
 
-\- Separação de responsabilidades.
+\* Separação de responsabilidades.
 
-\- Baixo acoplamento.
+\* Baixo acoplamento.
 
-\- Clareza das regras de negócio.
+\* Clareza das regras de negócio.
 
-\- Segurança.
+\* Segurança.
 
-\- Capacidade de evolução.
+\* Capacidade de evolução.
 
-\- Simplicidade de implantação.
+\* Simplicidade de implantação.
 
-\- Complexidade adequada ao escopo do MVP.
+\* Complexidade adequada ao escopo do MVP.
 
 
 
@@ -58,21 +58,21 @@ Os principais módulos previstos são:
 
 
 
-\- Autenticação.
+\* Autenticação.
 
-\- Alunos.
+\* Alunos.
 
-\- Instrutores.
+\* Instrutores.
 
-\- Disponibilidade.
+\* Disponibilidade.
 
-\- Solicitações de aulas.
+\* Solicitações de aulas.
 
-\- Aulas.
+\* Aulas.
 
-\- Avaliações.
+\* Avaliações.
 
-\- Matching/Compatibilidade.
+\* Matching/Compatibilidade.
 
 
 
@@ -92,17 +92,17 @@ O Monólito Modular permite:
 
 
 
-\- manter a aplicação simples de desenvolver e executar;
+\* manter a aplicação simples de desenvolver e executar;
 
-\- manter limites claros entre os módulos;
+\* manter limites claros entre os módulos;
 
-\- facilitar testes;
+\* facilitar testes;
 
-\- reduzir complexidade de infraestrutura;
+\* reduzir complexidade de infraestrutura;
 
-\- permitir evolução futura;
+\* permitir evolução futura;
 
-\- possibilitar uma eventual extração de módulos para serviços independentes caso isso seja justificado por requisitos futuros.
+\* possibilitar uma eventual extração de módulos para serviços independentes caso isso seja justificado por requisitos futuros.
 
 
 
@@ -126,13 +126,13 @@ A solução será composta inicialmente pelos seguintes projetos:
 
 
 
-\- `DriveMatch.Api`
+\* `DriveMatch.Api`
 
-\- `DriveMatch.Application`
+\* `DriveMatch.Application`
 
-\- `DriveMatch.Domain`
+\* `DriveMatch.Domain`
 
-\- `DriveMatch.Infrastructure`
+\* `DriveMatch.Infrastructure`
 
 
 
@@ -142,77 +142,79 @@ A representação conceitual será:
 
 ```text
 
-&#x20;                   ┌─────────────────────┐
+\&#x20;                   ┌─────────────────────┐
 
-&#x20;                   │   DriveMatch.Api    │
+\&#x20;                   │   DriveMatch.Api    │
 
-&#x20;                   │                     │
+\&#x20;                   │                     │
 
-&#x20;                   │ Controllers         │
+\&#x20;                   │ Controllers         │
 
-&#x20;                   │ HTTP                │
+\&#x20;                   │ HTTP                │
 
-&#x20;                   │ Middleware          │
+\&#x20;                   │ Middleware          │
 
-&#x20;                   └──────────┬──────────┘
+\&#x20;                   └──────────┬──────────┘
 
-&#x20;                              │
+\&#x20;                              │
 
-&#x20;                              ▼
+\&#x20;                              ▼
 
-&#x20;                   ┌─────────────────────┐
+\&#x20;                   ┌─────────────────────┐
 
-&#x20;                   │ Application         │
+\&#x20;                   │ Application         │
 
-&#x20;                   │                     │
+\&#x20;                   │                     │
 
-&#x20;                   │ Use Cases           │
+\&#x20;                   │ Use Cases           │
 
-&#x20;                   │ DTOs                │
+\&#x20;                   │ DTOs                │
 
-&#x20;                   │ Interfaces          │
+\&#x20;                   │ Interfaces          │
 
-&#x20;                   │ Validações          │
+\&#x20;                   │ Validações          │
 
-&#x20;                   └──────────┬──────────┘
+\&#x20;                   └──────────┬──────────┘
 
-&#x20;                              │
+\&#x20;                              │
 
-&#x20;                              ▼
+\&#x20;                              ▼
 
-&#x20;                   ┌─────────────────────┐
+\&#x20;                   ┌─────────────────────┐
 
-&#x20;                   │ Domain              │
+\&#x20;                   │ Domain              │
 
-&#x20;                   │                     │
+\&#x20;                   │                     │
 
-&#x20;                   │ Entities            │
+\&#x20;                   │ Entities            │
 
-&#x20;                   │ Value Objects       │
+\&#x20;                   │ Value Objects       │
 
-&#x20;                   │ Business Rules      │
+\&#x20;                   │ Business Rules      │
 
-&#x20;                   └─────────────────────┘
+\&#x20;                   └─────────────────────┘
 
-&#x20;                              ▲
+\&#x20;                              ▲
 
-&#x20;                              │
+\&#x20;                              │
 
-&#x20;                   ┌──────────┴──────────┐
+\&#x20;                   ┌──────────┴──────────┐
 
-&#x20;                   │ Infrastructure      │
+\&#x20;                   │ Infrastructure      │
 
-&#x20;                   │                     │
+\&#x20;                   │                     │
 
-&#x20;                   │ EF Core             │
+\&#x20;                   │ EF Core             │
 
-&#x20;                   │ PostgreSQL          │
+\&#x20;                   │ PostgreSQL          │
 
-&#x20;                   │ Persistência        │
+\&#x20;                   │ Persistência        │
 
-&#x20;                   │ Serviços externos   │
+\&#x20;                   │ Serviços externos   │
 
-&#x20;                   └─────────────────────┘
+\&#x20;                   └─────────────────────┘
+
+
 
 ```
 
@@ -234,13 +236,15 @@ As dependências deverão respeitar a seguinte direção:
 
 Api
 
-&#x20;↓
+\&#x20;↓
 
 Application
 
-&#x20;↓
+\&#x20;↓
 
 Domain
+
+
 
 ```
 
@@ -254,13 +258,15 @@ A infraestrutura implementará contratos definidos pelas camadas internas:
 
 Infrastructure
 
-&#x20;     ↓
+\&#x20;    ↓
 
 Application
 
-&#x20;     ↓
+\&#x20;    ↓
 
 Domain
+
+
 
 ```
 
@@ -274,19 +280,19 @@ Por exemplo, o domínio não deverá conhecer:
 
 
 
-\- Entity Framework Core.
+\* Entity Framework Core.
 
-\- PostgreSQL.
+\* PostgreSQL.
 
-\- ASP.NET Core.
+\* ASP.NET Core.
 
-\- Angular.
+\* Angular.
 
-\- HTTP.
+\* HTTP.
 
-\- JWT.
+\* JWT.
 
-\- bibliotecas específicas de infraestrutura.
+\* bibliotecas específicas de infraestrutura.
 
 
 
@@ -310,23 +316,23 @@ Entre os conceitos inicialmente previstos estão:
 
 
 
-\- Usuário.
+\* Usuário.
 
-\- Aluno.
+\* Aluno.
 
-\- Instrutor.
+\* Instrutor.
 
-\- Perfil do aluno.
+\* Perfil do aluno.
 
-\- Perfil profissional do instrutor.
+\* Perfil profissional do instrutor.
 
-\- Disponibilidade.
+\* Disponibilidade.
 
-\- Solicitação de aula.
+\* Solicitação de aula.
 
-\- Aula.
+\* Aula.
 
-\- Avaliação.
+\* Avaliação.
 
 
 
@@ -334,13 +340,13 @@ Também poderão existir:
 
 
 
-\- Enums.
+\* Enums.
 
-\- Value Objects.
+\* Value Objects.
 
-\- Exceções de domínio.
+\* Exceções de domínio.
 
-\- Regras de negócio.
+\* Regras de negócio.
 
 
 
@@ -364,35 +370,35 @@ Entre os casos de uso inicialmente previstos estão:
 
 
 
-\- Cadastro de usuário.
+\* Cadastro de usuário.
 
-\- Autenticação.
+\* Autenticação.
 
-\- Criação de perfil de aluno.
+\* Criação de perfil de aluno.
 
-\- Criação de perfil profissional.
+\* Criação de perfil profissional.
 
-\- Busca de instrutores.
+\* Busca de instrutores.
 
-\- Cálculo de compatibilidade.
+\* Cálculo de compatibilidade.
 
-\- Solicitação de aula.
+\* Solicitação de aula.
 
-\- Aceite de solicitação.
+\* Aceite de solicitação.
 
-\- Recusa de solicitação.
+\* Recusa de solicitação.
 
-\- Cancelamento.
+\* Cancelamento.
 
-\- Início da aula.
+\* Início da aula.
 
-\- Check-in.
+\* Check-in.
 
-\- Encerramento da aula.
+\* Encerramento da aula.
 
-\- Registro de ausência.
+\* Registro de ausência.
 
-\- Criação de avaliação.
+\* Criação de avaliação.
 
 
 
@@ -400,15 +406,15 @@ Também serão mantidos nessa camada:
 
 
 
-\- DTOs.
+\* DTOs.
 
-\- Interfaces.
+\* Interfaces.
 
-\- Validações de aplicação.
+\* Validações de aplicação.
 
-\- Serviços de aplicação.
+\* Serviços de aplicação.
 
-\- Orquestração dos casos de uso.
+\* Orquestração dos casos de uso.
 
 
 
@@ -432,23 +438,23 @@ Entre suas responsabilidades estarão:
 
 
 
-\- Persistência de dados.
+\* Persistência de dados.
 
-\- Entity Framework Core.
+\* Entity Framework Core.
 
-\- PostgreSQL.
+\* PostgreSQL.
 
-\- Implementação dos repositórios.
+\* Implementação dos repositórios.
 
-\- Configurações de banco de dados.
+\* Configurações de banco de dados.
 
-\- Geração de QR Code.
+\* Geração de QR Code.
 
-\- Integrações externas.
+\* Integrações externas.
 
-\- Implementações relacionadas à autenticação quando necessário.
+\* Implementações relacionadas à autenticação quando necessário.
 
-\- Serviços de infraestrutura.
+\* Serviços de infraestrutura.
 
 
 
@@ -472,25 +478,25 @@ Suas responsabilidades incluirão:
 
 
 
-\- Controllers.
+\* Controllers.
 
-\- Configuração da API.
+\* Configuração da API.
 
-\- Autenticação.
+\* Autenticação.
 
-\- Autorização.
+\* Autorização.
 
-\- Injeção de dependência.
+\* Injeção de dependência.
 
-\- Middleware.
+\* Middleware.
 
-\- Tratamento global de exceções.
+\* Tratamento global de exceções.
 
-\- Configuração do Swagger/OpenAPI.
+\* Configuração do Swagger/OpenAPI.
 
-\- Configurações relacionadas ao HTTP.
+\* Configurações relacionadas ao HTTP.
 
-\- Health Checks.
+\* Health Checks.
 
 
 
@@ -502,13 +508,13 @@ Eles serão responsáveis principalmente por:
 
 
 
-\- Receber requisições HTTP.
+\* Receber requisições HTTP.
 
-\- Validar informações relacionadas ao transporte da requisição.
+\* Validar informações relacionadas ao transporte da requisição.
 
-\- Invocar casos de uso.
+\* Invocar casos de uso.
 
-\- Retornar respostas HTTP adequadas.
+\* Retornar respostas HTTP adequadas.
 
 
 
@@ -528,13 +534,13 @@ O frontend será desenvolvido utilizando:
 
 
 
-\- Angular.
+\* Angular.
 
-\- TypeScript.
+\* TypeScript.
 
-\- HTML.
+\* HTML.
 
-\- CSS.
+\* CSS.
 
 
 
@@ -550,13 +556,15 @@ A comunicação com o backend ocorrerá através da API REST.
 
 Angular
 
-&#x20;  ↓
+\&#x20;  ↓
 
 HTTP
 
-&#x20;  ↓
+\&#x20;  ↓
 
 DriveMatch.Api
+
+
 
 ```
 
@@ -594,17 +602,19 @@ As alterações estruturais do banco serão controladas através de migrations.
 
 Application
 
-&#x20;    ↓
+\&#x20;   ↓
 
 Infrastructure
 
-&#x20;    ↓
+\&#x20;   ↓
 
 Entity Framework Core
 
-&#x20;    ↓
+\&#x20;   ↓
 
 PostgreSQL
+
+
 
 ```
 
@@ -630,9 +640,9 @@ O sistema possuirá inicialmente dois tipos principais de usuário:
 
 
 
-\- `STUDENT`
+\* `STUDENT`
 
-\- `INSTRUCTOR`
+\* `INSTRUCTOR`
 
 
 
@@ -676,17 +686,17 @@ O backend deverá validar:
 
 
 
-\- autenticidade do token;
+\* autenticidade do token;
 
-\- validade temporal;
+\* validade temporal;
 
-\- aula associada;
+\* aula associada;
 
-\- aluno associado;
+\* aluno associado;
 
-\- estado atual da aula;
+\* estado atual da aula;
 
-\- permissões do usuário.
+\* permissões do usuário.
 
 
 
@@ -698,33 +708,35 @@ Fluxo conceitual:
 
 Instrutor
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Inicia aula
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Backend gera token temporário
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Token é representado através de QR Code
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Aluno escaneia
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Backend valida token
 
-&#x20;   ↓
+\&#x20;   ↓
 
 Presença registrada
 
-&#x20;   ↓
+\&#x20;   ↓
 
-Aula → IN\_PROGRESS
+Aula → IN\\\_PROGRESS
+
+
 
 ```
 
@@ -750,6 +762,8 @@ tests/
 
 └── DriveMatch.IntegrationTests/
 
+
+
 ```
 
 
@@ -762,19 +776,19 @@ Serão utilizados para validar principalmente:
 
 
 
-\- Regras de negócio.
+\* Regras de negócio.
 
-\- Entidades.
+\* Entidades.
 
-\- Value Objects.
+\* Value Objects.
 
-\- Cálculo de compatibilidade.
+\* Cálculo de compatibilidade.
 
-\- Transições de estado.
+\* Transições de estado.
 
-\- Validações.
+\* Validações.
 
-\- Casos de uso isolados.
+\* Casos de uso isolados.
 
 
 
@@ -790,19 +804,19 @@ Entre os cenários previstos:
 
 
 
-\- API.
+\* API.
 
-\- Banco de dados.
+\* Banco de dados.
 
-\- Entity Framework Core.
+\* Entity Framework Core.
 
-\- Autenticação.
+\* Autenticação.
 
-\- Endpoints.
+\* Endpoints.
 
-\- Persistência.
+\* Persistência.
 
-\- Fluxos críticos.
+\* Fluxos críticos.
 
 
 
@@ -826,9 +840,9 @@ A infraestrutura inicial deverá contemplar:
 
 
 
-\- API.
+\* API.
 
-\- PostgreSQL.
+\* PostgreSQL.
 
 
 
@@ -856,25 +870,27 @@ O pipeline deverá executar pelo menos:
 
 Push / Pull Request
 
-&#x20;       ↓
+\&#x20;       ↓
 
 Restore
 
-&#x20;       ↓
+\&#x20;       ↓
 
 Build
 
-&#x20;       ↓
+\&#x20;       ↓
 
 Testes unitários
 
-&#x20;       ↓
+\&#x20;       ↓
 
 Testes de integração
 
-&#x20;       ↓
+\&#x20;       ↓
 
 Validação
+
+
 
 ```
 
@@ -900,13 +916,13 @@ Inicialmente serão utilizados:
 
 
 
-\- Logging estruturado.
+\* Logging estruturado.
 
-\- Tratamento global de exceções.
+\* Tratamento global de exceções.
 
-\- Identificador de requisição/correlação.
+\* Identificador de requisição/correlação.
 
-\- Health Checks.
+\* Health Checks.
 
 
 
@@ -926,25 +942,25 @@ A implementação deverá priorizar:
 
 
 
-\- Separação de responsabilidades.
+\* Separação de responsabilidades.
 
-\- Baixo acoplamento.
+\* Baixo acoplamento.
 
-\- Alta coesão.
+\* Alta coesão.
 
-\- Inversão de dependência.
+\* Inversão de dependência.
 
-\- Testabilidade.
+\* Testabilidade.
 
-\- Clareza das regras de negócio.
+\* Clareza das regras de negócio.
 
-\- Segurança por padrão.
+\* Segurança por padrão.
 
-\- Simplicidade.
+\* Simplicidade.
 
-\- Evolução incremental.
+\* Evolução incremental.
 
-\- Código legível e manutenível.
+\* Código legível e manutenível.
 
 
 
@@ -964,19 +980,19 @@ Não serão utilizados inicialmente:
 
 
 
-\- Microserviços.
+\* Microserviços.
 
-\- Kubernetes.
+\* Kubernetes.
 
-\- Service Mesh.
+\* Service Mesh.
 
-\- Message Broker.
+\* Message Broker.
 
-\- Arquitetura distribuída.
+\* Arquitetura distribuída.
 
-\- Event Sourcing.
+\* Event Sourcing.
 
-\- CQRS formal com infraestrutura adicional.
+\* CQRS formal com infraestrutura adicional.
 
 
 
@@ -1004,19 +1020,21 @@ Por isso, a arquitetura foi projetada para demonstrar:
 
 
 
-\- Conhecimento de arquitetura de software.
+\* Conhecimento de arquitetura de software.
 
-\- Organização de código.
+\* Organização de código.
 
-\- Separação de responsabilidades.
+\* Separação de responsabilidades.
 
-\- Aplicação de princípios de engenharia.
+\* Aplicação de princípios de engenharia.
 
-\- Testabilidade.
+\* Testabilidade.
 
-\- Segurança.
+\* Segurança.
 
-\- Automação.
+\* Automação.
 
-\- Capacidade de evolução.
+\* Capacidade de evolução.
+
+
 

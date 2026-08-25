@@ -34,13 +34,13 @@
 
 
 
-**- Identificação do usuário.**
+**\* Identificação do usuário.**
 
-**- Autenticação.**
+**\* Autenticação.**
 
-**- Controle de papel.**
+**\* Controle de papel.**
 
-**- Controle de status da conta.**
+**\* Controle de status da conta.**
 
 
 
@@ -48,21 +48,21 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- Name.**
+**\* Name.**
 
-**- Email.**
+**\* Email.**
 
-**- PasswordHash.**
+**\* PasswordHash.**
 
-**- Role.**
+**\* Role.**
 
-**- Status.**
+**\* Status.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
-**- UpdatedAt.**
+**\* UpdatedAt.**
 
 
 
@@ -82,23 +82,23 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- UserId.**
+**\* UserId.**
 
-**- City.**
+**\* City.**
 
-**- State.**
+**\* State.**
 
-**- ExperienceLevel.**
+**\* ExperienceLevel.**
 
-**- OwnsVehicle.**
+**\* OwnsVehicle.**
 
-**- HasOwnVehicleForLessons.**
+**\* HasOwnVehicleForLessons.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
-**- UpdatedAt.**
+**\* UpdatedAt.**
 
 
 
@@ -118,35 +118,35 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- UserId.**
+**\* UserId.**
 
-**- Description.**
+**\* Description.**
 
-**- ExperienceYears.**
+**\* ExperienceYears.**
 
-**- City.**
+**\* City.**
 
-**- State.**
+**\* State.**
 
-**- PricePerLesson.**
+**\* PricePerLesson.**
 
-**- AcceptsBeginners.**
+**\* AcceptsBeginners.**
 
-**- AcceptsExperiencedStudents.**
+**\* AcceptsExperiencedStudents.**
 
-**- AcceptsStudentVehicle.**
+**\* AcceptsStudentVehicle.**
 
-**- Status.**
+**\* Status.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
-**- UpdatedAt.**
+**\* UpdatedAt.**
 
 
 
-**Somente instrutores com status `ACTIVE` poderão aparecer nas buscas.**
+**> \*\*Nota:\*\* Somente instrutores com status `ACTIVE` poderão aparecer nas buscas.**
 
 
 
@@ -166,17 +166,17 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- InstructorProfileId.**
+**\* InstructorProfileId.**
 
-**- DayOfWeek.**
+**\* DayOfWeek.**
 
-**- StartTime.**
+**\* StartTime.**
 
-**- EndTime.**
+**\* EndTime.**
 
-**- IsActive.**
+**\* IsActive.**
 
 
 
@@ -200,27 +200,27 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- StudentId.**
+**\* StudentId.**
 
-**- InstructorId.**
+**\* InstructorId.**
 
-**- RequestedDate.**
+**\* RequestedDate.**
 
-**- StartTime.**
+**\* StartTime.**
 
-**- EndTime.**
+**\* EndTime.**
 
-**- UsesStudentVehicle.**
+**\* UsesStudentVehicle.**
 
-**- StudentMessage.**
+**\* StudentMessage.**
 
-**- Status.**
+**\* Status.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
-**- UpdatedAt.**
+**\* UpdatedAt.**
 
 
 
@@ -244,31 +244,31 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- StudentId.**
+**\* StudentId.**
 
-**- InstructorId.**
+**\* InstructorId.**
 
-**- LessonRequestId.**
+**\* LessonRequestId.**
 
-**- ScheduledDate.**
+**\* ScheduledDate.**
 
-**- StartTime.**
+**\* StartTime.**
 
-**- EndTime.**
+**\* EndTime.**
 
-**- Status.**
+**\* Status.**
 
-**- StartedAt.**
+**\* StartedAt.**
 
-**- CheckInAt.**
+**\* CheckInAt.**
 
-**- CompletedAt.**
+**\* CompletedAt.**
 
-**- CancelledAt.**
+**\* CancelledAt.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
 
 
@@ -292,19 +292,19 @@
 
 
 
-**- Id.**
+**\* Id.**
 
-**- LessonId.**
+**\* LessonId.**
 
-**- StudentId.**
+**\* StudentId.**
 
-**- InstructorId.**
+**\* InstructorId.**
 
-**- Rating.**
+**\* Rating.**
 
-**- Comment.**
+**\* Comment.**
 
-**- CreatedAt.**
+**\* CreatedAt.**
 
 
 
@@ -324,13 +324,9 @@
 
 
 
-**```text**
+**\* `STUDENT`**
 
-**STUDENT**
-
-**INSTRUCTOR**
-
-**```**
+**\* `INSTRUCTOR`**
 
 
 
@@ -338,13 +334,9 @@
 
 
 
-**```text**
+**\* `ACTIVE`**
 
-**ACTIVE**
-
-**INACTIVE**
-
-**```**
+**\* `INACTIVE`**
 
 
 
@@ -352,15 +344,11 @@
 
 
 
-**```text**
+**\* `DRAFT`**
 
-**DRAFT**
+**\* `ACTIVE`**
 
-**ACTIVE**
-
-**INACTIVE**
-
-**```**
+**\* `INACTIVE`**
 
 
 
@@ -368,21 +356,17 @@
 
 
 
-**```text**
+**\* `PENDING`**
 
-**PENDING**
+**\* `ACCEPTED`**
 
-**ACCEPTED**
+**\* `CONFIRMED`**
 
-**CONFIRMED**
+**\* `REJECTED`**
 
-**REJECTED**
+**\* `CANCELLED`**
 
-**CANCELLED**
-
-**EXPIRED**
-
-**```**
+**\* `EXPIRED`**
 
 
 
@@ -390,21 +374,17 @@
 
 
 
-**```text**
+**\* `SCHEDULED`**
 
-**SCHEDULED**
+**\* `CHECK\_IN`**
 
-**CHECK\_IN**
+**\* `IN\_PROGRESS`**
 
-**IN\_PROGRESS**
+**\* `COMPLETED`**
 
-**COMPLETED**
+**\* `CANCELLED`**
 
-**CANCELLED**
-
-**NOT\_ATTENDED**
-
-**```**
+**\* `NOT\_ATTENDED`**
 
 
 
@@ -453,6 +433,8 @@
 **Lesson**
 
 &#x20;**└── 0..1 Review**
+
+
 
 **```**
 
@@ -518,6 +500,8 @@
 
 **Review**
 
+
+
 **```**
 
 
@@ -530,59 +514,19 @@
 
 
 
-**### Instrutor ativo**
+**\* \*\*Instrutor ativo:\*\* Somente instrutores com perfil `ACTIVE` poderão ser encontrados pelos alunos.**
 
+**\* \*\*Conflito de agenda:\*\* Um instrutor não poderá possuir duas aulas confirmadas no mesmo intervalo.**
 
+**\* \*\*Disponibilidade:\*\* Uma solicitação deverá respeitar a disponibilidade configurada pelo instrutor.**
 
-**Somente instrutores com perfil ACTIVE poderão ser encontrados pelos alunos.**
+**\* \*\*Check-in:\*\* Uma aula somente poderá entrar em `IN\_PROGRESS` após check-in válido.**
 
+**\* \*\*Conclusão:\*\* Uma aula somente poderá ser concluída quando estiver `IN\_PROGRESS`.**
 
+**\* \*\*Avaliação:\*\* Uma avaliação somente poderá ser criada para uma aula `COMPLETED`.**
 
-**### Conflito de agenda**
-
-
-
-**Um instrutor não poderá possuir duas aulas confirmadas no mesmo intervalo.**
-
-
-
-**### Disponibilidade**
-
-
-
-**Uma solicitação deverá respeitar a disponibilidade configurada pelo instrutor.**
-
-
-
-**### Check-in**
-
-
-
-**Uma aula somente poderá entrar em IN\_PROGRESS após check-in válido.**
-
-
-
-**### Conclusão**
-
-
-
-**Uma aula somente poderá ser concluída quando estiver IN\_PROGRESS.**
-
-
-
-**### Avaliação**
-
-
-
-**Uma avaliação somente poderá ser criada para uma aula COMPLETED.**
-
-
-
-**### Avaliação única**
-
-
-
-**Uma aula poderá possuir no máximo uma avaliação.**
+**\* \*\*Avaliação única:\*\* Uma aula poderá possuir no máximo uma avaliação.**
 
 
 
@@ -598,11 +542,7 @@
 
 
 
-**A conta de autenticação é separada dos dados específicos de aluno e instrutor.**
-
-
-
-**Isso permite manter responsabilidades distintas e possibilita evolução futura dos papéis.**
+**A conta de autenticação é separada dos dados específicos de aluno e instrutor. Isso permite manter responsabilidades distintas e possibilita evolução futura dos papéis.**
 
 
 
@@ -610,15 +550,7 @@
 
 
 
-**Uma solicitação representa uma intenção de agendamento.**
-
-
-
-**Uma aula representa um compromisso efetivamente confirmado.**
-
-
-
-**A separação evita misturar estados de solicitação com estados de execução da aula.**
+**Uma solicitação representa uma intenção de agendamento. Uma aula representa um compromisso efetivamente confirmado. A separação evita misturar estados de solicitação com estados de execução da aula.**
 
 
 
@@ -630,15 +562,7 @@
 
 
 
-**Exemplo:**
-
-
-
-**`UsesStudentVehicle`**
-
-
-
-**A preferência geral pode pertencer ao perfil, mas a decisão específica da aula pertence à solicitação.**
+**> \*\*Exemplo:\*\* `UsesStudentVehicle`. A preferência geral pode pertencer ao perfil, mas a decisão específica da aula pertence à solicitação.**
 
 
 
@@ -646,11 +570,7 @@
 
 
 
-**O cálculo de compatibilidade será inicialmente tratado como comportamento da aplicação, não como uma entidade persistida.**
-
-
-
-**O score poderá ser calculado dinamicamente a partir das características do aluno e dos instrutores.**
+**O cálculo de compatibilidade será inicialmente tratado como comportamento da aplicação, não como uma entidade persistida. O score poderá ser calculado dinamicamente a partir das características do aluno e dos instrutores.**
 
 
 
@@ -666,29 +586,27 @@
 
 
 
-**- Pagamentos.**
+**\* Pagamentos.**
 
-**- Assinaturas.**
+**\* Assinaturas.**
 
-**- Chat.**
+**\* Chat.**
 
-**- Mensagens.**
+**\* Mensagens.**
 
-**- Cupons.**
+**\* Cupons.**
 
-**- Promoções.**
+**\* Promoções.**
 
-**- Veículos como entidade independente.**
+**\* Veículos como entidade independente.**
 
-**- Notificações complexas.**
+**\* Notificações complexas.**
 
-**- Certificações.**
+**\* Certificações.**
 
-**- Favoritos.**
+**\* Favoritos.**
 
 
 
 **Esses conceitos poderão ser adicionados futuramente caso novos requisitos justifiquem sua existência.**
-
-**```**
 
