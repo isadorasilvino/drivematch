@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DriveMatch.Api/DriveMatch.Api.csproj" />
+    <Project Path="src/DriveMatch.Application/DriveMatch.Application.csproj" />
+    <Project Path="src/DriveMatch.Domain/DriveMatch.Domain.csproj" />
+    <Project Path="src/DriveMatch.Infrastructure/DriveMatch.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DriveMatch.IntegrationTests/DriveMatch.IntegrationTests.csproj" />
+    <Project Path="tests/DriveMatch.UnitTests/DriveMatch.UnitTests.csproj" />
+  </Folder>
+</Solution>
