@@ -211,10 +211,17 @@ public class CreateInstructorProfileHandlerTests
     }
 
     private sealed class FakeInstructorProfileRepository
-        : IInstructorProfileRepository
+    : IInstructorProfileRepository
     {
         public bool ProfileExists { get; set; }
         public InstructorProfile? AddedProfile { get; private set; }
+
+        public Task<InstructorProfile?> GetByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<InstructorProfile?>(null);
+        }
 
         public Task<bool> ExistsByUserIdAsync(
             Guid userId,
