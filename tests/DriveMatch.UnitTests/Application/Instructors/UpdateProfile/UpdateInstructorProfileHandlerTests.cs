@@ -1,6 +1,7 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
 using DriveMatch.Domain.Entities;
+using DriveMatch.Domain.Enums;
 using DriveMatch.Domain.Exceptions;
 using DriveMatch.Domain.ValueObjects;
 
@@ -164,6 +165,18 @@ public class UpdateInstructorProfileHandlerTests
             CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+            string city,
+            string state,
+            ExperienceLevel experienceLevel,
+            bool usesStudentVehicle,
+            decimal? maxPricePerLesson,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<InstructorProfile>>(
+                Array.Empty<InstructorProfile>());
         }
     }
 

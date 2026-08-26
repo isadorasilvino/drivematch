@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Domain.Entities;
+using DriveMatch.Domain.Enums;
 
 namespace DriveMatch.Application.Abstractions.Persistence;
 
@@ -10,6 +11,14 @@ public interface IInstructorProfileRepository
 
     Task<bool> ExistsByUserIdAsync(
         Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+        string city,
+        string state,
+        ExperienceLevel experienceLevel,
+        bool usesStudentVehicle,
+        decimal? maxPricePerLesson,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
