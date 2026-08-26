@@ -36,6 +36,10 @@ public class StudentProfile : Entity
 
         ValidateLocation(city, state);
 
+        ValidateVehiclePreferences(
+            ownsVehicle,
+            hasOwnVehicleForLessons);
+
         UserId = userId;
         City = city.Trim();
         State = state.Trim().ToUpperInvariant();
@@ -64,6 +68,11 @@ public class StudentProfile : Entity
         bool ownsVehicle,
         bool hasOwnVehicleForLessons)
     {
+
+        ValidateVehiclePreferences(
+            ownsVehicle,
+            hasOwnVehicleForLessons);
+
         OwnsVehicle = ownsVehicle;
         HasOwnVehicleForLessons = hasOwnVehicleForLessons;
         UpdatedAt = DateTime.UtcNow;
@@ -76,5 +85,14 @@ public class StudentProfile : Entity
 
         if (string.IsNullOrWhiteSpace(state))
             throw new DomainException("O estado deve ser informado.");
+    }
+
+    private static void ValidateVehiclePreferences(
+    bool ownsVehicle,
+    bool hasOwnVehicleForLessons)
+    {
+        if (hasOwnVehicleForLessons && !ownsVehicle)
+            throw new DomainException(
+                "O aluno não pode disponibilizar veículo próprio para as aulas sem possuir um veículo.");
     }
 }

@@ -107,6 +107,31 @@ public class StudentProfileTests
         Assert.NotNull(profile.UpdatedAt);
     }
 
+    [Fact]
+    public void Constructor_ShouldThrowDomainException_WhenStudentUsesOwnVehicleButDoesNotOwnVehicle()
+    {
+        Assert.Throws<DomainException>(() =>
+            new StudentProfile(
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                "Belo Horizonte",
+                "MG",
+                ExperienceLevel.Beginner,
+                false,
+                true));
+    }
+
+    [Fact]
+    public void UpdateVehiclePreferences_ShouldThrowDomainException_WhenStudentUsesOwnVehicleButDoesNotOwnVehicle()
+    {
+        var profile = CreateProfile();
+
+        Assert.Throws<DomainException>(() =>
+            profile.UpdateVehiclePreferences(
+                false,
+                true));
+    }
+
     private static StudentProfile CreateProfile()
     {
         return new StudentProfile(
