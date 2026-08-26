@@ -2,6 +2,7 @@
 using DriveMatch.Api.Endpoints;
 using DriveMatch.Application.DependencyInjection;
 using DriveMatch.Infrastructure.DependencyInjection;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +21,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
 
 app.MapUserEndpoints();
+app.MapStudentEndpoints();
+app.MapInstructorEndpoints();
 
 app.Run();
