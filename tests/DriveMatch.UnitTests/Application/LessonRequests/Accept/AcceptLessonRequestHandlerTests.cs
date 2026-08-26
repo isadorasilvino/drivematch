@@ -207,6 +207,13 @@ public class AcceptLessonRequestHandlerTests
         public bool HasConflict { get; set; }
         public Lesson? AddedLesson { get; private set; }
 
+        public Task<Lesson?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<Lesson?>(null);
+        }
+
         public Task<bool> HasConflictAsync(
             Guid instructorProfileId,
             DateOnly scheduledDate,
