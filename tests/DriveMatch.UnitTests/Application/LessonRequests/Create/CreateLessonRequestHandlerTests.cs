@@ -379,6 +379,13 @@ public class CreateLessonRequestHandlerTests
             AddedLessonRequest = lessonRequest;
             return Task.CompletedTask;
         }
+
+        public Task<LessonRequest?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<LessonRequest?>(null);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

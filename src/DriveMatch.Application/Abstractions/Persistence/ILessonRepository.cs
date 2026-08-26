@@ -2,13 +2,16 @@
 
 namespace DriveMatch.Application.Abstractions.Persistence;
 
-public interface ILessonRequestRepository
+public interface ILessonRepository
 {
-    Task<LessonRequest?> GetByIdAsync(
-        Guid id,
+    Task<bool> HasConflictAsync(
+        Guid instructorProfileId,
+        DateOnly scheduledDate,
+        TimeOnly startTime,
+        TimeOnly endTime,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
-        LessonRequest lessonRequest,
+        Lesson lesson,
         CancellationToken cancellationToken = default);
 }
