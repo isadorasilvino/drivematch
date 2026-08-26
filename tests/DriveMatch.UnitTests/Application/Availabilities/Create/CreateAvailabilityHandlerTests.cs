@@ -157,9 +157,16 @@ public class CreateAvailabilityHandlerTests
     }
 
     private sealed class FakeAvailabilityRepository
-        : IAvailabilityRepository
+    : IAvailabilityRepository
     {
         public Availability? AddedAvailability { get; private set; }
+
+        public Task<Availability?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<Availability?>(null);
+        }
 
         public Task AddAsync(
             Availability availability,
