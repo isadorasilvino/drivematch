@@ -199,10 +199,17 @@ public class CreateStudentProfileHandlerTests
     }
 
     private sealed class FakeStudentProfileRepository
-        : IStudentProfileRepository
+    : IStudentProfileRepository
     {
         public bool ProfileExists { get; set; }
         public StudentProfile? AddedProfile { get; private set; }
+
+        public Task<StudentProfile?> GetByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<StudentProfile?>(null);
+        }
 
         public Task<bool> ExistsByUserIdAsync(
             Guid userId,
