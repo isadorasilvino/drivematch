@@ -1,6 +1,8 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Services;
 using DriveMatch.Infrastructure.Persistence;
 using DriveMatch.Infrastructure.Repositories;
+using DriveMatch.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,8 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<ILessonRequestRepository, LessonRequestRepository>();
         services.AddScoped<ILessonRepository, LessonRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }
