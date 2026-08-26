@@ -29,5 +29,6 @@ app.UseHttpsRedirection();
 app.MapUserEndpoints();
 app.MapStudentEndpoints();
 app.MapInstructorEndpoints();
+app.MapAvailabilityEndpoints();
 
 app.Run();

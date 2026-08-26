@@ -1,5 +1,14 @@
-﻿using DriveMatch.Application.Features.Instructors.CreateProfile;
+﻿using DriveMatch.Application.Features.Instructors.ChangeStatus;
+using DriveMatch.Application.Features.Instructors.CreateProfile;
+using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
+using DriveMatch.Domain.Enums;
+
+using ChangeStatusInstructorNotFoundException =
+    DriveMatch.Application.Features.Instructors.ChangeStatus.InstructorProfileNotFoundException;
+
+using UpdateInstructorNotFoundException =
+    DriveMatch.Application.Features.Instructors.UpdateProfile.InstructorProfileNotFoundException;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -23,6 +32,16 @@ public static class InstructorEndpoints
             .WithName("UpdateInstructorProfile")
             .Produces<UpdateInstructorProfileResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
+
+        group.MapPatch("/profile/status", ChangeStatusAsync)
+            .WithName("ChangeInstructorProfileStatus")
+            .Produces<ChangeInstructorProfileStatusResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("/search", SearchAsync)
+            .WithName("SearchInstructors")
+            .Produces<IReadOnlyCollection<SearchInstructorResult>>(
+                StatusCodes.Status200OK);
 
         return endpoints;
     }
@@ -87,11 +106,57 @@ public static class InstructorEndpoints
 
             return Results.Ok(result);
         }
-        catch (InstructorProfileNotFoundException exception)
+        catch (UpdateInstructorNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
         }
     }
+
+    private static async Task<IResult> ChangeStatusAsync(
+        ChangeInstructorProfileStatusRequest request,
+        ChangeInstructorProfileStatusHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await handler.HandleAsync(
+                new ChangeInstructorProfileStatusCommand(
+                    request.UserId,
+                    request.IsActive),
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (ChangeStatusInstructorNotFoundException exception)
+        {
+            return Results.NotFound(new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> SearchAsync(
+        string city,
+        string state,
+        ExperienceLevel experienceLevel,
+        bool usesStudentVehicle,
+        decimal? maxPricePerLesson,
+        SearchInstructorsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.HandleAsync(
+            new SearchInstructorsQuery(
+                city,
+                state,
+                experienceLevel,
+                usesStudentVehicle,
+                maxPricePerLesson),
+            cancellationToken);
+
+        return Results.Ok(result);
+    }
+
+    public sealed record ChangeInstructorProfileStatusRequest(
+        Guid UserId,
+        bool IsActive);
 
     public sealed record CreateInstructorProfileRequest(
         Guid UserId,
