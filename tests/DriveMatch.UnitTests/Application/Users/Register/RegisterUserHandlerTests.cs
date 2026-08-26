@@ -122,6 +122,13 @@ public class RegisterUserHandlerTests
         public string? LastCheckedEmail { get; private set; }
         public User? AddedUser { get; private set; }
 
+        public Task<User?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<User?>(null);
+        }
+
         public Task<bool> ExistsByEmailAsync(
             string email,
             CancellationToken cancellationToken = default)

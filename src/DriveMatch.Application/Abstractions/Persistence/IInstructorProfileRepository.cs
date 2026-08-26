@@ -2,17 +2,13 @@
 
 namespace DriveMatch.Application.Abstractions.Persistence;
 
-public interface IUserRepository
+public interface IInstructorProfileRepository
 {
-    Task<User?> GetByIdAsync(
-        Guid id,
-        CancellationToken cancellationToken = default);
-
-    Task<bool> ExistsByEmailAsync(
-        string email,
+    Task<bool> ExistsByUserIdAsync(
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
-        User user,
+        InstructorProfile instructorProfile,
         CancellationToken cancellationToken = default);
 }
