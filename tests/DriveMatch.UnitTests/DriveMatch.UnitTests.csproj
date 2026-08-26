@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DriveMatch.Domain\DriveMatch.Domain.csproj" />
+    <ProjectReference Include="..\..\src\DriveMatch.Application\DriveMatch.Application.csproj" />
   </ItemGroup>
 
 </Project>
