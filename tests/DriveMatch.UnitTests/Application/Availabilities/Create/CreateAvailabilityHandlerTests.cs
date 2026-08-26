@@ -167,6 +167,13 @@ public class CreateAvailabilityHandlerTests
             return Task.FromResult<IReadOnlyCollection<InstructorProfile>>(
                 Array.Empty<InstructorProfile>());
         }
+
+        public Task<InstructorProfile?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<InstructorProfile?>(null);
+        }
     }
 
     private sealed class FakeAvailabilityRepository
@@ -187,6 +194,16 @@ public class CreateAvailabilityHandlerTests
         {
             AddedAvailability = availability;
             return Task.CompletedTask;
+        }
+
+        public Task<bool> HasAvailabilityAsync(
+            Guid instructorProfileId,
+            DayOfWeek dayOfWeek,
+            TimeOnly startTime,
+            TimeOnly endTime,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(false);
         }
     }
 

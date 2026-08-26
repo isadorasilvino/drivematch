@@ -146,5 +146,12 @@ public class SearchInstructorsHandlerTests
         {
             return Task.CompletedTask;
         }
+
+        public Task<InstructorProfile?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<InstructorProfile?>(null);
+        }
     }
 }

@@ -249,6 +249,13 @@ public class CreateInstructorProfileHandlerTests
             return Task.FromResult<IReadOnlyCollection<InstructorProfile>>(
                 Array.Empty<InstructorProfile>());
         }
+
+        public Task<InstructorProfile?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<InstructorProfile?>(null);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

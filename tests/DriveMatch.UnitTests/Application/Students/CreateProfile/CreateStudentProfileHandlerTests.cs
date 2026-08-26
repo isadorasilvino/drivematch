@@ -225,6 +225,13 @@ public class CreateStudentProfileHandlerTests
             AddedProfile = studentProfile;
             return Task.CompletedTask;
         }
+
+        public Task<StudentProfile?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<StudentProfile?>(null);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

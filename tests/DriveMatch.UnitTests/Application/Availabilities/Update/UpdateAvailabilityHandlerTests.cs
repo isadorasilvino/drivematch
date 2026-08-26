@@ -128,6 +128,16 @@ public class UpdateAvailabilityHandlerTests
         {
             return Task.CompletedTask;
         }
+
+        public Task<bool> HasAvailabilityAsync(
+            Guid instructorProfileId,
+            DayOfWeek dayOfWeek,
+            TimeOnly startTime,
+            TimeOnly endTime,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(false);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

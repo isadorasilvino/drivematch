@@ -5,6 +5,10 @@ namespace DriveMatch.Application.Abstractions.Persistence;
 
 public interface IInstructorProfileRepository
 {
+    Task<InstructorProfile?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
     Task<InstructorProfile?> GetByUserIdAsync(
         Guid userId,
         CancellationToken cancellationToken = default);
