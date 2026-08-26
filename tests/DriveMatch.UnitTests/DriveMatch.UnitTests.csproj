@@ -18,4 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DriveMatch.Domain\DriveMatch.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
