@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DriveMatch.Infrastructure.Repositories;
 
-public sealed class UserRepository : IUserRepository
+public sealed class UserRepository : IUserRepository, IUserAuthenticationRepository
 {
     private readonly DriveMatchDbContext _context;
 
@@ -41,5 +41,15 @@ public sealed class UserRepository : IUserRepository
         await _context.Users.AddAsync(
             user,
             cancellationToken);
+    }
+
+    public Task<User?> GetByEmailAsync(
+    string email,
+    CancellationToken cancellationToken = default)
+    {
+        return _context.Users
+            .FirstOrDefaultAsync(
+                user => user.Email == email,
+                cancellationToken);
     }
 }

@@ -29,7 +29,9 @@ public static class LessonEndpoints
     {
         var group = endpoints
             .MapGroup("/api/lessons")
-            .WithTags("Lessons");
+            .WithTags("Lessons")
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/{lessonId:guid}/check-in/start", StartCheckInAsync)
             .WithName("StartLessonCheckIn")

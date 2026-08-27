@@ -11,7 +11,9 @@ public static class AvailabilityEndpoints
     {
         var group = endpoints
             .MapGroup("/api/availabilities")
-            .WithTags("Availabilities");
+            .WithTags("Availabilities")
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPost("/", CreateAsync)
             .WithName("CreateAvailability")

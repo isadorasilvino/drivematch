@@ -16,22 +16,28 @@ public static class LessonRequestEndpoints
         this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints
-            .MapGroup("/api/lesson-requests")
-            .WithTags("Lesson Requests");
+            .MapGroup("/api/lessons")
+            .WithTags("Lessons")
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPost("/", CreateAsync)
             .WithName("CreateLessonRequest")
             .Produces<CreateLessonRequestResult>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student")); ;
 
         group.MapPatch("/{lessonRequestId:guid}/accept", AcceptAsync)
             .WithName("AcceptLessonRequest")
             .Produces<AcceptLessonRequestResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status409Conflict);
-
+            .Produces(StatusCodes.Status409Conflict)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
+        
         group.MapPatch("/{lessonRequestId:guid}/reject", RejectAsync)
             .WithName("RejectLessonRequest")
             .Produces<RejectLessonRequestResult>(StatusCodes.Status200OK)

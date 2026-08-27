@@ -33,6 +33,8 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<ILessonRequestRepository, LessonRequestRepository>();
         services.AddScoped<ILessonRepository, LessonRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IUserAuthenticationRepository, UserRepository>();
+        services.AddScoped<ITokenService, JwtTokenService>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
 

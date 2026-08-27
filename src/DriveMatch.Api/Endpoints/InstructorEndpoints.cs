@@ -26,7 +26,9 @@ public static class InstructorEndpoints
             .Produces<CreateInstructorProfileResult>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status409Conflict);
+            .Produces(StatusCodes.Status409Conflict)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor")); ;
 
         group.MapPut("/profile", UpdateProfileAsync)
             .WithName("UpdateInstructorProfile")

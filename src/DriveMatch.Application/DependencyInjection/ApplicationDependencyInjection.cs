@@ -17,6 +17,7 @@ using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 using DriveMatch.Application.Features.Lessons.MarkAsNotAttended;
 using DriveMatch.Application.Features.Lessons.StartCheckIn;
 using DriveMatch.Application.Features.Reviews.Create;
+using DriveMatch.Application.Features.Auth.Login;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DriveMatch.Application.DependencyInjection;
@@ -47,6 +48,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<CancelLessonHandler>();
         services.AddScoped<MarkLessonAsNotAttendedHandler>();
         services.AddScoped<CreateReviewHandler>();
+        services.AddScoped<LoginHandler>();
 
         return services;
     }

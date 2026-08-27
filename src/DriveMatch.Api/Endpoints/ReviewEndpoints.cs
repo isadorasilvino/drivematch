@@ -10,7 +10,9 @@ public static class ReviewEndpoints
     {
         var group = endpoints
             .MapGroup("/api/reviews")
-            .WithTags("Reviews");
+            .WithTags("Reviews")
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
 
         group.MapPost("/", CreateAsync)
             .WithName("CreateReview")

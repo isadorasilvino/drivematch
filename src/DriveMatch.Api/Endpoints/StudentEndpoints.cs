@@ -11,7 +11,9 @@ public static class StudentEndpoints
     {
         var group = endpoints
             .MapGroup("/api/students")
-            .WithTags("Students");
+            .WithTags("Students")
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
 
         group.MapPost("/profile", CreateProfileAsync)
             .WithName("CreateStudentProfile")

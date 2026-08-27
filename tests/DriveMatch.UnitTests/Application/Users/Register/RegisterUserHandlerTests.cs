@@ -167,5 +167,12 @@ public class RegisterUserHandlerTests
             LastPassword = password;
             return $"HASHED:{password}";
         }
+
+        public bool Verify(
+            string password,
+            string passwordHash)
+        {
+            return passwordHash == $"HASHED:{password}";
+        }
     }
 }
