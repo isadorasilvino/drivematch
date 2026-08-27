@@ -11,6 +11,11 @@ using DriveMatch.Application.Features.Instructors.ChangeStatus;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Accept;
 using DriveMatch.Application.Features.LessonRequests.Reject;
+using DriveMatch.Application.Features.Lessons.Cancel;
+using DriveMatch.Application.Features.Lessons.Complete;
+using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
+using DriveMatch.Application.Features.Lessons.MarkAsNotAttended;
+using DriveMatch.Application.Features.Lessons.StartCheckIn;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DriveMatch.Application.DependencyInjection;
@@ -35,6 +40,11 @@ public static class ApplicationDependencyInjection
         services.AddScoped<CreateLessonRequestHandler>();
         services.AddScoped<AcceptLessonRequestHandler>();
         services.AddScoped<RejectLessonRequestHandler>();
+        services.AddScoped<StartLessonCheckInHandler>();
+        services.AddScoped<ConfirmLessonCheckInHandler>();
+        services.AddScoped<CompleteLessonHandler>();
+        services.AddScoped<CancelLessonHandler>();
+        services.AddScoped<MarkLessonAsNotAttendedHandler>();
 
         return services;
     }
