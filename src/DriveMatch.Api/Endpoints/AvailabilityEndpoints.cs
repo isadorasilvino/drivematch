@@ -1,6 +1,8 @@
 ﻿using DriveMatch.Application.Features.Availabilities.ChangeStatus;
 using DriveMatch.Application.Features.Availabilities.Create;
 using DriveMatch.Application.Features.Availabilities.Update;
+using DriveMatch.Api.Extensions;
+using System.Security.Claims;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -34,15 +36,18 @@ public static class AvailabilityEndpoints
     }
 
     private static async Task<IResult> CreateAsync(
+        ClaimsPrincipal user,
         CreateAvailabilityRequest request,
         CreateAvailabilityHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new CreateAvailabilityCommand(
-                    request.UserId,
+                    userId,
                     request.DayOfWeek,
                     request.StartTime,
                     request.EndTime),
@@ -105,7 +110,6 @@ public static class AvailabilityEndpoints
     }
 
     public sealed record CreateAvailabilityRequest(
-        Guid UserId,
         DayOfWeek DayOfWeek,
         TimeOnly StartTime,
         TimeOnly EndTime);

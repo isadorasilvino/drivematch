@@ -2,6 +2,8 @@
 using DriveMatch.Application.Features.Instructors.CreateProfile;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
+using DriveMatch.Api.Extensions;
+using System.Security.Claims;
 using DriveMatch.Domain.Enums;
 
 using ChangeStatusInstructorNotFoundException =
@@ -49,15 +51,17 @@ public static class InstructorEndpoints
     }
 
     private static async Task<IResult> CreateProfileAsync(
+        ClaimsPrincipal user,
         CreateInstructorProfileRequest request,
         CreateInstructorProfileHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
             var result = await handler.HandleAsync(
                 new CreateInstructorProfileCommand(
-                    request.UserId,
+                    userId,
                     request.Description,
                     request.ExperienceYears,
                     request.City,
@@ -87,15 +91,18 @@ public static class InstructorEndpoints
     }
 
     private static async Task<IResult> UpdateProfileAsync(
+        ClaimsPrincipal user,
         UpdateInstructorProfileRequest request,
         UpdateInstructorProfileHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new UpdateInstructorProfileCommand(
-                    request.UserId,
+                    userId,
                     request.Description,
                     request.ExperienceYears,
                     request.City,
@@ -115,15 +122,17 @@ public static class InstructorEndpoints
     }
 
     private static async Task<IResult> ChangeStatusAsync(
+        ClaimsPrincipal user,
         ChangeInstructorProfileStatusRequest request,
         ChangeInstructorProfileStatusHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
             var result = await handler.HandleAsync(
                 new ChangeInstructorProfileStatusCommand(
-                    request.UserId,
+                    userId,
                     request.IsActive),
                 cancellationToken);
 
@@ -157,11 +166,9 @@ public static class InstructorEndpoints
     }
 
     public sealed record ChangeInstructorProfileStatusRequest(
-        Guid UserId,
         bool IsActive);
 
     public sealed record CreateInstructorProfileRequest(
-        Guid UserId,
         string Description,
         int ExperienceYears,
         string City,
@@ -172,7 +179,6 @@ public static class InstructorEndpoints
         bool AcceptsStudentVehicle);
 
     public sealed record UpdateInstructorProfileRequest(
-        Guid UserId,
         string Description,
         int ExperienceYears,
         string City,

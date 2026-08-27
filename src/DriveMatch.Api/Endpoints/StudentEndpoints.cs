@@ -1,6 +1,9 @@
-﻿using DriveMatch.Application.Features.Students.CreateProfile;
+﻿using DriveMatch.Api.Extensions;
+using DriveMatch.Application.Features.Students.CreateProfile;
 using DriveMatch.Application.Features.Students.UpdateProfile;
+using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
+using System.Security.Claims;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -31,16 +34,18 @@ public static class StudentEndpoints
         return endpoints;
     }
 
-    private static async Task<IResult> CreateProfileAsync(
+    private static async Task<IResult> CreateProfileAsync(ClaimsPrincipal user,
         CreateStudentProfileRequest request,
         CreateStudentProfileHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new CreateStudentProfileCommand(
-                    request.UserId,
+                    userId,
                     request.City,
                     request.State,
                     request.ExperienceLevel,
@@ -66,16 +71,18 @@ public static class StudentEndpoints
         }
     }
 
-    private static async Task<IResult> UpdateProfileAsync(
+    private static async Task<IResult> UpdateProfileAsync(ClaimsPrincipal user,
         UpdateStudentProfileRequest request,
         UpdateStudentProfileHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new UpdateStudentProfileCommand(
-                    request.UserId,
+                    userId,
                     request.City,
                     request.State,
                     request.ExperienceLevel,
@@ -92,15 +99,14 @@ public static class StudentEndpoints
     }
 
     public sealed record CreateStudentProfileRequest(
-        Guid UserId,
         string City,
         string State,
         ExperienceLevel ExperienceLevel,
         bool OwnsVehicle,
         bool HasOwnVehicleForLessons);
 
+
     public sealed record UpdateStudentProfileRequest(
-        Guid UserId,
         string City,
         string State,
         ExperienceLevel ExperienceLevel,
