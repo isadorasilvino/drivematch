@@ -8,6 +8,9 @@ using DriveMatch.Application.Features.Availabilities.Create;
 using DriveMatch.Application.Features.Availabilities.Update;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.ChangeStatus;
+using DriveMatch.Application.Features.LessonRequests.Create;
+using DriveMatch.Application.Features.LessonRequests.Accept;
+using DriveMatch.Application.Features.LessonRequests.Reject;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DriveMatch.Application.DependencyInjection;
@@ -29,6 +32,9 @@ public static class ApplicationDependencyInjection
         services.AddScoped<ChangeAvailabilityStatusHandler>();
         services.AddScoped<SearchInstructorsHandler>();
         services.AddScoped<ChangeInstructorProfileStatusHandler>();
+        services.AddScoped<CreateLessonRequestHandler>();
+        services.AddScoped<AcceptLessonRequestHandler>();
+        services.AddScoped<RejectLessonRequestHandler>();
 
         return services;
     }

@@ -30,5 +30,6 @@ app.MapUserEndpoints();
 app.MapStudentEndpoints();
 app.MapInstructorEndpoints();
 app.MapAvailabilityEndpoints();
+app.MapLessonRequestEndpoints();
 
 app.Run();
