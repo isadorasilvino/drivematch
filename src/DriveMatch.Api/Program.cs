@@ -32,5 +32,6 @@ app.MapInstructorEndpoints();
 app.MapAvailabilityEndpoints();
 app.MapLessonRequestEndpoints();
 app.MapLessonEndpoints();
+app.MapReviewEndpoints();
 
 app.Run();
