@@ -31,13 +31,13 @@ public sealed class CreateLessonRequestHandler
         CancellationToken cancellationToken = default)
     {
         var studentProfile =
-            await _studentProfileRepository.GetByIdAsync(
-                command.StudentProfileId,
+            await _studentProfileRepository.GetByUserIdAsync(
+                command.UserId,
                 cancellationToken);
 
         if (studentProfile is null)
             throw new StudentProfileNotFoundException(
-                command.StudentProfileId);
+                command.UserId);
 
         var instructorProfile =
             await _instructorProfileRepository.GetByIdAsync(

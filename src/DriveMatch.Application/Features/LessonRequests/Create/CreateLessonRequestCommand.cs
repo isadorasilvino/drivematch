@@ -1,7 +1,7 @@
 ﻿namespace DriveMatch.Application.Features.LessonRequests.Create;
 
 public sealed record CreateLessonRequestCommand(
-    Guid StudentProfileId,
+    Guid UserId,
     Guid InstructorProfileId,
     DateOnly RequestedDate,
     TimeOnly StartTime,

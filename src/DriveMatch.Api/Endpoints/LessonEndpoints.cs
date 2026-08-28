@@ -1,9 +1,12 @@
-﻿using DriveMatch.Application.Features.Lessons.Cancel;
+﻿using DriveMatch.Api.Extensions;
+using DriveMatch.Application.Features.Lessons;
+using DriveMatch.Application.Features.Lessons.Cancel;
 using DriveMatch.Application.Features.Lessons.Complete;
 using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 using DriveMatch.Application.Features.Lessons.MarkAsNotAttended;
 using DriveMatch.Application.Features.Lessons.StartCheckIn;
 using DriveMatch.Domain.Exceptions;
+using System.Security.Claims;
 
 using CancelLessonNotFoundException =
     DriveMatch.Application.Features.Lessons.Cancel.LessonNotFoundException;
@@ -37,30 +40,35 @@ public static class LessonEndpoints
             .WithName("StartLessonCheckIn")
             .Produces<StartLessonCheckInResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{lessonId:guid}/check-in/confirm", ConfirmCheckInAsync)
             .WithName("ConfirmLessonCheckIn")
             .Produces<ConfirmLessonCheckInResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{lessonId:guid}/complete", CompleteAsync)
             .WithName("CompleteLesson")
             .Produces<CompleteLessonResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{lessonId:guid}/cancel", CancelAsync)
             .WithName("CancelLesson")
             .Produces<CancelLessonResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{lessonId:guid}/not-attended", MarkAsNotAttendedAsync)
             .WithName("MarkLessonAsNotAttended")
             .Produces<MarkLessonAsNotAttendedResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         return endpoints;
@@ -68,13 +76,18 @@ public static class LessonEndpoints
 
     private static async Task<IResult> StartCheckInAsync(
         Guid lessonId,
+        ClaimsPrincipal user,
         StartLessonCheckInHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new StartLessonCheckInCommand(lessonId),
+                new StartLessonCheckInCommand(
+                    lessonId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -82,6 +95,12 @@ public static class LessonEndpoints
         catch (StartCheckInLessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (LessonForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (DomainException exception)
         {
@@ -91,13 +110,18 @@ public static class LessonEndpoints
 
     private static async Task<IResult> ConfirmCheckInAsync(
         Guid lessonId,
+        ClaimsPrincipal user,
         ConfirmLessonCheckInHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new ConfirmLessonCheckInCommand(lessonId),
+                new ConfirmLessonCheckInCommand(
+                    lessonId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -105,6 +129,12 @@ public static class LessonEndpoints
         catch (ConfirmCheckInLessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (LessonForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (DomainException exception)
         {
@@ -114,13 +144,18 @@ public static class LessonEndpoints
 
     private static async Task<IResult> CompleteAsync(
         Guid lessonId,
+        ClaimsPrincipal user,
         CompleteLessonHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new CompleteLessonCommand(lessonId),
+                new CompleteLessonCommand(
+                    lessonId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -128,6 +163,12 @@ public static class LessonEndpoints
         catch (CompleteLessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (LessonForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (DomainException exception)
         {
@@ -137,13 +178,18 @@ public static class LessonEndpoints
 
     private static async Task<IResult> CancelAsync(
         Guid lessonId,
+        ClaimsPrincipal user,
         CancelLessonHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new CancelLessonCommand(lessonId),
+                new CancelLessonCommand(
+                    lessonId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -151,6 +197,12 @@ public static class LessonEndpoints
         catch (CancelLessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (LessonForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (DomainException exception)
         {
@@ -160,13 +212,18 @@ public static class LessonEndpoints
 
     private static async Task<IResult> MarkAsNotAttendedAsync(
         Guid lessonId,
+        ClaimsPrincipal user,
         MarkLessonAsNotAttendedHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new MarkLessonAsNotAttendedCommand(lessonId),
+                new MarkLessonAsNotAttendedCommand(
+                    lessonId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -174,6 +231,12 @@ public static class LessonEndpoints
         catch (NotAttendedLessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (LessonForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (DomainException exception)
         {

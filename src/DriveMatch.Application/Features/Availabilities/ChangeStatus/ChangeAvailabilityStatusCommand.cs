@@ -2,4 +2,5 @@
 
 public sealed record ChangeAvailabilityStatusCommand(
     Guid AvailabilityId,
+    Guid UserId,
     bool IsActive);

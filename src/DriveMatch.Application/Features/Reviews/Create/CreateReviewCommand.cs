@@ -2,5 +2,6 @@
 
 public sealed record CreateReviewCommand(
     Guid LessonId,
+    Guid UserId,
     int Rating,
     string? Comment);

@@ -1,25 +1,34 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Features.Lessons;
 using DriveMatch.Application.Features.Lessons.Cancel;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
 using DriveMatch.Domain.Exceptions;
+using DriveMatch.UnitTests.Application.Lessons;
 
 namespace DriveMatch.UnitTests.Application.Lessons.Cancel;
 
 public class CancelLessonHandlerTests
 {
     [Fact]
-    public async Task HandleAsync_ShouldCancelLesson_WhenLessonIsScheduled()
+    public async Task HandleAsync_ShouldCancelLesson_WhenLessonBelongsToAuthenticatedInstructor()
     {
-        var lesson = CreateLesson();
+        var userId = Guid.NewGuid();
+        var instructorProfileId = Guid.NewGuid();
+
+        var lesson = LessonTestHelpers.CreateLesson(instructorProfileId);
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
+
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CancelLessonHandler(
             new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
             unitOfWork);
 
         var result = await handler.HandleAsync(
-            new CancelLessonCommand(lesson.Id));
+            new CancelLessonCommand(lesson.Id, userId));
 
         Assert.Equal(lesson.Id, result.LessonId);
         Assert.Equal(LessonStatus.Cancelled, result.Status);
@@ -32,42 +41,68 @@ public class CancelLessonHandlerTests
     {
         var handler = new CancelLessonHandler(
             new FakeLessonRepository(null),
+            new FakeInstructorProfileRepository(null),
             new FakeUnitOfWork());
 
         await Assert.ThrowsAsync<LessonNotFoundException>(
             () => handler.HandleAsync(
-                new CancelLessonCommand(Guid.NewGuid())));
+                new CancelLessonCommand(
+                    Guid.NewGuid(),
+                    Guid.NewGuid())));
     }
 
     [Fact]
     public async Task HandleAsync_ShouldPropagateDomainException_WhenLessonIsNotScheduled()
     {
-        var lesson = CreateLesson();
+        var userId = Guid.NewGuid();
+        var instructorProfileId = Guid.NewGuid();
+
+        var lesson = LessonTestHelpers.CreateLesson(instructorProfileId);
         lesson.StartCheckIn();
+
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
 
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CancelLessonHandler(
             new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
             unitOfWork);
 
         await Assert.ThrowsAsync<DomainException>(
             () => handler.HandleAsync(
-                new CancelLessonCommand(lesson.Id)));
+                new CancelLessonCommand(lesson.Id, userId)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
 
-    private static Lesson CreateLesson()
+    [Fact]
+    public async Task HandleAsync_ShouldThrowLessonForbiddenException_WhenLessonBelongsToAnotherInstructor()
     {
-        return new Lesson(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            new DateOnly(2026, 8, 31),
-            new TimeOnly(14, 0),
-            new TimeOnly(15, 0));
+        var userId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(Guid.NewGuid());
+
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(
+                Guid.NewGuid(),
+                userId);
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CancelLessonHandler(
+            new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<LessonForbiddenException>(
+            () => handler.HandleAsync(
+                new CancelLessonCommand(lesson.Id, userId)));
+
+        Assert.Equal(LessonStatus.Scheduled, lesson.Status);
+        Assert.False(unitOfWork.SaveChangesCalled);
     }
 
     private sealed class FakeLessonRepository : ILessonRepository

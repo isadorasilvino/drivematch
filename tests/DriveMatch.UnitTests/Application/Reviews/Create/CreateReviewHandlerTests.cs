@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Features.Reviews;
 using DriveMatch.Application.Features.Reviews.Create;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
@@ -9,19 +10,29 @@ namespace DriveMatch.UnitTests.Application.Reviews.Create;
 public class CreateReviewHandlerTests
 {
     [Fact]
-    public async Task HandleAsync_ShouldCreateReview_WhenLessonIsCompleted()
+    public async Task HandleAsync_ShouldCreateReview_WhenLessonIsCompletedAndBelongsToAuthenticatedStudent()
     {
-        var lesson = CreateCompletedLesson();
+        var studentUserId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var studentProfile = CreateStudentProfile(
+            studentProfileId,
+            studentUserId);
+
+        var lesson = CreateCompletedLesson(studentProfileId);
+
         var reviewRepository = new FakeReviewRepository();
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
             reviewRepository,
             unitOfWork);
 
         var command = new CreateReviewCommand(
             lesson.Id,
+            studentUserId,
             5,
             " Excelente aula. ");
 
@@ -44,6 +55,7 @@ public class CreateReviewHandlerTests
     {
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(null),
+            new FakeStudentProfileRepository(null),
             new FakeReviewRepository(),
             new FakeUnitOfWork());
 
@@ -51,17 +63,88 @@ public class CreateReviewHandlerTests
             () => handler.HandleAsync(
                 new CreateReviewCommand(
                     Guid.NewGuid(),
+                    Guid.NewGuid(),
                     5,
                     null)));
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldThrowLessonNotCompletedException_WhenLessonIsNotCompleted()
+    public async Task HandleAsync_ShouldThrowReviewForbiddenException_WhenStudentProfileDoesNotExist()
     {
-        var lesson = CreateLesson();
+        var studentProfileId = Guid.NewGuid();
+        var lesson = CreateCompletedLesson(studentProfileId);
+
+        var unitOfWork = new FakeUnitOfWork();
+        var reviewRepository = new FakeReviewRepository();
 
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(null),
+            reviewRepository,
+            unitOfWork);
+
+        await Assert.ThrowsAsync<ReviewForbiddenException>(
+            () => handler.HandleAsync(
+                new CreateReviewCommand(
+                    lesson.Id,
+                    Guid.NewGuid(),
+                    5,
+                    null)));
+
+        Assert.Null(reviewRepository.AddedReview);
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowReviewForbiddenException_WhenLessonBelongsToAnotherStudent()
+    {
+        var authenticatedUserId = Guid.NewGuid();
+
+        var authenticatedStudentProfile =
+            CreateStudentProfile(
+                Guid.NewGuid(),
+                authenticatedUserId);
+
+        var lesson =
+            CreateCompletedLesson(Guid.NewGuid());
+
+        var reviewRepository = new FakeReviewRepository();
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CreateReviewHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(authenticatedStudentProfile),
+            reviewRepository,
+            unitOfWork);
+
+        await Assert.ThrowsAsync<ReviewForbiddenException>(
+            () => handler.HandleAsync(
+                new CreateReviewCommand(
+                    lesson.Id,
+                    authenticatedUserId,
+                    5,
+                    null)));
+
+        Assert.Null(reviewRepository.AddedReview);
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowLessonNotCompletedException_WhenLessonIsNotCompleted()
+    {
+        var studentUserId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var studentProfile =
+            CreateStudentProfile(
+                studentProfileId,
+                studentUserId);
+
+        var lesson = CreateLesson(studentProfileId);
+
+        var handler = new CreateReviewHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
             new FakeReviewRepository(),
             new FakeUnitOfWork());
 
@@ -69,6 +152,7 @@ public class CreateReviewHandlerTests
             () => handler.HandleAsync(
                 new CreateReviewCommand(
                     lesson.Id,
+                    studentUserId,
                     5,
                     null)));
     }
@@ -76,7 +160,15 @@ public class CreateReviewHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldThrowReviewAlreadyExistsException_WhenLessonAlreadyHasReview()
     {
-        var lesson = CreateCompletedLesson();
+        var studentUserId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var studentProfile =
+            CreateStudentProfile(
+                studentProfileId,
+                studentUserId);
+
+        var lesson = CreateCompletedLesson(studentProfileId);
 
         var reviewRepository = new FakeReviewRepository
         {
@@ -85,6 +177,7 @@ public class CreateReviewHandlerTests
 
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
             reviewRepository,
             new FakeUnitOfWork());
 
@@ -92,6 +185,7 @@ public class CreateReviewHandlerTests
             () => handler.HandleAsync(
                 new CreateReviewCommand(
                     lesson.Id,
+                    studentUserId,
                     5,
                     null)));
     }
@@ -99,7 +193,15 @@ public class CreateReviewHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldNotPersist_WhenReviewAlreadyExists()
     {
-        var lesson = CreateCompletedLesson();
+        var studentUserId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var studentProfile =
+            CreateStudentProfile(
+                studentProfileId,
+                studentUserId);
+
+        var lesson = CreateCompletedLesson(studentProfileId);
 
         var reviewRepository = new FakeReviewRepository
         {
@@ -110,6 +212,7 @@ public class CreateReviewHandlerTests
 
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
             reviewRepository,
             unitOfWork);
 
@@ -117,6 +220,7 @@ public class CreateReviewHandlerTests
             () => handler.HandleAsync(
                 new CreateReviewCommand(
                     lesson.Id,
+                    studentUserId,
                     5,
                     null)));
 
@@ -127,11 +231,21 @@ public class CreateReviewHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldPropagateDomainException_WhenRatingIsInvalid()
     {
-        var lesson = CreateCompletedLesson();
+        var studentUserId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var studentProfile =
+            CreateStudentProfile(
+                studentProfileId,
+                studentUserId);
+
+        var lesson = CreateCompletedLesson(studentProfileId);
+
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CreateReviewHandler(
             new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
             new FakeReviewRepository(),
             unitOfWork);
 
@@ -139,17 +253,18 @@ public class CreateReviewHandlerTests
             () => handler.HandleAsync(
                 new CreateReviewCommand(
                     lesson.Id,
+                    studentUserId,
                     6,
                     null)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
 
-    private static Lesson CreateLesson()
+    private static Lesson CreateLesson(Guid studentProfileId)
     {
         return new Lesson(
             Guid.NewGuid(),
-            Guid.NewGuid(),
+            studentProfileId,
             Guid.NewGuid(),
             Guid.NewGuid(),
             new DateOnly(2026, 8, 31),
@@ -157,14 +272,29 @@ public class CreateReviewHandlerTests
             new TimeOnly(15, 0));
     }
 
-    private static Lesson CreateCompletedLesson()
+    private static Lesson CreateCompletedLesson(Guid studentProfileId)
     {
-        var lesson = CreateLesson();
+        var lesson = CreateLesson(studentProfileId);
+
         lesson.StartCheckIn();
         lesson.ConfirmCheckIn();
         lesson.Complete();
 
         return lesson;
+    }
+
+    private static StudentProfile CreateStudentProfile(
+        Guid profileId,
+        Guid userId)
+    {
+        return new StudentProfile(
+            profileId,
+            userId,
+            "Belo Horizonte",
+            "MG",
+            ExperienceLevel.Beginner,
+            false,
+            false);
     }
 
     private sealed class FakeLessonRepository : ILessonRepository
@@ -202,9 +332,53 @@ public class CreateReviewHandlerTests
         }
     }
 
+    private sealed class FakeStudentProfileRepository
+        : IStudentProfileRepository
+    {
+        private readonly StudentProfile? _profile;
+
+        public FakeStudentProfileRepository(
+            StudentProfile? profile)
+        {
+            _profile = profile;
+        }
+
+        public Task<StudentProfile?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(
+                _profile?.Id == id ? _profile : null);
+        }
+
+        public Task<StudentProfile?> GetByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(
+                _profile?.UserId == userId ? _profile : null);
+        }
+
+        public Task<bool> ExistsByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(
+                _profile?.UserId == userId);
+        }
+
+        public Task AddAsync(
+            StudentProfile studentProfile,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     private sealed class FakeReviewRepository : IReviewRepository
     {
         public bool ReviewExists { get; set; }
+
         public Review? AddedReview { get; private set; }
 
         public Task<bool> ExistsForLessonAsync(
@@ -231,6 +405,7 @@ public class CreateReviewHandlerTests
             CancellationToken cancellationToken = default)
         {
             SaveChangesCalled = true;
+
             return Task.FromResult(1);
         }
     }

@@ -25,7 +25,7 @@ public class CreateLessonRequestHandlerTests
             unitOfWork);
 
         var command = new CreateLessonRequestCommand(
-            studentProfile.Id,
+            studentProfile.UserId,
             instructorProfile.Id,
             new DateOnly(2026, 8, 31),
             new TimeOnly(14, 0),
@@ -80,7 +80,7 @@ public class CreateLessonRequestHandlerTests
         await Assert.ThrowsAsync<InstructorProfileNotFoundException>(
             () => handler.HandleAsync(
                 CreateCommand(
-                    studentProfile.Id,
+                    studentProfile.UserId,
                     Guid.NewGuid())));
     }
 
@@ -98,10 +98,9 @@ public class CreateLessonRequestHandlerTests
             new FakeUnitOfWork());
 
         await Assert.ThrowsAsync<InstructorNotActiveException>(
-            () => handler.HandleAsync(
-                CreateCommand(
-                    studentProfile.Id,
-                    instructorProfile.Id)));
+            () => handler.HandleAsync(CreateCommand(
+                studentProfile.UserId,
+                instructorProfile.Id)));
     }
 
     [Fact]
@@ -131,7 +130,7 @@ public class CreateLessonRequestHandlerTests
             new FakeUnitOfWork());
 
         var command = new CreateLessonRequestCommand(
-            studentProfile.Id,
+            studentProfile.UserId,
             instructorProfile.Id,
             new DateOnly(2026, 8, 31),
             new TimeOnly(14, 0),
@@ -159,7 +158,7 @@ public class CreateLessonRequestHandlerTests
         await Assert.ThrowsAsync<InstructorUnavailableException>(
             () => handler.HandleAsync(
                 CreateCommand(
-                    studentProfile.Id,
+                    studentProfile.UserId,
                     instructorProfile.Id)));
     }
 
@@ -182,7 +181,7 @@ public class CreateLessonRequestHandlerTests
         await Assert.ThrowsAsync<InstructorUnavailableException>(
             () => handler.HandleAsync(
                 CreateCommand(
-                    studentProfile.Id,
+                    studentProfile.UserId,
                     instructorProfile.Id)));
 
         Assert.Null(lessonRequestRepository.AddedLessonRequest);
@@ -190,11 +189,11 @@ public class CreateLessonRequestHandlerTests
     }
 
     private static CreateLessonRequestCommand CreateCommand(
-        Guid studentProfileId,
+        Guid userId,
         Guid instructorProfileId)
     {
         return new CreateLessonRequestCommand(
-            studentProfileId,
+            userId,
             instructorProfileId,
             new DateOnly(2026, 8, 31),
             new TimeOnly(14, 0),

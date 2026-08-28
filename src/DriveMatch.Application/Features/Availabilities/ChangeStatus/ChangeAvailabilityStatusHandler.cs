@@ -1,17 +1,21 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Features.Availabilities;
 
 namespace DriveMatch.Application.Features.Availabilities.ChangeStatus;
 
 public sealed class ChangeAvailabilityStatusHandler
 {
     private readonly IAvailabilityRepository _availabilityRepository;
+    private readonly IInstructorProfileRepository _instructorProfileRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ChangeAvailabilityStatusHandler(
         IAvailabilityRepository availabilityRepository,
+        IInstructorProfileRepository instructorProfileRepository,
         IUnitOfWork unitOfWork)
     {
         _availabilityRepository = availabilityRepository;
+        _instructorProfileRepository = instructorProfileRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -25,6 +29,17 @@ public sealed class ChangeAvailabilityStatusHandler
 
         if (availability is null)
             throw new AvailabilityNotFoundException(command.AvailabilityId);
+
+        var instructorProfile =
+            await _instructorProfileRepository.GetByUserIdAsync(
+                command.UserId,
+                cancellationToken);
+
+        if (instructorProfile is null ||
+            instructorProfile.Id != availability.InstructorProfileId)
+        {
+            throw new AvailabilityForbiddenException();
+        }
 
         if (command.IsActive)
             availability.Activate();

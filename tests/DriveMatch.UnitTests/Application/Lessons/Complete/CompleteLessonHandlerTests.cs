@@ -1,28 +1,37 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Features.Lessons;
 using DriveMatch.Application.Features.Lessons.Complete;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
 using DriveMatch.Domain.Exceptions;
+using DriveMatch.UnitTests.Application.Lessons;
 
 namespace DriveMatch.UnitTests.Application.Lessons.Complete;
 
 public class CompleteLessonHandlerTests
 {
     [Fact]
-    public async Task HandleAsync_ShouldCompleteLesson_WhenLessonIsInProgress()
+    public async Task HandleAsync_ShouldCompleteLesson_WhenLessonBelongsToAuthenticatedInstructor()
     {
-        var lesson = CreateLesson();
+        var userId = Guid.NewGuid();
+        var instructorProfileId = Guid.NewGuid();
+
+        var lesson = LessonTestHelpers.CreateLesson(instructorProfileId);
         lesson.StartCheckIn();
         lesson.ConfirmCheckIn();
+
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
 
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CompleteLessonHandler(
             new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
             unitOfWork);
 
         var result = await handler.HandleAsync(
-            new CompleteLessonCommand(lesson.Id));
+            new CompleteLessonCommand(lesson.Id, userId));
 
         Assert.Equal(lesson.Id, result.LessonId);
         Assert.Equal(LessonStatus.Completed, result.Status);
@@ -36,11 +45,14 @@ public class CompleteLessonHandlerTests
     {
         var handler = new CompleteLessonHandler(
             new FakeLessonRepository(null),
+            new FakeInstructorProfileRepository(null),
             new FakeUnitOfWork());
 
         await Assert.ThrowsAsync<LessonNotFoundException>(
             () => handler.HandleAsync(
-                new CompleteLessonCommand(Guid.NewGuid())));
+                new CompleteLessonCommand(
+                    Guid.NewGuid(),
+                    Guid.NewGuid())));
     }
 
     [Fact]
@@ -50,11 +62,14 @@ public class CompleteLessonHandlerTests
 
         var handler = new CompleteLessonHandler(
             new FakeLessonRepository(null),
+            new FakeInstructorProfileRepository(null),
             unitOfWork);
 
         await Assert.ThrowsAsync<LessonNotFoundException>(
             () => handler.HandleAsync(
-                new CompleteLessonCommand(Guid.NewGuid())));
+                new CompleteLessonCommand(
+                    Guid.NewGuid(),
+                    Guid.NewGuid())));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
@@ -62,30 +77,58 @@ public class CompleteLessonHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldPropagateDomainException_WhenLessonIsNotInProgress()
     {
-        var lesson = CreateLesson();
+        var userId = Guid.NewGuid();
+        var instructorProfileId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(instructorProfileId);
+
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
+
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CompleteLessonHandler(
             new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
             unitOfWork);
 
         await Assert.ThrowsAsync<DomainException>(
             () => handler.HandleAsync(
-                new CompleteLessonCommand(lesson.Id)));
+                new CompleteLessonCommand(lesson.Id, userId)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
 
-    private static Lesson CreateLesson()
+    [Fact]
+    public async Task HandleAsync_ShouldThrowLessonForbiddenException_WhenLessonBelongsToAnotherInstructor()
     {
-        return new Lesson(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            new DateOnly(2026, 8, 31),
-            new TimeOnly(14, 0),
-            new TimeOnly(15, 0));
+        var userId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(Guid.NewGuid());
+
+        lesson.StartCheckIn();
+        lesson.ConfirmCheckIn();
+
+        var instructorProfile =
+            LessonTestHelpers.CreateInstructorProfile(
+                Guid.NewGuid(),
+                userId);
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CompleteLessonHandler(
+            new FakeLessonRepository(lesson),
+            new FakeInstructorProfileRepository(instructorProfile),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<LessonForbiddenException>(
+            () => handler.HandleAsync(
+                new CompleteLessonCommand(lesson.Id, userId)));
+
+        Assert.Equal(LessonStatus.InProgress, lesson.Status);
+        Assert.False(unitOfWork.SaveChangesCalled);
     }
 
     private sealed class FakeLessonRepository : ILessonRepository

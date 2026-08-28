@@ -1,5 +1,9 @@
 ﻿using DriveMatch.Application.Features.Reviews.Create;
+using DriveMatch.Application.Features.Reviews;
 using DriveMatch.Domain.Exceptions;
+using DriveMatch.Api.Extensions;
+
+using System.Security.Claims;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -18,6 +22,7 @@ public static class ReviewEndpoints
             .WithName("CreateReview")
             .Produces<CreateReviewResult>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict);
 
@@ -27,13 +32,17 @@ public static class ReviewEndpoints
     private static async Task<IResult> CreateAsync(
         CreateReviewRequest request,
         CreateReviewHandler handler,
+        ClaimsPrincipal user,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new CreateReviewCommand(
                     request.LessonId,
+                    userId,
                     request.Rating,
                     request.Comment),
                 cancellationToken);
@@ -45,6 +54,12 @@ public static class ReviewEndpoints
         catch (LessonNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (ReviewForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (LessonNotCompletedException exception)
         {

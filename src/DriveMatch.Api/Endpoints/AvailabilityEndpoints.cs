@@ -1,6 +1,7 @@
 ﻿using DriveMatch.Application.Features.Availabilities.ChangeStatus;
 using DriveMatch.Application.Features.Availabilities.Create;
 using DriveMatch.Application.Features.Availabilities.Update;
+using DriveMatch.Application.Features.Availabilities;
 using DriveMatch.Api.Extensions;
 using System.Security.Claims;
 
@@ -25,11 +26,13 @@ public static class AvailabilityEndpoints
         group.MapPut("/{availabilityId:guid}", UpdateAsync)
             .WithName("UpdateAvailability")
             .Produces<UpdateAvailabilityResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{availabilityId:guid}/status", ChangeStatusAsync)
             .WithName("ChangeAvailabilityStatus")
             .Produces<ChangeAvailabilityStatusResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
         return endpoints;
@@ -65,15 +68,19 @@ public static class AvailabilityEndpoints
 
     private static async Task<IResult> UpdateAsync(
         Guid availabilityId,
+        ClaimsPrincipal user,
         UpdateAvailabilityRequest request,
         UpdateAvailabilityHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new UpdateAvailabilityCommand(
                     availabilityId,
+                    userId,
                     request.DayOfWeek,
                     request.StartTime,
                     request.EndTime),
@@ -85,19 +92,29 @@ public static class AvailabilityEndpoints
         {
             return Results.NotFound(new { error = exception.Message });
         }
+        catch (AvailabilityForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
+        }
     }
 
     private static async Task<IResult> ChangeStatusAsync(
         Guid availabilityId,
+        ClaimsPrincipal user,
         ChangeAvailabilityStatusRequest request,
         ChangeAvailabilityStatusHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new ChangeAvailabilityStatusCommand(
                     availabilityId,
+                    userId,
                     request.IsActive),
                 cancellationToken);
 
@@ -106,6 +123,12 @@ public static class AvailabilityEndpoints
         catch (DriveMatch.Application.Features.Availabilities.ChangeStatus.AvailabilityNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
+        }
+        catch (AvailabilityForbiddenException exception)
+        {
+            return Results.Json(
+                new { error = exception.Message },
+                statusCode: StatusCodes.Status403Forbidden);
         }
     }
 

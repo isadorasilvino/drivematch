@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Domain.Entities;
 
 namespace DriveMatch.Application.Features.LessonRequests.Accept;
@@ -9,22 +10,25 @@ public sealed class AcceptLessonRequestHandler
     private readonly IAvailabilityRepository _availabilityRepository;
     private readonly ILessonRepository _lessonRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IInstructorProfileRepository _instructorProfileRepository;
 
     public AcceptLessonRequestHandler(
         ILessonRequestRepository lessonRequestRepository,
         IAvailabilityRepository availabilityRepository,
         ILessonRepository lessonRepository,
+        IInstructorProfileRepository instructorProfileRepository,
         IUnitOfWork unitOfWork)
     {
         _lessonRequestRepository = lessonRequestRepository;
         _availabilityRepository = availabilityRepository;
         _lessonRepository = lessonRepository;
+        _instructorProfileRepository = instructorProfileRepository;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<AcceptLessonRequestResult> HandleAsync(
-        AcceptLessonRequestCommand command,
-        CancellationToken cancellationToken = default)
+    AcceptLessonRequestCommand command,
+    CancellationToken cancellationToken = default)
     {
         var lessonRequest = await _lessonRequestRepository.GetByIdAsync(
             command.LessonRequestId,
@@ -32,6 +36,17 @@ public sealed class AcceptLessonRequestHandler
 
         if (lessonRequest is null)
             throw new LessonRequestNotFoundException(command.LessonRequestId);
+
+        var instructorProfile =
+            await _instructorProfileRepository.GetByUserIdAsync(
+                command.UserId,
+                cancellationToken);
+
+        if (instructorProfile is null ||
+            instructorProfile.Id != lessonRequest.InstructorId)
+        {
+            throw new LessonRequestForbiddenException();
+        }
 
         var hasAvailability =
             await _availabilityRepository.HasAvailabilityAsync(

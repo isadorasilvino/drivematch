@@ -1,6 +1,9 @@
+using DriveMatch.Api.Extensions;
+using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Application.Features.LessonRequests.Accept;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Reject;
+using System.Security.Claims;
 
 using AcceptNotFoundException =
     DriveMatch.Application.Features.LessonRequests.Accept.LessonRequestNotFoundException;
@@ -17,45 +20,51 @@ public static class LessonRequestEndpoints
     {
         var group = endpoints
             .MapGroup("/api/lessons")
-            .WithTags("Lessons")
-            .RequireAuthorization(policy =>
-                policy.RequireRole("Instructor"));
+            .WithTags("Lessons");
 
         group.MapPost("/", CreateAsync)
             .WithName("CreateLessonRequest")
             .Produces<CreateLessonRequestResult>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
             .RequireAuthorization(policy =>
-                policy.RequireRole("Student")); ;
+                policy.RequireRole("Student"));
 
         group.MapPatch("/{lessonRequestId:guid}/accept", AcceptAsync)
             .WithName("AcceptLessonRequest")
             .Produces<AcceptLessonRequestResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .RequireAuthorization(policy =>
                 policy.RequireRole("Instructor"));
-        
+
         group.MapPatch("/{lessonRequestId:guid}/reject", RejectAsync)
             .WithName("RejectLessonRequest")
             .Produces<RejectLessonRequestResult>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         return endpoints;
     }
 
     private static async Task<IResult> CreateAsync(
-        CreateLessonRequestRequest request,
-        CreateLessonRequestHandler handler,
-        CancellationToken cancellationToken)
+    ClaimsPrincipal user,
+    CreateLessonRequestRequest request,
+    CreateLessonRequestHandler handler,
+    CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
                 new CreateLessonRequestCommand(
-                    request.StudentProfileId,
+                    userId,
                     request.InstructorProfileId,
                     request.RequestedDate,
                     request.StartTime,
@@ -70,74 +79,123 @@ public static class LessonRequestEndpoints
         }
         catch (StudentProfileNotFoundException exception)
         {
-            return Results.NotFound(new { error = exception.Message });
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
         }
         catch (InstructorProfileNotFoundException exception)
         {
-            return Results.NotFound(new { error = exception.Message });
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
         }
         catch (InstructorNotActiveException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
         }
-        catch (DriveMatch.Application.Features.LessonRequests.Create.InstructorUnavailableException exception)
+        catch (
+            DriveMatch.Application.Features.LessonRequests.Create
+                .InstructorUnavailableException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
         }
         catch (StudentVehicleNotAcceptedException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
         }
     }
 
     private static async Task<IResult> AcceptAsync(
+        ClaimsPrincipal user,
         Guid lessonRequestId,
         AcceptLessonRequestHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new AcceptLessonRequestCommand(lessonRequestId),
+                new AcceptLessonRequestCommand(
+                    lessonRequestId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
         }
         catch (AcceptNotFoundException exception)
         {
-            return Results.NotFound(new { error = exception.Message });
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
         }
-        catch (DriveMatch.Application.Features.LessonRequests.Accept.InstructorUnavailableException exception)
+        catch (
+            DriveMatch.Application.Features.LessonRequests.Accept
+                .InstructorUnavailableException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
         }
         catch (LessonScheduleConflictException exception)
         {
-            return Results.Conflict(new { error = exception.Message });
+            return Results.Conflict(new
+            {
+                error = exception.Message
+            });
         }
     }
 
     private static async Task<IResult> RejectAsync(
+        ClaimsPrincipal user,
         Guid lessonRequestId,
         RejectLessonRequestHandler handler,
         CancellationToken cancellationToken)
     {
         try
         {
+            var userId = user.GetUserId();
+
             var result = await handler.HandleAsync(
-                new RejectLessonRequestCommand(lessonRequestId),
+                new RejectLessonRequestCommand(
+                    lessonRequestId,
+                    userId),
                 cancellationToken);
 
             return Results.Ok(result);
         }
         catch (RejectNotFoundException exception)
         {
-            return Results.NotFound(new { error = exception.Message });
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
+        catch (LessonRequestForbiddenException exception)
+        {
+            return Results.Json(
+                new
+                {
+                    error = exception.Message
+                },
+                statusCode: StatusCodes.Status403Forbidden);
         }
     }
 
     public sealed record CreateLessonRequestRequest(
-        Guid StudentProfileId,
         Guid InstructorProfileId,
         DateOnly RequestedDate,
         TimeOnly StartTime,
