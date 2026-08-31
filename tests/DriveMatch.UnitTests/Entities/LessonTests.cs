@@ -113,30 +113,36 @@ public class LessonTests
     {
         var lesson = CreateLesson();
 
-        lesson.StartCheckIn();
+        var token = lesson.StartCheckIn();
 
         Assert.Equal(LessonStatus.CheckIn, lesson.Status);
+        Assert.False(string.IsNullOrWhiteSpace(token));
+        Assert.Equal(token, lesson.CheckInToken);
+        Assert.NotNull(lesson.CheckInTokenExpiresAt);
+        Assert.True(lesson.CheckInTokenExpiresAt > DateTime.UtcNow);
     }
 
     [Fact]
     public void ConfirmCheckIn_ShouldChangeStatusToInProgress()
     {
         var lesson = CreateLesson();
-        lesson.StartCheckIn();
+        var token = lesson.StartCheckIn();
 
-        lesson.ConfirmCheckIn();
+        lesson.ConfirmCheckIn(token);
 
         Assert.Equal(LessonStatus.InProgress, lesson.Status);
         Assert.NotNull(lesson.CheckInAt);
         Assert.NotNull(lesson.StartedAt);
+        Assert.Null(lesson.CheckInToken);
+        Assert.Null(lesson.CheckInTokenExpiresAt);
     }
 
     [Fact]
     public void Complete_ShouldChangeStatusToCompleted()
     {
         var lesson = CreateLesson();
-        lesson.StartCheckIn();
-        lesson.ConfirmCheckIn();
+        var token = lesson.StartCheckIn();
+        lesson.ConfirmCheckIn(token);
 
         lesson.Complete();
 
@@ -179,7 +185,7 @@ public class LessonTests
     {
         var lesson = CreateLesson();
 
-        Assert.Throws<DomainException>(() => lesson.ConfirmCheckIn());
+        Assert.Throws<DomainException>(() => lesson.ConfirmCheckIn("qualquer-token"));
     }
 
     [Fact]
@@ -212,11 +218,54 @@ public class LessonTests
     public void CompletedLesson_ShouldNotAllowReturningToPreviousState()
     {
         var lesson = CreateLesson();
-        lesson.StartCheckIn();
-        lesson.ConfirmCheckIn();
+        var token = lesson.StartCheckIn();
+        lesson.ConfirmCheckIn(token);
         lesson.Complete();
 
         Assert.Throws<DomainException>(() => lesson.StartCheckIn());
+    }
+
+    [Fact]
+    public void ConfirmCheckIn_ShouldThrowDomainException_WhenTokenIsInvalid()
+    {
+        var lesson = CreateLesson();
+        lesson.StartCheckIn();
+
+        Assert.Throws<DomainException>(
+            () => lesson.ConfirmCheckIn("token-invalido"));
+
+        Assert.Equal(LessonStatus.CheckIn, lesson.Status);
+        Assert.Null(lesson.CheckInAt);
+        Assert.Null(lesson.StartedAt);
+    }
+
+    [Fact]
+    public void ConfirmCheckIn_ShouldThrowDomainException_WhenTokenIsEmpty()
+    {
+        var lesson = CreateLesson();
+        lesson.StartCheckIn();
+
+        Assert.Throws<DomainException>(
+            () => lesson.ConfirmCheckIn(string.Empty));
+
+        Assert.Equal(LessonStatus.CheckIn, lesson.Status);
+    }
+
+    [Fact]
+    public void StartCheckIn_ShouldGenerateNewToken_WhenCheckInIsAlreadyInProgress()
+    {
+        var lesson = CreateLesson();
+
+        var firstToken = lesson.StartCheckIn();
+        var firstExpiration = lesson.CheckInTokenExpiresAt;
+
+        var secondToken = lesson.StartCheckIn();
+
+        Assert.NotEqual(firstToken, secondToken);
+        Assert.Equal(LessonStatus.CheckIn, lesson.Status);
+        Assert.Equal(secondToken, lesson.CheckInToken);
+        Assert.NotNull(lesson.CheckInTokenExpiresAt);
+        Assert.True(lesson.CheckInTokenExpiresAt >= firstExpiration);
     }
 
     private static Lesson CreateLesson()

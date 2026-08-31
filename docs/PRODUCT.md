@@ -208,19 +208,39 @@ O mecanismo poderá apresentar um índice de compatibilidade entre aluno e instr
 
 
 
-O DriveMatch possuirá um mecanismo de validação de aulas utilizando QR Code.
+O DriveMatch possuirá um mecanismo de validação de presença utilizando QR Code temporário.
 
 
 
-Antes do início da aula, o instrutor deverá iniciar a aula através da plataforma.
+Antes do início da aula, o instrutor deverá iniciar o processo de check-in através da plataforma.
 
 
 
-O sistema gerará um QR Code temporário.
+O backend gerará um token temporário, único para a aula e com validade de 15 minutos.
 
 
 
-O aluno deverá realizar a leitura do código através da aplicação para confirmar sua presença.
+O frontend será responsável por representar esse token através de um QR Code apresentado pelo instrutor.
+
+
+
+O aluno deverá realizar a leitura do QR Code através da aplicação para confirmar sua presença.
+
+
+
+Durante a confirmação, o backend deverá validar:
+
+
+
+\* a identidade do aluno autenticado;
+
+\* a associação do aluno à aula;
+
+\* o estado atual da aula;
+
+\* a correspondência do token;
+
+\* a validade temporal do token.
 
 
 
@@ -230,15 +250,17 @@ Após a validação:
 
 \* a presença do aluno será registrada;
 
-\* a aula será marcada como iniciada;
+\* a data e hora do check-in serão registradas;
 
-\* o horário ficará registrado;
+\* o início da aula será registrado;
 
-\* a aula poderá posteriormente ser encerrada pelo instrutor.
+\* o token utilizado será invalidado;
+
+\* a aula passará para o estado `IN\_PROGRESS`.
 
 
 
-O mecanismo não possui relação com processamento de pagamentos no MVP.
+Caso o token expire antes da confirmação, o instrutor poderá iniciar novamente o processo de check-in, gerando um novo token e invalidando o anterior.
 
 
 

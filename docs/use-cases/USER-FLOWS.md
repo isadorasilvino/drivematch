@@ -470,23 +470,73 @@ O instrutor poderá visualizar suas aulas futuras e históricas.
 
 
 
+\#### Ator principal
+
+Aluno.
+
+\#### Ator secundário
+
+Instrutor.
+
+\#### Pré-condições
+
+* A aula deve estar agendada.
+* O instrutor autenticado deve estar associado à aula.
+* O aluno autenticado deve estar associado à aula.
+
 \#### Fluxo principal
 
+1. O instrutor acessa uma aula agendada.
+2. O instrutor inicia o processo de check-in.
+3. O backend gera um token temporário e único associado à aula.
+4. O token recebe validade de 15 minutos.
+5. O frontend representa o token através de um QR Code apresentado pelo instrutor.
+6. O aluno realiza a leitura do QR Code.
+7. O frontend envia o token ao backend utilizando a autenticação do aluno.
+8. O backend valida:
+   * se a aula está em `CHECK_IN`;
+   * se o aluno autenticado está associado à aula;
+   * se o token corresponde ao token ativo;
+   * se o token ainda está dentro do período de validade.
+9. O sistema registra a data e hora do check-in em `CheckInAt`.
+10. O sistema registra o início da aula em `StartedAt`.
+11. O token utilizado é invalidado.
+12. A data de expiração do token é removida.
+13. A aula passa para `IN_PROGRESS`.
 
+\#### Fluxo alternativo — Token expirado
 
-1\. Instrutor acessa uma aula confirmada.
+1. O aluno tenta confirmar o check-in utilizando um token expirado.
+2. O backend rejeita a confirmação.
+3. A aula permanece em `CHECK_IN`.
+4. O instrutor inicia novamente o processo de check-in.
+5. O backend gera um novo token com um novo período de validade.
+6. O token anterior deixa de ser válido.
+7. O fluxo principal poderá ser retomado com o novo token.
 
-2\. Instrutor inicia o processo de check-in.
+\#### Fluxo alternativo — Token inválido
 
-3\. Sistema gera um QR Code temporário.
+1. O aluno tenta confirmar o check-in utilizando um token que não corresponde ao token ativo da aula.
+2. O backend rejeita a confirmação.
+3. A presença não é registrada.
+4. A aula permanece em `CHECK_IN`.
 
-4\. Aluno realiza a leitura.
+\#### Fluxo alternativo — Aluno não associado à aula
 
-5\. Sistema valida o código.
+1. Um aluno autenticado que não está associado à aula tenta confirmar o check-in.
+2. O backend rejeita a operação por falta de permissão.
+3. A presença não é registrada.
+4. O estado da aula não é alterado.
 
-6\. Sistema registra a presença.
+\#### Pós-condições
 
-7\. Aula passa para `IN\_PROGRESS`.
+Após um check-in válido:
+
+* a presença do aluno estará registrada;
+* `CheckInAt` estará preenchido;
+* `StartedAt` estará preenchido;
+* o token de check-in estará invalidado;
+* a aula estará em `IN_PROGRESS`.
 
 
 

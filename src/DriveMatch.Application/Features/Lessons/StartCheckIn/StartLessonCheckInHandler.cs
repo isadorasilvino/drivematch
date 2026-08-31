@@ -41,12 +41,14 @@ public sealed class StartLessonCheckInHandler
             throw new LessonForbiddenException();
         }
 
-        lesson.StartCheckIn();
+        var checkInToken = lesson.StartCheckIn();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new StartLessonCheckInResult(
             lesson.Id,
-            lesson.Status);
+            lesson.Status,
+            checkInToken,
+            lesson.CheckInTokenExpiresAt!.Value);
     }
 }

@@ -8,11 +8,12 @@ namespace DriveMatch.UnitTests.Application.Lessons;
 internal static class LessonTestHelpers
 {
     public static Lesson CreateLesson(
-        Guid instructorProfileId)
+        Guid instructorProfileId,
+        Guid? studentProfileId = null)
     {
         return new Lesson(
             Guid.NewGuid(),
-            Guid.NewGuid(),
+            studentProfileId ?? Guid.NewGuid(),
             instructorProfileId,
             Guid.NewGuid(),
             new DateOnly(2026, 8, 31),
@@ -36,6 +37,20 @@ internal static class LessonTestHelpers
             true,
             true);
     }
+
+    public static StudentProfile CreateStudentProfile(
+        Guid profileId,
+        Guid userId)
+    {
+        return new StudentProfile(
+            profileId,
+            userId,
+            "Belo Horizonte",
+            "MG",
+            ExperienceLevel.Beginner,
+            false,
+            false);
+    }
 }
 
 internal sealed class FakeInstructorProfileRepository
@@ -54,7 +69,9 @@ internal sealed class FakeInstructorProfileRepository
         CancellationToken cancellationToken = default)
     {
         return Task.FromResult(
-            _profile?.Id == id ? _profile : null);
+            _profile?.Id == id
+                ? _profile
+                : null);
     }
 
     public Task<InstructorProfile?> GetByUserIdAsync(
@@ -91,6 +108,53 @@ internal sealed class FakeInstructorProfileRepository
 
     public Task AddAsync(
         InstructorProfile instructorProfile,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class FakeStudentProfileRepository
+    : IStudentProfileRepository
+{
+    private readonly StudentProfile? _profile;
+
+    public FakeStudentProfileRepository(
+        StudentProfile? profile)
+    {
+        _profile = profile;
+    }
+
+    public Task<StudentProfile?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            _profile?.Id == id
+                ? _profile
+                : null);
+    }
+
+    public Task<StudentProfile?> GetByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            _profile?.UserId == userId
+                ? _profile
+                : null);
+    }
+
+    public Task<bool> ExistsByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(
+            _profile?.UserId == userId);
+    }
+
+    public Task AddAsync(
+        StudentProfile studentProfile,
         CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;

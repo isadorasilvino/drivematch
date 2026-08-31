@@ -666,49 +666,48 @@ O instrutor deve poder iniciar uma aula agendada através da plataforma.
 
 
 
-\#### RF-034 — Geração de QR Code
+\#### RF-034 — Geração de token de check-in
 
+**Prioridade:** Must
 
+Ao iniciar o processo de check-in de uma aula, o backend deve gerar um token temporário e único associado à aula.
 
-\*\*Prioridade:\*\* Must
+O token deve possuir validade de 15 minutos.
 
+O frontend poderá representar esse token através de um QR Code apresentado pelo instrutor.
 
-
-Ao iniciar uma aula, o sistema deve gerar um QR Code temporário para validação da presença do aluno.
-
-
+Caso o token expire antes da confirmação, o instrutor deve poder iniciar novamente o processo de check-in, gerando um novo token e invalidando o anterior.
 
 \---
-
-
 
 \#### RF-035 — Check-in do aluno
 
-
-
-\*\*Prioridade:\*\* Must
-
-
+**Prioridade:** Must
 
 O aluno deve poder realizar o check-in através da leitura do QR Code apresentado pelo instrutor.
 
+A confirmação do check-in deve utilizar o token temporário associado à aula.
 
+O backend deve validar:
+
+* o aluno autenticado;
+* a associação do aluno à aula;
+* o estado atual da aula;
+* a correspondência do token informado;
+* a validade temporal do token.
 
 \---
 
-
-
 \#### RF-036 — Validação da presença
 
+**Prioridade:** Must
 
+Após a validação bem-sucedida do check-in, o sistema deve:
 
-\*\*Prioridade:\*\* Must
-
-
-
-Após o check-in, o sistema deve registrar a presença do aluno e alterar o estado da aula para "Em andamento".
-
-
+* registrar a data e hora do check-in;
+* registrar o início da aula;
+* invalidar o token utilizado;
+* alterar o estado da aula para `IN_PROGRESS`.
 
 \---
 
@@ -1176,7 +1175,7 @@ O QR Code utilizado para check-in deverá possuir validade limitada e não poder
 
 
 
-O registro de presença deverá ocorrer somente após a validação do QR Code pelo aluno.
+O registro de presença deverá ocorrer somente após a validação do token de check-in enviado pelo aluno autenticado.
 
 
 

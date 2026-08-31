@@ -30,17 +30,21 @@ public static class InstructorEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .RequireAuthorization(policy =>
-                policy.RequireRole("Instructor")); ;
+                policy.RequireRole("Instructor"));
 
         group.MapPut("/profile", UpdateProfileAsync)
             .WithName("UpdateInstructorProfile")
             .Produces<UpdateInstructorProfileResult>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/profile/status", ChangeStatusAsync)
             .WithName("ChangeInstructorProfileStatus")
             .Produces<ChangeInstructorProfileStatusResult>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapGet("/search", SearchAsync)
             .WithName("SearchInstructors")

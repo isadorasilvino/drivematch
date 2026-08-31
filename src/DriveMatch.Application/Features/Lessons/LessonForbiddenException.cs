@@ -3,7 +3,7 @@
 public sealed class LessonForbiddenException : Exception
 {
     public LessonForbiddenException()
-        : base("O instrutor autenticado não possui permissão para alterar esta aula.")
+        : base("O usuário autenticado não possui permissão para alterar esta aula.")
     {
     }
 }

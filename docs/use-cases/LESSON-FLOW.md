@@ -114,9 +114,9 @@ Permitido quando:
 
 
 
-\* O QR Code é válido.
+\* O token de check-in é válido.
 
-\* O QR Code não expirou.
+\* O token de check-in não expirou.
 
 \* O aluno pertence à aula.
 
@@ -212,45 +212,41 @@ O sistema não deve permitir:
 
 
 
-O check-in possui como objetivo validar a presença do aluno. O processo utiliza um QR Code temporário.
+O check-in possui como objetivo validar a presença do aluno antes do início da aula.
 
+O processo utiliza um token temporário gerado pelo backend e associado à aula. O frontend poderá representar esse token através de um QR Code apresentado pelo instrutor.
 
+Fluxo principal:
 
 ```text
-
 Instrutor
-
-&#x20;   ↓
-
-Start aula
-
-&#x20;   ↓
-
-Sistema gera QR Code
-
-&#x20;   ↓
-
-Aluno escaneia
-
-&#x20;   ↓
-
-Sistema valida
-
-&#x20;   ↓
-
+   ↓
+Inicia processo de check-in
+   ↓
+Backend gera token temporário
+   ↓
+Token possui validade de 15 minutos
+   ↓
+Frontend representa o token em QR Code
+   ↓
+Aluno escaneia o QR Code
+   ↓
+Frontend envia o token ao backend
+   ↓
+Backend valida token e aluno autenticado
+   ↓
 Presença registrada
-
-&#x20;   ↓
-
-IN\_PROGRESS
-
+   ↓
+Token invalidado
+   ↓
+IN_PROGRESS
 
 
 ```
 
 
 
-> \*\*Atenção:\*\* O QR Code deverá possuir validade limitada para reduzir riscos de reutilização.
+> \*\*Atenção:\*\* O token representado pelo QR Code possui validade limitada para reduzir riscos de reutilização.
 
 
 

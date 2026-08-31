@@ -448,7 +448,7 @@ Entre suas responsabilidades estarão:
 
 \* Configurações de banco de dados.
 
-\* Geração de QR Code.
+\* Geração de token temporário para check-in.
 
 \* Integrações externas.
 
@@ -668,73 +668,43 @@ O backend deverá validar se o usuário autenticado possui permissão para execu
 
 \## 12. Check-in das aulas
 
+O processo de check-in utilizará um token temporário associado à aula.
 
+O backend será responsável por gerar esse token, enquanto o frontend poderá representá-lo através de um QR Code apresentado pelo instrutor.
 
-O processo de check-in utilizará um QR Code temporário.
-
-
-
-O QR Code não deverá expor informações sensíveis.
-
-
-
-Em vez disso, deverá representar um token temporário associado ao processo de check-in.
-
-
+O token não deverá expor informações sensíveis e possuirá validade de 15 minutos.
 
 O backend deverá validar:
 
-
-
-\* autenticidade do token;
-
-\* validade temporal;
-
-\* aula associada;
-
-\* aluno associado;
-
-\* estado atual da aula;
-
-\* permissões do usuário.
-
-
+* autenticidade do token;
+* validade temporal;
+* aula associada;
+* aluno associado;
+* estado atual da aula;
+* permissões do usuário autenticado.
 
 Fluxo conceitual:
 
-
-
 ```text
-
 Instrutor
-
-\&#x20;   ↓
-
-Inicia aula
-
-\&#x20;   ↓
-
+   ↓
+Inicia processo de check-in
+   ↓
 Backend gera token temporário
-
-\&#x20;   ↓
-
-Token é representado através de QR Code
-
-\&#x20;   ↓
-
-Aluno escaneia
-
-\&#x20;   ↓
-
-Backend valida token
-
-\&#x20;   ↓
-
-Presença registrada
-
-\&#x20;   ↓
-
-Aula → IN\\\_PROGRESS
+   ↓
+Frontend representa o token em QR Code
+   ↓
+Aluno escaneia o QR Code
+   ↓
+Frontend envia o token ao backend
+   ↓
+Backend valida token e ownership do aluno
+   ↓
+Check-in confirmado
+   ↓
+Token é invalidado
+   ↓
+Aula passa para IN_PROGRESS
 
 
 

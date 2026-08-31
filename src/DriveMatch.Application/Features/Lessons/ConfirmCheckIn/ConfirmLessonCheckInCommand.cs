@@ -2,4 +2,5 @@
 
 public sealed record ConfirmLessonCheckInCommand(
     Guid LessonId,
-    Guid UserId);
+    Guid UserId,
+    string CheckInToken);

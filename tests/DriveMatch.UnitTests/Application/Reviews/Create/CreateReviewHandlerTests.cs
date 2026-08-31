@@ -272,12 +272,13 @@ public class CreateReviewHandlerTests
             new TimeOnly(15, 0));
     }
 
-    private static Lesson CreateCompletedLesson(Guid studentProfileId)
+    private static Lesson CreateCompletedLesson(
+    Guid studentProfileId)
     {
         var lesson = CreateLesson(studentProfileId);
 
-        lesson.StartCheckIn();
-        lesson.ConfirmCheckIn();
+        var token = lesson.StartCheckIn();
+        lesson.ConfirmCheckIn(token);
         lesson.Complete();
 
         return lesson;

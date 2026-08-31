@@ -15,6 +15,8 @@ public class Lesson : Entity
     public LessonStatus Status { get; private set; }
     public DateTime? StartedAt { get; private set; }
     public DateTime? CheckInAt { get; private set; }
+    public string? CheckInToken { get; private set; }
+    public DateTime? CheckInTokenExpiresAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
     public DateTime? CancelledAt { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -57,19 +59,52 @@ public class Lesson : Entity
         CreatedAt = DateTime.UtcNow;
     }
 
-    public void StartCheckIn()
+    public string StartCheckIn()
     {
-        EnsureStatus(LessonStatus.Scheduled);
+        if (Status is not LessonStatus.Scheduled
+            and not LessonStatus.CheckIn)
+        {
+            throw new DomainException(
+                "O check-in só pode ser iniciado para uma aula agendada ou com check-in em andamento.");
+        }
 
+        CheckInToken = Guid.NewGuid().ToString("N");
+        CheckInTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);
         Status = LessonStatus.CheckIn;
+
+        return CheckInToken;
     }
 
-    public void ConfirmCheckIn()
+    public void ConfirmCheckIn(string token)
     {
         EnsureStatus(LessonStatus.CheckIn);
 
-        CheckInAt = DateTime.UtcNow;
-        StartedAt = DateTime.UtcNow;
+        if (string.IsNullOrWhiteSpace(token))
+            throw new DomainException(
+                "O token de check-in deve ser informado.");
+
+        if (string.IsNullOrWhiteSpace(CheckInToken) ||
+            !string.Equals(CheckInToken, token, StringComparison.Ordinal))
+        {
+            throw new DomainException(
+                "O token de check-in é inválido.");
+        }
+
+        if (CheckInTokenExpiresAt is null ||
+            CheckInTokenExpiresAt <= DateTime.UtcNow)
+        {
+            throw new DomainException(
+                "O token de check-in expirou.");
+        }
+
+        var now = DateTime.UtcNow;
+
+        CheckInAt = now;
+        StartedAt = now;
+
+        CheckInToken = null;
+        CheckInTokenExpiresAt = null;
+
         Status = LessonStatus.InProgress;
     }
 

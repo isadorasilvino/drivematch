@@ -44,6 +44,12 @@ public sealed class LessonConfiguration
 
         builder.Property(lesson => lesson.StartedAt);
         builder.Property(lesson => lesson.CheckInAt);
+
+        builder.Property(lesson => lesson.CheckInToken)
+            .HasMaxLength(32);
+
+        builder.Property(lesson => lesson.CheckInTokenExpiresAt);
+
         builder.Property(lesson => lesson.CompletedAt);
         builder.Property(lesson => lesson.CancelledAt);
 

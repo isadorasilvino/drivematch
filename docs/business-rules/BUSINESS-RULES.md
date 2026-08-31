@@ -126,56 +126,49 @@ Somente aulas confirmadas poderão ser iniciadas.
 
 \## RN-009 — Check-in
 
+O processo de check-in deverá ser iniciado pelo instrutor para uma aula agendada.
 
+Ao iniciar o check-in, o backend deverá gerar um token temporário e único associado à aula, com validade de 15 minutos.
 
-O check-in deverá ocorrer através de um QR Code temporário gerado para a aula.
+O frontend poderá representar esse token através de um QR Code apresentado pelo instrutor.
 
-
-
-\---
-
-
-
-\## RN-010 — Validação do QR Code
-
-
-
-O QR Code deverá:
-
-
-
-\* Pertencer à aula correta.
-
-\* Estar dentro da validade.
-
-\* Não ter sido invalidado.
-
-\* Ser utilizado pelo aluno correto.
-
-
+Caso o token expire antes da confirmação do aluno, o instrutor poderá iniciar novamente o processo de check-in. Nesse caso, um novo token deverá ser gerado e o token anterior deixará de ser válido.
 
 \---
 
+\## RN-010 — Validação do token de check-in
 
+Para que o check-in seja considerado válido, o token deverá:
+
+* corresponder ao token ativo da aula;
+* estar dentro do período de validade;
+* pertencer a uma aula em estado `CHECK_IN`;
+* ser utilizado pelo aluno associado à aula.
+
+Somente o aluno autenticado associado à aula poderá confirmar o check-in.
+
+Após uma confirmação válida, o token deverá ser invalidado e não poderá ser reutilizado.
+
+\---
 
 \## RN-011 — Presença
 
+A presença somente poderá ser registrada após a validação bem-sucedida do check-in.
 
+Após a validação:
 
-A presença somente poderá ser registrada após a validação do check-in.
-
-
+* `CheckInAt` deverá registrar a data e hora da confirmação;
+* `StartedAt` deverá registrar o início da aula;
+* o token de check-in deverá ser invalidado;
+* sua data de expiração deverá ser removida.
 
 \---
 
-
-
 \## RN-012 — Início da aula
 
+Uma aula somente poderá entrar em `IN_PROGRESS` após um check-in válido realizado pelo aluno associado à aula.
 
-
-Uma aula somente poderá entrar em `IN\_PROGRESS` após check-in válido.
-
+A confirmação válida do check-in deverá realizar a transição da aula de `CHECK_IN` para `IN_PROGRESS`.
 
 
 \---

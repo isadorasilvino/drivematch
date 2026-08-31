@@ -6,16 +6,16 @@ namespace DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 public sealed class ConfirmLessonCheckInHandler
 {
     private readonly ILessonRepository _lessonRepository;
-    private readonly IInstructorProfileRepository _instructorProfileRepository;
+    private readonly IStudentProfileRepository _studentProfileRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ConfirmLessonCheckInHandler(
         ILessonRepository lessonRepository,
-        IInstructorProfileRepository instructorProfileRepository,
+        IStudentProfileRepository studentProfileRepository,
         IUnitOfWork unitOfWork)
     {
         _lessonRepository = lessonRepository;
-        _instructorProfileRepository = instructorProfileRepository;
+        _studentProfileRepository = studentProfileRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -30,18 +30,18 @@ public sealed class ConfirmLessonCheckInHandler
         if (lesson is null)
             throw new LessonNotFoundException(command.LessonId);
 
-        var instructorProfile =
-            await _instructorProfileRepository.GetByUserIdAsync(
+        var studentProfile =
+            await _studentProfileRepository.GetByUserIdAsync(
                 command.UserId,
                 cancellationToken);
 
-        if (instructorProfile is null ||
-            instructorProfile.Id != lesson.InstructorId)
+        if (studentProfile is null ||
+            studentProfile.Id != lesson.StudentId)
         {
             throw new LessonForbiddenException();
         }
 
-        lesson.ConfirmCheckIn();
+        lesson.ConfirmCheckIn(command.CheckInToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

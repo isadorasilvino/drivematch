@@ -11,67 +11,135 @@ namespace DriveMatch.UnitTests.Application.Lessons.ConfirmCheckIn;
 public class ConfirmLessonCheckInHandlerTests
 {
     [Fact]
-    public async Task HandleAsync_ShouldConfirmCheckIn_WhenLessonBelongsToAuthenticatedInstructor()
+    public async Task HandleAsync_ShouldConfirmCheckIn_WhenLessonBelongsToAuthenticatedStudentAndTokenIsValid()
     {
         var userId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
         var instructorProfileId = Guid.NewGuid();
 
-        var lesson = LessonTestHelpers.CreateLesson(instructorProfileId);
-        lesson.StartCheckIn();
+        var lesson = LessonTestHelpers.CreateLesson(
+            instructorProfileId,
+            studentProfileId);
 
-        var instructorProfile =
-            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
+        var token = lesson.StartCheckIn();
+
+        var studentProfile =
+            LessonTestHelpers.CreateStudentProfile(
+                studentProfileId,
+                userId);
 
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new ConfirmLessonCheckInHandler(
             new FakeLessonRepository(lesson),
-            new FakeInstructorProfileRepository(instructorProfile),
+            new FakeStudentProfileRepository(studentProfile),
             unitOfWork);
 
         var result = await handler.HandleAsync(
             new ConfirmLessonCheckInCommand(
                 lesson.Id,
-                userId));
+                userId,
+                token));
 
         Assert.Equal(lesson.Id, result.LessonId);
         Assert.Equal(LessonStatus.InProgress, result.Status);
         Assert.NotNull(result.CheckInAt);
         Assert.NotNull(result.StartedAt);
-        Assert.Equal(LessonStatus.InProgress, lesson.Status);
+
+        Assert.Equal(
+            LessonStatus.InProgress,
+            lesson.Status);
+
+        Assert.Null(lesson.CheckInToken);
+        Assert.Null(lesson.CheckInTokenExpiresAt);
+
         Assert.True(unitOfWork.SaveChangesCalled);
     }
 
     [Fact]
     public async Task HandleAsync_ShouldThrowLessonNotFoundException_WhenLessonDoesNotExist()
     {
-        var handler = new ConfirmLessonCheckInHandler(
-            new FakeLessonRepository(null),
-            new FakeInstructorProfileRepository(null),
-            new FakeUnitOfWork());
-
-        await Assert.ThrowsAsync<LessonNotFoundException>(
-            () => handler.HandleAsync(
-                new ConfirmLessonCheckInCommand(
-                    Guid.NewGuid(),
-                    Guid.NewGuid())));
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldNotSaveChanges_WhenLessonDoesNotExist()
-    {
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new ConfirmLessonCheckInHandler(
             new FakeLessonRepository(null),
-            new FakeInstructorProfileRepository(null),
+            new FakeStudentProfileRepository(null),
             unitOfWork);
 
         await Assert.ThrowsAsync<LessonNotFoundException>(
             () => handler.HandleAsync(
                 new ConfirmLessonCheckInCommand(
                     Guid.NewGuid(),
-                    Guid.NewGuid())));
+                    Guid.NewGuid(),
+                    "token")));
+
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowLessonForbiddenException_WhenStudentProfileDoesNotExist()
+    {
+        var lesson =
+            LessonTestHelpers.CreateLesson(
+                Guid.NewGuid());
+
+        var token = lesson.StartCheckIn();
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new ConfirmLessonCheckInHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(null),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<LessonForbiddenException>(
+            () => handler.HandleAsync(
+                new ConfirmLessonCheckInCommand(
+                    lesson.Id,
+                    Guid.NewGuid(),
+                    token)));
+
+        Assert.Equal(
+            LessonStatus.CheckIn,
+            lesson.Status);
+
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowLessonForbiddenException_WhenLessonBelongsToAnotherStudent()
+    {
+        var userId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(
+                Guid.NewGuid(),
+                Guid.NewGuid());
+
+        var token = lesson.StartCheckIn();
+
+        var studentProfile =
+            LessonTestHelpers.CreateStudentProfile(
+                Guid.NewGuid(),
+                userId);
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new ConfirmLessonCheckInHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<LessonForbiddenException>(
+            () => handler.HandleAsync(
+                new ConfirmLessonCheckInCommand(
+                    lesson.Id,
+                    userId,
+                    token)));
+
+        Assert.Equal(
+            LessonStatus.CheckIn,
+            lesson.Status);
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
@@ -80,67 +148,120 @@ public class ConfirmLessonCheckInHandlerTests
     public async Task HandleAsync_ShouldPropagateDomainException_WhenLessonIsNotInCheckIn()
     {
         var userId = Guid.NewGuid();
-        var instructorProfileId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
 
         var lesson =
-            LessonTestHelpers.CreateLesson(instructorProfileId);
-
-        var instructorProfile =
-            LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
-
-        var unitOfWork = new FakeUnitOfWork();
-
-        var handler = new ConfirmLessonCheckInHandler(
-            new FakeLessonRepository(lesson),
-            new FakeInstructorProfileRepository(instructorProfile),
-            unitOfWork);
-
-        await Assert.ThrowsAsync<DomainException>(
-            () => handler.HandleAsync(
-                new ConfirmLessonCheckInCommand(
-                    lesson.Id,
-                    userId)));
-
-        Assert.False(unitOfWork.SaveChangesCalled);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldThrowLessonForbiddenException_WhenLessonBelongsToAnotherInstructor()
-    {
-        var userId = Guid.NewGuid();
-
-        var lesson =
-            LessonTestHelpers.CreateLesson(Guid.NewGuid());
-
-        lesson.StartCheckIn();
-
-        var instructorProfile =
-            LessonTestHelpers.CreateInstructorProfile(
+            LessonTestHelpers.CreateLesson(
                 Guid.NewGuid(),
+                studentProfileId);
+
+        var studentProfile =
+            LessonTestHelpers.CreateStudentProfile(
+                studentProfileId,
                 userId);
 
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new ConfirmLessonCheckInHandler(
             new FakeLessonRepository(lesson),
-            new FakeInstructorProfileRepository(instructorProfile),
+            new FakeStudentProfileRepository(studentProfile),
             unitOfWork);
 
-        await Assert.ThrowsAsync<LessonForbiddenException>(
+        await Assert.ThrowsAsync<DomainException>(
             () => handler.HandleAsync(
                 new ConfirmLessonCheckInCommand(
                     lesson.Id,
-                    userId)));
+                    userId,
+                    "token")));
 
-        Assert.Equal(LessonStatus.CheckIn, lesson.Status);
         Assert.False(unitOfWork.SaveChangesCalled);
     }
 
-    private sealed class FakeLessonRepository : ILessonRepository
+    [Fact]
+    public async Task HandleAsync_ShouldPropagateDomainException_WhenTokenIsInvalid()
+    {
+        var userId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(
+                Guid.NewGuid(),
+                studentProfileId);
+
+        lesson.StartCheckIn();
+
+        var studentProfile =
+            LessonTestHelpers.CreateStudentProfile(
+                studentProfileId,
+                userId);
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new ConfirmLessonCheckInHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<DomainException>(
+            () => handler.HandleAsync(
+                new ConfirmLessonCheckInCommand(
+                    lesson.Id,
+                    userId,
+                    "token-invalido")));
+
+        Assert.Equal(
+            LessonStatus.CheckIn,
+            lesson.Status);
+
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldPropagateDomainException_WhenTokenIsEmpty()
+    {
+        var userId = Guid.NewGuid();
+        var studentProfileId = Guid.NewGuid();
+
+        var lesson =
+            LessonTestHelpers.CreateLesson(
+                Guid.NewGuid(),
+                studentProfileId);
+
+        lesson.StartCheckIn();
+
+        var studentProfile =
+            LessonTestHelpers.CreateStudentProfile(
+                studentProfileId,
+                userId);
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new ConfirmLessonCheckInHandler(
+            new FakeLessonRepository(lesson),
+            new FakeStudentProfileRepository(studentProfile),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<DomainException>(
+            () => handler.HandleAsync(
+                new ConfirmLessonCheckInCommand(
+                    lesson.Id,
+                    userId,
+                    string.Empty)));
+
+        Assert.Equal(
+            LessonStatus.CheckIn,
+            lesson.Status);
+
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    private sealed class FakeLessonRepository
+        : ILessonRepository
     {
         private readonly Lesson? _lesson;
 
-        public FakeLessonRepository(Lesson? lesson)
+        public FakeLessonRepository(
+            Lesson? lesson)
         {
             _lesson = lesson;
         }
@@ -150,7 +271,9 @@ public class ConfirmLessonCheckInHandlerTests
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult(
-                _lesson?.Id == id ? _lesson : null);
+                _lesson?.Id == id
+                    ? _lesson
+                    : null);
         }
 
         public Task<bool> HasConflictAsync(
@@ -171,7 +294,8 @@ public class ConfirmLessonCheckInHandlerTests
         }
     }
 
-    private sealed class FakeUnitOfWork : IUnitOfWork
+    private sealed class FakeUnitOfWork
+        : IUnitOfWork
     {
         public bool SaveChangesCalled { get; private set; }
 
@@ -179,6 +303,7 @@ public class ConfirmLessonCheckInHandlerTests
             CancellationToken cancellationToken = default)
         {
             SaveChangesCalled = true;
+
             return Task.FromResult(1);
         }
     }

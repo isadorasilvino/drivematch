@@ -17,8 +17,8 @@ public class CompleteLessonHandlerTests
         var instructorProfileId = Guid.NewGuid();
 
         var lesson = LessonTestHelpers.CreateLesson(instructorProfileId);
-        lesson.StartCheckIn();
-        lesson.ConfirmCheckIn();
+        var token = lesson.StartCheckIn();
+        lesson.ConfirmCheckIn(token);
 
         var instructorProfile =
             LessonTestHelpers.CreateInstructorProfile(instructorProfileId, userId);
@@ -108,8 +108,8 @@ public class CompleteLessonHandlerTests
         var lesson =
             LessonTestHelpers.CreateLesson(Guid.NewGuid());
 
-        lesson.StartCheckIn();
-        lesson.ConfirmCheckIn();
+        var token = lesson.StartCheckIn();
+        lesson.ConfirmCheckIn(token);
 
         var instructorProfile =
             LessonTestHelpers.CreateInstructorProfile(

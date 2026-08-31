@@ -32,44 +32,52 @@ public static class LessonEndpoints
     {
         var group = endpoints
             .MapGroup("/api/lessons")
-            .WithTags("Lessons")
-            .RequireAuthorization(policy =>
-                policy.RequireRole("Instructor"));
+            .WithTags("Lessons");
 
         group.MapPatch("/{lessonId:guid}/check-in/start", StartCheckInAsync)
             .WithName("StartLessonCheckIn")
             .Produces<StartLessonCheckInResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/{lessonId:guid}/check-in/confirm", ConfirmCheckInAsync)
             .WithName("ConfirmLessonCheckIn")
             .Produces<ConfirmLessonCheckInResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
 
         group.MapPatch("/{lessonId:guid}/complete", CompleteAsync)
             .WithName("CompleteLesson")
             .Produces<CompleteLessonResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/{lessonId:guid}/cancel", CancelAsync)
             .WithName("CancelLesson")
             .Produces<CancelLessonResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/{lessonId:guid}/not-attended", MarkAsNotAttendedAsync)
             .WithName("MarkLessonAsNotAttended")
             .Produces<MarkLessonAsNotAttendedResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         return endpoints;
     }
@@ -111,6 +119,7 @@ public static class LessonEndpoints
     private static async Task<IResult> ConfirmCheckInAsync(
         Guid lessonId,
         ClaimsPrincipal user,
+        ConfirmLessonCheckInRequest request,
         ConfirmLessonCheckInHandler handler,
         CancellationToken cancellationToken)
     {
@@ -121,7 +130,8 @@ public static class LessonEndpoints
             var result = await handler.HandleAsync(
                 new ConfirmLessonCheckInCommand(
                     lessonId,
-                    userId),
+                    userId,
+                    request.CheckInToken),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -243,4 +253,7 @@ public static class LessonEndpoints
             return Results.BadRequest(new { error = exception.Message });
         }
     }
+
+    public sealed record ConfirmLessonCheckInRequest(
+        string CheckInToken);
 }
