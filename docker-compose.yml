@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: drivematch-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: drivematch
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - drivematch-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d drivematch"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: src/DriveMatch.Api/Dockerfile
+    container_name: drivematch-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=drivematch;Username=postgres;Password=postgres
+      Jwt__Issuer: DriveMatch.Api
+      Jwt__Audience: DriveMatch.Client
+      Jwt__Key: ${JWT_KEY}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  drivematch-postgres-data:
