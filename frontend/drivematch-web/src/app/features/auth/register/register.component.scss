@@ -66,44 +66,7 @@
   margin-bottom: var(--dm-space-6);
 }
 
-.role-card {
-  width: 100%;
-  padding: var(--dm-space-4);
-  border: 1px solid var(--dm-border);
-  border-radius: var(--dm-radius-lg);
-  background: var(--dm-surface);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 150ms ease,
-    background-color 150ms ease,
-    box-shadow 150ms ease;
 
-  &:focus-visible {
-    outline: 3px solid rgb(37 99 235 / 20%);
-    outline-offset: 2px;
-  }
-}
-
-.role-card--selected {
-  border-color: var(--dm-primary);
-  background: var(--dm-primary-soft);
-  box-shadow: 0 0 0 1px var(--dm-primary);
-}
-
-.role-card__title {
-  display: block;
-  margin-bottom: var(--dm-space-1);
-  color: var(--dm-text);
-  font-weight: 700;
-}
-
-.role-card__description {
-  display: block;
-  color: var(--dm-text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
 
 form {
   display: grid;
