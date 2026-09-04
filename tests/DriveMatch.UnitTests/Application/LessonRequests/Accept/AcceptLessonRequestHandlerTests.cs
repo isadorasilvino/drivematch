@@ -352,6 +352,14 @@ public class AcceptLessonRequestHandlerTests
             return Task.FromResult<Availability?>(null);
         }
 
+        public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                Array.Empty<Availability>());
+        }
+
         public Task<bool> HasAvailabilityAsync(
             Guid instructorProfileId,
             DayOfWeek dayOfWeek,

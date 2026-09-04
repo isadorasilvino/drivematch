@@ -7,6 +7,7 @@ using DriveMatch.Application.Features.Users.Register;
 using DriveMatch.Application.Features.Availabilities.ChangeStatus;
 using DriveMatch.Application.Features.Availabilities.Create;
 using DriveMatch.Application.Features.Availabilities.Update;
+using DriveMatch.Application.Features.Availabilities.GetMine;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.ChangeStatus;
 using DriveMatch.Application.Features.Instructors.GetProfile;
@@ -53,6 +54,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<CreateReviewHandler>();
         services.AddScoped<LoginHandler>();
         services.AddScoped<GetStudentProfileHandler>();
+        services.AddScoped<GetMyAvailabilitiesHandler>();
 
         return services;
     }

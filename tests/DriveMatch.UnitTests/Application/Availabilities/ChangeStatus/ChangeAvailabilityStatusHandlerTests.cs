@@ -220,6 +220,14 @@ public class ChangeAvailabilityStatusHandlerTests
         {
             return Task.FromResult(false);
         }
+
+        public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                Array.Empty<Availability>());
+        }
     }
 
     private sealed class FakeInstructorProfileRepository

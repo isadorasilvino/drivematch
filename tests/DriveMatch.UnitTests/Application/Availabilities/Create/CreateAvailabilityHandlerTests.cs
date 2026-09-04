@@ -196,6 +196,14 @@ public class CreateAvailabilityHandlerTests
             return Task.CompletedTask;
         }
 
+        public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                Array.Empty<Availability>());
+        }
+
         public Task<bool> HasAvailabilityAsync(
             Guid instructorProfileId,
             DayOfWeek dayOfWeek,
@@ -205,6 +213,7 @@ public class CreateAvailabilityHandlerTests
         {
             return Task.FromResult(false);
         }
+
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

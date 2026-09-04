@@ -26,6 +26,19 @@ public sealed class AvailabilityRepository
                 cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+        Guid instructorProfileId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Availabilities
+            .AsNoTracking()
+            .Where(availability =>
+                availability.InstructorProfileId == instructorProfileId)
+            .OrderBy(availability => availability.DayOfWeek)
+            .ThenBy(availability => availability.StartTime)
+            .ToArrayAsync(cancellationToken);
+    }
+
     public Task<bool> HasAvailabilityAsync(
         Guid instructorProfileId,
         DayOfWeek dayOfWeek,

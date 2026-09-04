@@ -8,6 +8,10 @@ public interface IAvailabilityRepository
         Guid id,
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+        Guid instructorProfileId,
+        CancellationToken cancellationToken = default);
+
     Task<bool> HasAvailabilityAsync(
         Guid instructorProfileId,
         DayOfWeek dayOfWeek,

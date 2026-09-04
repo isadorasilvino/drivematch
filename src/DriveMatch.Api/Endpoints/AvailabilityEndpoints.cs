@@ -1,9 +1,16 @@
 ﻿using DriveMatch.Application.Features.Availabilities.ChangeStatus;
 using DriveMatch.Application.Features.Availabilities.Create;
 using DriveMatch.Application.Features.Availabilities.Update;
+using DriveMatch.Application.Features.Availabilities.GetMine;
 using DriveMatch.Application.Features.Availabilities;
 using DriveMatch.Api.Extensions;
 using System.Security.Claims;
+
+using CreateInstructorProfileNotFoundException =
+    DriveMatch.Application.Features.Availabilities.Create.InstructorProfileNotFoundException;
+
+using GetMineInstructorProfileNotFoundException =
+    DriveMatch.Application.Features.Availabilities.GetMine.InstructorProfileNotFoundException;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -17,6 +24,12 @@ public static class AvailabilityEndpoints
             .WithTags("Availabilities")
             .RequireAuthorization(policy =>
                 policy.RequireRole("Instructor"));
+
+        group.MapGet("/", GetMineAsync)
+            .WithName("GetMyAvailabilities")
+            .Produces<IReadOnlyCollection<GetMyAvailabilitiesResult>>(
+                StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/", CreateAsync)
             .WithName("CreateAvailability")
@@ -36,6 +49,30 @@ public static class AvailabilityEndpoints
             .Produces(StatusCodes.Status404NotFound);
 
         return endpoints;
+    }
+
+    private static async Task<IResult> GetMineAsync(
+        ClaimsPrincipal user,
+        GetMyAvailabilitiesHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var userId = user.GetUserId();
+
+            var result = await handler.HandleAsync(
+                userId,
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (GetMineInstructorProfileNotFoundException exception)
+        {
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
     }
 
     private static async Task<IResult> CreateAsync(
@@ -60,7 +97,7 @@ public static class AvailabilityEndpoints
                 $"/api/availabilities/{result.AvailabilityId}",
                 result);
         }
-        catch (InstructorProfileNotFoundException exception)
+        catch (CreateInstructorProfileNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
         }
