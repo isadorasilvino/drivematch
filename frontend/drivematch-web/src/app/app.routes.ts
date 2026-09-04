@@ -1,3 +1,39 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
+import { StudentHomeComponent } from './features/student/student-home.component';
+
+export const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'student',
+    component: StudentHomeComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+    ],
+  },
+  {
+    path: 'instructor',
+    component: InstructorHomeComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Instructor']),
+    ],
+  },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+  },
+];

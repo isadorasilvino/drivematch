@@ -1,0 +1,86 @@
+:root {
+  // Brand
+  --dm-primary: #2563eb;
+  --dm-primary-hover: #1d4ed8;
+  --dm-primary-active: #1e40af;
+  --dm-primary-soft: #eff6ff;
+
+  --dm-secondary: #172554;
+
+  // Semantic
+  --dm-success: #16a34a;
+  --dm-success-soft: #f0fdf4;
+
+  --dm-warning: #d97706;
+  --dm-warning-soft: #fffbeb;
+
+  --dm-danger: #dc2626;
+  --dm-danger-soft: #fef2f2;
+
+  // Neutral
+  --dm-background: #f8fafc;
+  --dm-surface: #ffffff;
+
+  --dm-text: #0f172a;
+  --dm-text-secondary: #64748b;
+  --dm-text-muted: #94a3b8;
+
+  --dm-border: #e2e8f0;
+  --dm-border-strong: #cbd5e1;
+
+  // Typography
+  --dm-font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --dm-font-xs: 0.75rem;
+  --dm-font-sm: 0.875rem;
+  --dm-font-md: 1rem;
+  --dm-font-lg: 1.125rem;
+  --dm-font-xl: 1.25rem;
+  --dm-font-2xl: 1.5rem;
+  --dm-font-3xl: 1.875rem;
+  --dm-font-4xl: 2.25rem;
+
+  // Spacing
+  --dm-space-1: 0.25rem;
+  --dm-space-2: 0.5rem;
+  --dm-space-3: 0.75rem;
+  --dm-space-4: 1rem;
+  --dm-space-5: 1.25rem;
+  --dm-space-6: 1.5rem;
+  --dm-space-8: 2rem;
+  --dm-space-10: 2.5rem;
+  --dm-space-12: 3rem;
+
+  // Radius
+  --dm-radius-sm: 0.5rem;
+  --dm-radius-md: 0.75rem;
+  --dm-radius-lg: 1rem;
+  --dm-radius-xl: 1.5rem;
+  --dm-radius-full: 9999px;
+
+  // Shadows
+  --dm-shadow-sm:
+    0 1px 2px rgb(15 23 42 / 5%),
+    0 1px 3px rgb(15 23 42 / 8%);
+
+  --dm-shadow-md:
+    0 4px 12px rgb(15 23 42 / 6%),
+    0 1px 4px rgb(15 23 42 / 6%);
+
+  --dm-shadow-lg:
+    0 20px 40px rgb(15 23 42 / 10%);
+
+  // Motion
+  --dm-transition-fast: 150ms ease;
+  --dm-transition-normal: 250ms ease;
+
+  // Layout
+  --dm-content-max-width: 75rem;
+  --dm-mobile-nav-height: 4.5rem;
+}

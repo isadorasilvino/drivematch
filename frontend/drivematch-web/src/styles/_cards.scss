@@ -1,0 +1,18 @@
+.dm-card {
+  background: var(--dm-surface);
+  border: 1px solid var(--dm-border);
+  border-radius: var(--dm-radius-lg);
+  box-shadow: var(--dm-shadow-sm);
+}
+
+.dm-card--interactive {
+  transition:
+    box-shadow var(--dm-transition-normal),
+    transform var(--dm-transition-normal),
+    border-color var(--dm-transition-normal);
+
+  &:hover {
+    border-color: var(--dm-border-strong);
+    box-shadow: var(--dm-shadow-md);
+  }
+}
