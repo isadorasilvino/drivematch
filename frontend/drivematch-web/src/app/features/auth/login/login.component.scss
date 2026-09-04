@@ -164,3 +164,20 @@ form {
         display: none;
     }
 }
+
+.register-link {
+  margin: var(--dm-space-6) 0 0;
+  color: var(--dm-text-secondary);
+  text-align: center;
+  font-size: 0.875rem;
+
+  a {
+    color: var(--dm-primary);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -20,21 +20,36 @@ export interface LoginResponse {
   token: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
+export interface RegisterResponse {
+  userId: string;
+  name: string;
+  email: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly authStorage = inject(AuthStorageService);
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(
-        `${API_BASE_URL}/api/auth/login`,
-        request,
-      )
+      .post<LoginResponse>(`${API_BASE_URL}/api/auth/login`, request)
       .pipe(
         tap((response) => this.authStorage.saveSession(response)),
       );
+  }
+
+  register(request: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(
+      `${API_BASE_URL}/api/users/`,
+      request,
+    );
   }
 }

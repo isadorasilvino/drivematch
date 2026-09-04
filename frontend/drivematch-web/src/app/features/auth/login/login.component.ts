@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
 
 import { AuthService } from '../../../core/auth/auth.service';
 
@@ -11,6 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

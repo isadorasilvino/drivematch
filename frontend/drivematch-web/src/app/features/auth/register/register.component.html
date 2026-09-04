@@ -1,0 +1,186 @@
+<main class="register-page">
+    <section class="register-hero">
+        <div class="register-hero__content">
+            <img
+                class="brand-mark"
+                src="/brand/drivematch-symbol-dark.png"
+                alt=""
+                aria-hidden="true"
+            />
+
+            <p class="register-hero__eyebrow">
+                DriveMatch
+            </p>
+
+            <h1>
+                Comece sua jornada.
+            </h1>
+
+            <p>
+                Crie sua conta e encontre o caminho ideal para suas aulas de direção.
+            </p>
+        </div>
+    </section>
+
+    <section class="register-content">
+        <div class="register-card dm-card">
+            <header class="register-header">
+                <div class="mobile-brand">
+                    <img
+                        class="brand-mark"
+                        src="/brand/drivematch-symbol-light.png"
+                        alt=""
+                        aria-hidden="true"
+                    />
+
+                    <strong>DriveMatch</strong>
+                </div>
+
+                <h2>Crie sua conta</h2>
+
+                <p>
+                    Primeiro, conte como você vai usar o DriveMatch.
+                </p>
+            </header>
+
+            <div class="role-selector">
+                <button
+                    type="button"
+                    class="role-card"
+                    [class.role-card--selected]="selectedRole() === 'Student'"
+                    (click)="selectRole('Student')"
+                >
+                    <span class="role-card__title">
+                        Sou aluno
+                    </span>
+
+                    <span class="role-card__description">
+                        Quero encontrar instrutores e organizar minhas aulas.
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    class="role-card"
+                    [class.role-card--selected]="selectedRole() === 'Instructor'"
+                    (click)="selectRole('Instructor')"
+                >
+                    <span class="role-card__title">
+                        Sou instrutor
+                    </span>
+
+                    <span class="role-card__description">
+                        Quero divulgar meu trabalho e gerenciar meus alunos.
+                    </span>
+                </button>
+            </div>
+
+            <form (ngSubmit)="register()">
+                <div class="dm-field">
+                    <label
+                        class="dm-label"
+                        for="name"
+                    >
+                        Nome
+                    </label>
+
+                    <input
+                        id="name"
+                        class="dm-input"
+                        type="text"
+                        name="name"
+                        [(ngModel)]="name"
+                        autocomplete="name"
+                        placeholder="Seu nome"
+                        required
+                    />
+                </div>
+
+                <div class="dm-field">
+                    <label
+                        class="dm-label"
+                        for="email"
+                    >
+                        E-mail
+                    </label>
+
+                    <input
+                        id="email"
+                        class="dm-input"
+                        type="email"
+                        name="email"
+                        [(ngModel)]="email"
+                        autocomplete="email"
+                        placeholder="seu@email.com"
+                        required
+                    />
+                </div>
+
+                <div class="dm-field">
+                    <label
+                        class="dm-label"
+                        for="password"
+                    >
+                        Senha
+                    </label>
+
+                    <input
+                        id="password"
+                        class="dm-input"
+                        type="password"
+                        name="password"
+                        [(ngModel)]="password"
+                        autocomplete="new-password"
+                        placeholder="Crie uma senha"
+                        required
+                    />
+                </div>
+
+                <div class="dm-field">
+                    <label
+                        class="dm-label"
+                        for="confirmPassword"
+                    >
+                        Confirmar senha
+                    </label>
+
+                    <input
+                        id="confirmPassword"
+                        class="dm-input"
+                        type="password"
+                        name="confirmPassword"
+                        [(ngModel)]="confirmPassword"
+                        autocomplete="new-password"
+                        placeholder="Digite a senha novamente"
+                        required
+                    />
+                </div>
+
+                @if (errorMessage()) {
+                    <div
+                        class="register-error"
+                        role="alert"
+                    >
+                        {{ errorMessage() }}
+                    </div>
+                }
+
+                <button
+                    class="dm-button dm-button--primary dm-button--full"
+                    type="submit"
+                    [disabled]="isLoading()"
+                >
+                    {{ isLoading() ? 'Criando conta...' : 'Criar conta' }}
+                </button>
+            </form>
+
+            <p class="login-link">
+                Já tem uma conta?
+
+                <a routerLink="/login">
+                    Entrar
+                </a>
+            </p>
+        </div>
+    </section>
+</main>

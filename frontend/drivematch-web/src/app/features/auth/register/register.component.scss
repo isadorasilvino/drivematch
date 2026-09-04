@@ -1,0 +1,212 @@
+.register-page {
+  min-height: 100dvh;
+  background: var(--dm-background);
+}
+
+.register-hero {
+  display: none;
+}
+
+.register-content {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    max(var(--dm-space-6), env(safe-area-inset-top))
+    var(--dm-space-4)
+    max(var(--dm-space-6), env(safe-area-inset-bottom));
+}
+
+.register-card {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.register-header {
+  margin-bottom: var(--dm-space-6);
+
+  h2 {
+    margin: 0 0 var(--dm-space-2);
+    color: var(--dm-text);
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  > p {
+    margin: 0;
+    color: var(--dm-text-secondary);
+  }
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--dm-space-3);
+  margin-bottom: var(--dm-space-8);
+
+  strong {
+    color: var(--dm-secondary);
+    font-size: 1.125rem;
+  }
+}
+
+.brand-mark {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--dm-space-3);
+  margin-bottom: var(--dm-space-6);
+}
+
+.role-card {
+  width: 100%;
+  padding: var(--dm-space-4);
+  border: 1px solid var(--dm-border);
+  border-radius: var(--dm-radius-lg);
+  background: var(--dm-surface);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+
+  &:focus-visible {
+    outline: 3px solid rgb(37 99 235 / 20%);
+    outline-offset: 2px;
+  }
+}
+
+.role-card--selected {
+  border-color: var(--dm-primary);
+  background: var(--dm-primary-soft);
+  box-shadow: 0 0 0 1px var(--dm-primary);
+}
+
+.role-card__title {
+  display: block;
+  margin-bottom: var(--dm-space-1);
+  color: var(--dm-text);
+  font-weight: 700;
+}
+
+.role-card__description {
+  display: block;
+  color: var(--dm-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+form {
+  display: grid;
+  gap: var(--dm-space-4);
+}
+
+.register-error {
+  padding: var(--dm-space-3) var(--dm-space-4);
+  border-radius: var(--dm-radius-md);
+  background: rgb(220 38 38 / 8%);
+  color: var(--dm-danger);
+  font-size: 0.875rem;
+}
+
+.login-link {
+  margin: var(--dm-space-6) 0 0;
+  color: var(--dm-text-secondary);
+  text-align: center;
+  font-size: 0.875rem;
+
+  a {
+    color: var(--dm-primary);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (min-width: 48rem) {
+  .role-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  .register-page {
+    display: grid;
+    grid-template-columns: minmax(24rem, 0.9fr) minmax(34rem, 1.1fr);
+    background: var(--dm-surface);
+  }
+
+  .register-hero {
+    display: flex;
+    align-items: center;
+    padding: var(--dm-space-12);
+    background:
+      linear-gradient(
+        145deg,
+        var(--dm-secondary) 0%,
+        #1e3a8a 55%,
+        var(--dm-primary) 100%
+      );
+    color: #fff;
+  }
+
+  .register-hero__content {
+    width: 100%;
+    max-width: 32rem;
+    margin-inline: auto;
+
+    .brand-mark {
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: var(--dm-space-8);
+    }
+
+    h1 {
+      max-width: 28rem;
+      margin: 0 0 var(--dm-space-5);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    > p:last-child {
+      max-width: 28rem;
+      margin: 0;
+      color: rgb(255 255 255 / 75%);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+  }
+
+  .register-hero__eyebrow {
+    margin: 0 0 var(--dm-space-4);
+    color: rgb(255 255 255 / 75%);
+    font-weight: 700;
+  }
+
+  .register-content {
+    min-height: 100dvh;
+    padding: var(--dm-space-12);
+  }
+
+  .register-card {
+    box-shadow: none;
+    border: 0;
+  }
+
+  .mobile-brand {
+    display: none;
+  }
+}
