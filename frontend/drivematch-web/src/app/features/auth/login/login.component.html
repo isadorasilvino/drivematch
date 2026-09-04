@@ -1,7 +1,12 @@
 <main class="login-page">
     <section class="login-hero">
         <div class="login-hero__content">
-            <img class="brand-mark" src="/brand/drivematch-symbol.svg" alt="" aria-hidden="true" />
+            <img
+                class="brand-mark"
+                src="/brand/drivematch-symbol-dark.png"
+                alt=""
+                aria-hidden="true"
+            />
 
             <p class="login-hero__eyebrow">
                 DriveMatch
@@ -22,7 +27,12 @@
         <div class="login-card dm-card">
             <header class="login-header">
                 <div class="mobile-brand">
-                    <img class="brand-mark" src="/brand/drivematch-symbol.svg" alt="" aria-hidden="true" />
+                    <img
+                        class="brand-mark"
+                        src="/brand/drivematch-symbol-light.png"
+                        alt=""
+                        aria-hidden="true"
+                    />
 
                     <strong>DriveMatch</strong>
                 </div>
@@ -40,8 +50,16 @@
                         E-mail
                     </label>
 
-                    <input id="email" class="dm-input" type="email" name="email" [(ngModel)]="email"
-                        autocomplete="email" placeholder="seu@email.com" required />
+                    <input
+                        id="email"
+                        class="dm-input"
+                        type="email"
+                        name="email"
+                        [(ngModel)]="email"
+                        autocomplete="email"
+                        placeholder="seu@email.com"
+                        required
+                    />
                 </div>
 
                 <div class="dm-field">
@@ -49,17 +67,29 @@
                         Senha
                     </label>
 
-                    <input id="password" class="dm-input" type="password" name="password" [(ngModel)]="password"
-                        autocomplete="current-password" placeholder="Digite sua senha" required />
+                    <input
+                        id="password"
+                        class="dm-input"
+                        type="password"
+                        name="password"
+                        [(ngModel)]="password"
+                        autocomplete="current-password"
+                        placeholder="Digite sua senha"
+                        required
+                    />
                 </div>
 
                 @if (errorMessage()) {
-                <div class="login-error" role="alert">
-                    {{ errorMessage() }}
-                </div>
+                    <div class="login-error" role="alert">
+                        {{ errorMessage() }}
+                    </div>
                 }
 
-                <button class="dm-button dm-button--primary dm-button--full" type="submit" [disabled]="isLoading()">
+                <button
+                    class="dm-button dm-button--primary dm-button--full"
+                    type="submit"
+                    [disabled]="isLoading()"
+                >
                     {{ isLoading() ? 'Entrando...' : 'Entrar' }}
                 </button>
             </form>
