@@ -3,7 +3,9 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { studentProfileGuard } from './core/guards/student-profile.guard';
+import { instructorProfileGuard } from './core/guards/instructor-profile.guard';
 
+import { ProfileComponent as InstructorProfileComponent } from './features/instructor/profile/profile.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 
@@ -39,11 +41,20 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'instructor/profile',
+    component: InstructorProfileComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Instructor']),
+    ],
+  },
+  {
     path: 'instructor',
     component: InstructorHomeComponent,
     canActivate: [
       authGuard,
       roleGuard(['Instructor']),
+      instructorProfileGuard,
     ],
   },
   {

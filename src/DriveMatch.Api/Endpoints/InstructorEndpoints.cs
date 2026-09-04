@@ -1,14 +1,15 @@
-﻿using DriveMatch.Application.Features.Instructors.ChangeStatus;
+﻿using DriveMatch.Api.Extensions;
+using DriveMatch.Application.Features.Instructors.ChangeStatus;
 using DriveMatch.Application.Features.Instructors.CreateProfile;
+using DriveMatch.Application.Features.Instructors.GetProfile;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
-using DriveMatch.Api.Extensions;
-using System.Security.Claims;
 using DriveMatch.Domain.Enums;
-
+using System.Security.Claims;
 using ChangeStatusInstructorNotFoundException =
     DriveMatch.Application.Features.Instructors.ChangeStatus.InstructorProfileNotFoundException;
-
+using GetInstructorNotFoundException =
+    DriveMatch.Application.Features.Instructors.GetProfile.InstructorProfileNotFoundException;
 using UpdateInstructorNotFoundException =
     DriveMatch.Application.Features.Instructors.UpdateProfile.InstructorProfileNotFoundException;
 
@@ -51,7 +52,37 @@ public static class InstructorEndpoints
             .Produces<IReadOnlyCollection<SearchInstructorResult>>(
                 StatusCodes.Status200OK);
 
+        group.MapGet("/profile", GetProfileAsync)
+            .WithName("GetInstructorProfile")
+            .Produces<GetInstructorProfileResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
+
         return endpoints;
+    }
+    private static async Task<IResult> GetProfileAsync(
+    ClaimsPrincipal user,
+    GetInstructorProfileHandler handler,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var userId = user.GetUserId();
+
+            var result = await handler.HandleAsync(
+                userId,
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (GetInstructorNotFoundException exception)
+        {
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
     }
 
     private static async Task<IResult> CreateProfileAsync(
