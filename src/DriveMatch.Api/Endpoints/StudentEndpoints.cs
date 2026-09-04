@@ -1,9 +1,16 @@
 ﻿using DriveMatch.Api.Extensions;
 using DriveMatch.Application.Features.Students.CreateProfile;
+using DriveMatch.Application.Features.Students.GetProfile;
 using DriveMatch.Application.Features.Students.UpdateProfile;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
 using System.Security.Claims;
+
+using GetStudentProfileNotFoundException =
+    DriveMatch.Application.Features.Students.GetProfile.StudentProfileNotFoundException;
+
+using UpdateStudentProfileNotFoundException =
+    DriveMatch.Application.Features.Students.UpdateProfile.StudentProfileNotFoundException;
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -18,6 +25,11 @@ public static class StudentEndpoints
             .RequireAuthorization(policy =>
                 policy.RequireRole("Student"));
 
+        group.MapGet("/profile", GetProfileAsync)
+            .WithName("GetStudentProfile")
+            .Produces<GetStudentProfileResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
         group.MapPost("/profile", CreateProfileAsync)
             .WithName("CreateStudentProfile")
             .Produces<CreateStudentProfileResult>(StatusCodes.Status201Created)
@@ -31,7 +43,33 @@ public static class StudentEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);
 
+        
+
         return endpoints;
+    }
+
+    private static async Task<IResult> GetProfileAsync(
+    ClaimsPrincipal user,
+    GetStudentProfileHandler handler,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var userId = user.GetUserId();
+
+            var result = await handler.HandleAsync(
+                userId,
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (GetStudentProfileNotFoundException exception)
+        {
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
     }
 
     private static async Task<IResult> CreateProfileAsync(ClaimsPrincipal user,
@@ -92,7 +130,7 @@ public static class StudentEndpoints
 
             return Results.Ok(result);
         }
-        catch (StudentProfileNotFoundException exception)
+        catch (UpdateStudentProfileNotFoundException exception)
         {
             return Results.NotFound(new { error = exception.Message });
         }
