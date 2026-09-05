@@ -8,7 +8,7 @@ import { instructorProfileGuard } from './core/guards/instructor-profile.guard';
 import { ProfileComponent as InstructorProfileComponent } from './features/instructor/profile/profile.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
-
+import { AvailabilityComponent } from './features/instructor/availability/availability.component';
 import { StudentHomeComponent } from './features/student/student-home.component';
 import { ProfileComponent } from './features/student/profile/profile.component';
 
@@ -38,6 +38,15 @@ export const routes: Routes = [
       authGuard,
       roleGuard(['Student']),
       studentProfileGuard,
+    ],
+  },
+  {
+    path: 'instructor/availability',
+    component: AvailabilityComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Instructor']),
+      instructorProfileGuard,
     ],
   },
   {

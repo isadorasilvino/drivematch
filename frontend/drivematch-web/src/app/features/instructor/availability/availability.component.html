@@ -1,0 +1,161 @@
+<div class="availability-page">
+    <header class="availability-header">
+        <div>
+            <span class="availability-header__eyebrow">
+                Agenda
+            </span>
+
+            <h1>Minha disponibilidade</h1>
+
+            <p>
+                Configure os dias e horários em que você está disponível para dar aulas.
+            </p>
+        </div>
+    </header>
+
+    @if (errorMessage) {
+    <div class="feedback feedback--error">
+        {{ errorMessage }}
+    </div>
+    }
+
+    @if (successMessage) {
+    <div class="feedback feedback--success">
+        {{ successMessage }}
+    </div>
+    }
+
+    <section class="dm-card availability-form-card">
+        <div class="section-heading">
+            <div>
+                <h2>
+                    {{ editingAvailabilityId ? 'Editar horário' : 'Adicionar horário' }}
+                </h2>
+
+                <p>
+                    Escolha o dia da semana e o período em que deseja receber alunos.
+                </p>
+            </div>
+        </div>
+
+        <form class="availability-form" (ngSubmit)="save()">
+            <div class="dm-field">
+                <label class="dm-label" for="dayOfWeek">
+                    Dia da semana
+                </label>
+
+                <select id="dayOfWeek" name="dayOfWeek" class="dm-select" [(ngModel)]="dayOfWeek">
+                    @for (day of days; track day.value) {
+                    <option [ngValue]="day.value">
+                        {{ day.label }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="time-fields">
+                <div class="dm-field">
+                    <label class="dm-label" for="startTime">
+                        Início
+                    </label>
+
+                    <input id="startTime" name="startTime" class="dm-input" type="time" [(ngModel)]="startTime" />
+                </div>
+
+                <div class="dm-field">
+                    <label class="dm-label" for="endTime">
+                        Fim
+                    </label>
+
+                    <input id="endTime" name="endTime" class="dm-input" type="time" [(ngModel)]="endTime" />
+                </div>
+            </div>
+
+            <div class="form-actions">
+                @if (editingAvailabilityId) {
+                <button type="button" class="dm-button dm-button--secondary" (click)="cancelEdit()"
+                    [disabled]="isSaving">
+                    Cancelar
+                </button>
+                }
+
+                <button type="submit" class="dm-button dm-button--primary" [disabled]="isSaving">
+                    {{
+                    isSaving
+                    ? 'Salvando...'
+                    : editingAvailabilityId
+                    ? 'Salvar alterações'
+                    : 'Adicionar horário'
+                    }}
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="availability-list-section">
+        <div class="section-heading">
+            <div>
+                <h2>Horários cadastrados</h2>
+
+                <p>
+                    Você pode editar ou desativar temporariamente qualquer horário.
+                </p>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="dm-card state-card">
+            <p>Carregando sua disponibilidade...</p>
+        </div>
+        } @else if (availabilities.length === 0) {
+        <div class="dm-card state-card state-card--empty">
+            <div class="state-card__icon">
+                +
+            </div>
+
+            <h3>Nenhum horário cadastrado</h3>
+
+            <p>
+                Adicione sua primeira disponibilidade para começar a organizar sua agenda.
+            </p>
+        </div>
+        } @else {
+        <div class="availability-list">
+            @for (
+            availability of availabilities;
+            track availability.availabilityId
+            ) {
+            <article class="dm-card availability-item" [class.availability-item--inactive]="!availability.isActive">
+                <div class="availability-item__main">
+                    <div class="availability-item__day">
+                        {{ getDayLabel(availability.dayOfWeek) }}
+                    </div>
+
+                    <div class="availability-item__time">
+                        {{ formatTime(availability.startTime) }}
+                        <span>às</span>
+                        {{ formatTime(availability.endTime) }}
+                    </div>
+
+                    <span class="availability-status" [class.availability-status--active]="availability.isActive">
+                        {{ availability.isActive ? 'Ativo' : 'Inativo' }}
+                    </span>
+                </div>
+
+                <div class="availability-item__actions">
+                    <button type="button" class="availability-action" (click)="edit(availability)">
+                        Editar
+                    </button>
+
+                    <button type="button" class="availability-action"
+                        [class.availability-action--activate]="!availability.isActive"
+                        (click)="toggleStatus(availability)">
+                        {{ availability.isActive ? 'Desativar' : 'Ativar' }}
+                    </button>
+                </div>
+            </article>
+            }
+        </div>
+        }
+    </section>
+</div>
