@@ -177,6 +177,10 @@ public static class InstructorEndpoints
         {
             return Results.NotFound(new { error = exception.Message });
         }
+        catch (InstructorProfileCannotBeActivatedException exception)
+        {
+            return Results.BadRequest(new { error = exception.Message });
+        }
     }
 
     private static async Task<IResult> SearchAsync(

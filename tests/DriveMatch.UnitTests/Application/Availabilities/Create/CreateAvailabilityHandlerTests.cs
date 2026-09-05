@@ -224,6 +224,12 @@ public class CreateAvailabilityHandlerTests
             return Task.FromResult(false);
         }
 
+        public Task<bool> HasActiveAvailabilityAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(false);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

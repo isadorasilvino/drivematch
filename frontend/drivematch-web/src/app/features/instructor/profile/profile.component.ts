@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import {
   InstructorProfileRequest,
   InstructorProfileService,
+  InstructorProfileStatus,
 } from '../../../core/instructor/instructor-profile.service';
 
 @Component({
@@ -37,6 +38,9 @@ export class ProfileComponent implements OnInit {
   readonly isSaving = signal(false);
   readonly isEditing = signal(false);
   readonly errorMessage = signal('');
+  readonly profileStatus = signal<InstructorProfileStatus>('Draft');
+  readonly isChangingStatus = signal(false);
+  readonly statusMessage = signal('');
 
   readonly states = [
     { value: 'AC', label: 'Acre' },
@@ -144,10 +148,42 @@ export class ProfileComponent implements OnInit {
 
         this.errorMessage.set(
           error.error?.error ??
-            'Não foi possível salvar seu perfil. Tente novamente.',
+          'Não foi possível salvar seu perfil. Tente novamente.',
         );
       },
     });
+  }
+
+  changeProfileStatus(isActive: boolean): void {
+    this.errorMessage.set('');
+    this.statusMessage.set('');
+    this.isChangingStatus.set(true);
+
+    this.instructorProfileService.changeStatus(isActive).subscribe({
+      next: (result) => {
+        this.profileStatus.set(result.status);
+        this.isChangingStatus.set(false);
+
+        this.statusMessage.set(
+          isActive
+            ? 'Seu perfil está ativo e pode ser encontrado pelos alunos.'
+            : 'Seu perfil foi desativado e não aparecerá para novos alunos.',
+        );
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.isChangingStatus.set(false);
+
+        this.errorMessage.set(
+          error.error?.error ??
+          'Não foi possível alterar o status do seu perfil. Tente novamente.',
+        );
+      },
+    });
+  }
+
+  goToAvailability(): void {
+    void this.router.navigate(['/instructor/availability']);
   }
 
   private loadProfile(): void {
@@ -162,6 +198,7 @@ export class ProfileComponent implements OnInit {
         this.acceptsExperiencedStudents =
           profile.acceptsExperiencedStudents;
         this.acceptsStudentVehicle = profile.acceptsStudentVehicle;
+        this.profileStatus.set(profile.status);
 
         this.isEditing.set(true);
         this.isLoading.set(false);

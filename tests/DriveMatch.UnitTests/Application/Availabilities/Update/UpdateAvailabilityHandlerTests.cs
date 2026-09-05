@@ -258,6 +258,13 @@ public class UpdateAvailabilityHandlerTests
             return Task.FromResult<IReadOnlyCollection<Availability>>(
                 Array.Empty<Availability>());
         }
+
+        public Task<bool> HasActiveAvailabilityAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(false);
+        }
     }
 
     private sealed class FakeInstructorProfileRepository

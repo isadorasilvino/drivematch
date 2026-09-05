@@ -39,6 +39,17 @@ public sealed class AvailabilityRepository
             .ToArrayAsync(cancellationToken);
     }
 
+    public Task<bool> HasActiveAvailabilityAsync(
+    Guid instructorProfileId,
+    CancellationToken cancellationToken = default)
+    {
+        return _context.Availabilities.AnyAsync(
+            availability =>
+                availability.InstructorProfileId == instructorProfileId &&
+                availability.IsActive,
+            cancellationToken);
+    }
+
     public Task<bool> HasAvailabilityAsync(
         Guid instructorProfileId,
         DayOfWeek dayOfWeek,

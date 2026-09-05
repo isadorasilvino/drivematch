@@ -12,6 +12,10 @@ public interface IAvailabilityRepository
         Guid instructorProfileId,
         CancellationToken cancellationToken = default);
 
+    Task<bool> HasActiveAvailabilityAsync(
+        Guid instructorProfileId,
+        CancellationToken cancellationToken = default);
+
     Task<bool> HasAvailabilityAsync(
         Guid instructorProfileId,
         DayOfWeek dayOfWeek,
