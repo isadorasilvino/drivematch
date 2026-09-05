@@ -30,7 +30,9 @@ public class CreateAvailabilityHandlerTests
             instructorProfile.UserId,
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            60,
+            10);
 
         var result = await handler.HandleAsync(command);
 
@@ -39,6 +41,8 @@ public class CreateAvailabilityHandlerTests
         Assert.Equal(DayOfWeek.Monday, result.DayOfWeek);
         Assert.Equal(new TimeOnly(8, 0), result.StartTime);
         Assert.Equal(new TimeOnly(12, 0), result.EndTime);
+        Assert.Equal(60, result.LessonDurationMinutes);
+        Assert.Equal(10, result.BreakDurationMinutes);
 
         Assert.NotNull(availabilityRepository.AddedAvailability);
         Assert.True(unitOfWork.SaveChangesCalled);
@@ -56,7 +60,9 @@ public class CreateAvailabilityHandlerTests
             Guid.NewGuid(),
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            60,
+            10);
 
         await Assert.ThrowsAsync<InstructorProfileNotFoundException>(
             () => handler.HandleAsync(command));
@@ -79,7 +85,9 @@ public class CreateAvailabilityHandlerTests
             Guid.NewGuid(),
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            60,
+            10);
 
         await Assert.ThrowsAsync<InstructorProfileNotFoundException>(
             () => handler.HandleAsync(command));
@@ -102,7 +110,9 @@ public class CreateAvailabilityHandlerTests
             instructorProfile.UserId,
             DayOfWeek.Monday,
             new TimeOnly(12, 0),
-            new TimeOnly(8, 0));
+            new TimeOnly(8, 0),
+            60,
+            10);
 
         await Assert.ThrowsAsync<DomainException>(
             () => handler.HandleAsync(command));

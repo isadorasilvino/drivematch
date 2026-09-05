@@ -6,4 +6,6 @@ public sealed record GetMyAvailabilitiesResult(
     DayOfWeek DayOfWeek,
     TimeOnly StartTime,
     TimeOnly EndTime,
+    int LessonDurationMinutes,
+    int BreakDurationMinutes,
     bool IsActive);

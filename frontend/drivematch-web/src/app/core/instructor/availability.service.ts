@@ -19,6 +19,8 @@ export interface AvailabilityResponse {
     dayOfWeek: AvailabilityDay;
     startTime: string;
     endTime: string;
+    lessonDurationMinutes: number;
+    breakDurationMinutes: number;
     isActive: boolean;
 }
 
@@ -26,6 +28,8 @@ export interface AvailabilityRequest {
     dayOfWeek: AvailabilityDay;
     startTime: string;
     endTime: string;
+    lessonDurationMinutes: number;
+    breakDurationMinutes: number;
 }
 
 export interface ChangeAvailabilityStatusRequest {

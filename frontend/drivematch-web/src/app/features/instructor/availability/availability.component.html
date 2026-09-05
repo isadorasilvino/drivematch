@@ -71,6 +71,38 @@
                 </div>
             </div>
 
+            <div class="time-fields">
+                <div class="dm-field">
+                    <label class="dm-label" for="lessonDurationMinutes">
+                        Duração da aula
+                    </label>
+
+                    <select id="lessonDurationMinutes" name="lessonDurationMinutes" class="dm-select"
+                        [(ngModel)]="lessonDurationMinutes">
+                        @for (duration of lessonDurations; track duration.value) {
+                        <option [ngValue]="duration.value">
+                            {{ duration.label }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="dm-field">
+                    <label class="dm-label" for="breakDurationMinutes">
+                        Intervalo entre aulas
+                    </label>
+
+                    <select id="breakDurationMinutes" name="breakDurationMinutes" class="dm-select"
+                        [(ngModel)]="breakDurationMinutes">
+                        @for (breakDuration of breakDurations; track breakDuration.value) {
+                        <option [ngValue]="breakDuration.value">
+                            {{ breakDuration.label }}
+                        </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
             <div class="form-actions">
                 @if (editingAvailabilityId) {
                 <button type="button" class="dm-button dm-button--secondary" (click)="cancelEdit()"
@@ -135,6 +167,10 @@
                         {{ formatTime(availability.startTime) }}
                         <span>às</span>
                         {{ formatTime(availability.endTime) }}
+                    </div>
+
+                    <div class="availability-item__configuration">
+                        {{ getLessonConfigurationLabel(availability) }}
                     </div>
 
                     <span class="availability-status" [class.availability-status--active]="availability.isActive">

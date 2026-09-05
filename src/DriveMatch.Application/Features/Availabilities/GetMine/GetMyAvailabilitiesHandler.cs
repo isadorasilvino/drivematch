@@ -39,6 +39,8 @@ public sealed class GetMyAvailabilitiesHandler
                 availability.DayOfWeek,
                 availability.StartTime,
                 availability.EndTime,
+                availability.LessonDurationMinutes,
+                availability.BreakDurationMinutes,
                 availability.IsActive))
             .ToArray();
     }

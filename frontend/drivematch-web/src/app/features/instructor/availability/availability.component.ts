@@ -44,11 +44,30 @@ export class AvailabilityComponent implements OnInit {
     { value: 'Sunday', label: 'Domingo' },
   ];
 
+  readonly lessonDurations = [
+    { value: 30, label: '30 minutos' },
+    { value: 40, label: '40 minutos' },
+    { value: 45, label: '45 minutos' },
+    { value: 50, label: '50 minutos' },
+    { value: 60, label: '60 minutos' },
+  ];
+
+  readonly breakDurations = [
+    { value: 0, label: 'Sem intervalo' },
+    { value: 5, label: '5 minutos' },
+    { value: 10, label: '10 minutos' },
+    { value: 15, label: '15 minutos' },
+    { value: 20, label: '20 minutos' },
+    { value: 30, label: '30 minutos' },
+  ];
+
   availabilities: AvailabilityResponse[] = [];
 
   dayOfWeek: AvailabilityDay = 'Monday';
   startTime = '';
   endTime = '';
+  lessonDurationMinutes = 60;
+  breakDurationMinutes = 0;
 
   editingAvailabilityId: string | null = null;
 
@@ -102,6 +121,8 @@ export class AvailabilityComponent implements OnInit {
       dayOfWeek: this.dayOfWeek,
       startTime: this.normalizeTime(this.startTime),
       endTime: this.normalizeTime(this.endTime),
+      lessonDurationMinutes: this.lessonDurationMinutes,
+      breakDurationMinutes: this.breakDurationMinutes,
     };
 
     this.isSaving = true;
@@ -146,6 +167,8 @@ export class AvailabilityComponent implements OnInit {
     this.dayOfWeek = availability.dayOfWeek;
     this.startTime = this.formatTimeForInput(availability.startTime);
     this.endTime = this.formatTimeForInput(availability.endTime);
+    this.lessonDurationMinutes = availability.lessonDurationMinutes;
+    this.breakDurationMinutes = availability.breakDurationMinutes;
 
     window.scrollTo({
       top: 0,
@@ -205,6 +228,20 @@ export class AvailabilityComponent implements OnInit {
     return time.slice(0, 5);
   }
 
+  getLessonConfigurationLabel(
+    availability: AvailabilityResponse,
+  ): string {
+    const lessonLabel =
+      `Aulas de ${availability.lessonDurationMinutes} min`;
+
+    const breakLabel =
+      availability.breakDurationMinutes === 0
+        ? 'sem intervalo'
+        : `intervalo de ${availability.breakDurationMinutes} min`;
+
+    return `${lessonLabel} · ${breakLabel}`;
+  }
+
   trackByAvailabilityId(
     _index: number,
     availability: AvailabilityResponse,
@@ -217,6 +254,8 @@ export class AvailabilityComponent implements OnInit {
     this.dayOfWeek = 'Monday';
     this.startTime = '';
     this.endTime = '';
+    this.lessonDurationMinutes = 60;
+    this.breakDurationMinutes = 0;
   }
 
   private clearMessages(): void {

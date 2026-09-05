@@ -35,7 +35,9 @@ public class UpdateAvailabilityHandlerTests
             instructorUserId,
             DayOfWeek.Tuesday,
             new TimeOnly(14, 0),
-            new TimeOnly(18, 0));
+            new TimeOnly(18, 0),
+            45,
+            15);
 
         var result = await handler.HandleAsync(command);
 
@@ -43,6 +45,8 @@ public class UpdateAvailabilityHandlerTests
         Assert.Equal(DayOfWeek.Tuesday, result.DayOfWeek);
         Assert.Equal(new TimeOnly(14, 0), result.StartTime);
         Assert.Equal(new TimeOnly(18, 0), result.EndTime);
+        Assert.Equal(45, result.LessonDurationMinutes);
+        Assert.Equal(15, result.BreakDurationMinutes);
         Assert.True(result.IsActive);
         Assert.True(unitOfWork.SaveChangesCalled);
     }
@@ -60,7 +64,9 @@ public class UpdateAvailabilityHandlerTests
             Guid.NewGuid(),
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            45,
+            15);
 
         await Assert.ThrowsAsync<AvailabilityNotFoundException>(
             () => handler.HandleAsync(command));
@@ -83,7 +89,9 @@ public class UpdateAvailabilityHandlerTests
                     Guid.NewGuid(),
                     DayOfWeek.Monday,
                     new TimeOnly(8, 0),
-                    new TimeOnly(12, 0))));
+                    new TimeOnly(12, 0),
+                    60,
+                    10)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
@@ -113,7 +121,9 @@ public class UpdateAvailabilityHandlerTests
                     authenticatedUserId,
                     DayOfWeek.Tuesday,
                     new TimeOnly(14, 0),
-                    new TimeOnly(18, 0))));
+                    new TimeOnly(18, 0),
+                    60,
+                    10)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
@@ -136,7 +146,9 @@ public class UpdateAvailabilityHandlerTests
                     Guid.NewGuid(),
                     DayOfWeek.Tuesday,
                     new TimeOnly(14, 0),
-                    new TimeOnly(18, 0))));
+                    new TimeOnly(18, 0),
+                    60,
+                    10)));
 
         Assert.False(unitOfWork.SaveChangesCalled);
     }
@@ -164,7 +176,9 @@ public class UpdateAvailabilityHandlerTests
             instructorUserId,
             DayOfWeek.Monday,
             new TimeOnly(12, 0),
-            new TimeOnly(8, 0));
+            new TimeOnly(8, 0),
+            45,
+            15);
 
         await Assert.ThrowsAsync<DomainException>(
             () => handler.HandleAsync(command));
@@ -179,7 +193,9 @@ public class UpdateAvailabilityHandlerTests
             instructorProfileId,
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            60,
+            10);
     }
 
     private static InstructorProfile CreateInstructorProfile(

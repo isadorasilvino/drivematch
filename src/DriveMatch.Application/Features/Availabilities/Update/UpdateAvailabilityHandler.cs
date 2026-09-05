@@ -44,7 +44,9 @@ public sealed class UpdateAvailabilityHandler
         availability.Update(
             command.DayOfWeek,
             command.StartTime,
-            command.EndTime);
+            command.EndTime,
+            command.LessonDurationMinutes,
+            command.BreakDurationMinutes);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -54,6 +56,8 @@ public sealed class UpdateAvailabilityHandler
             availability.DayOfWeek,
             availability.StartTime,
             availability.EndTime,
+            availability.LessonDurationMinutes,
+            availability.BreakDurationMinutes,
             availability.IsActive);
     }
 }

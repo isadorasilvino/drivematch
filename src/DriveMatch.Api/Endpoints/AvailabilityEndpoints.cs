@@ -90,7 +90,9 @@ public static class AvailabilityEndpoints
                     userId,
                     request.DayOfWeek,
                     request.StartTime,
-                    request.EndTime),
+                    request.EndTime,
+                    request.LessonDurationMinutes,
+                    request.BreakDurationMinutes),
                 cancellationToken);
 
             return Results.Created(
@@ -120,7 +122,9 @@ public static class AvailabilityEndpoints
                     userId,
                     request.DayOfWeek,
                     request.StartTime,
-                    request.EndTime),
+                    request.EndTime,
+                    request.LessonDurationMinutes,
+                    request.BreakDurationMinutes),
                 cancellationToken);
 
             return Results.Ok(result);
@@ -172,12 +176,16 @@ public static class AvailabilityEndpoints
     public sealed record CreateAvailabilityRequest(
         DayOfWeek DayOfWeek,
         TimeOnly StartTime,
-        TimeOnly EndTime);
+        TimeOnly EndTime,
+        int LessonDurationMinutes,
+        int BreakDurationMinutes);
 
     public sealed record UpdateAvailabilityRequest(
         DayOfWeek DayOfWeek,
         TimeOnly StartTime,
-        TimeOnly EndTime);
+        TimeOnly EndTime,
+        int LessonDurationMinutes,
+        int BreakDurationMinutes);
 
     public sealed record ChangeAvailabilityStatusRequest(
         bool IsActive);

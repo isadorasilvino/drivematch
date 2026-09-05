@@ -30,6 +30,12 @@ public sealed class AvailabilityConfiguration
         builder.Property(availability => availability.EndTime)
             .IsRequired();
 
+        builder.Property(availability => availability.LessonDurationMinutes)
+            .IsRequired();
+
+        builder.Property(availability => availability.BreakDurationMinutes)
+            .IsRequired();
+
         builder.Property(availability => availability.IsActive)
             .IsRequired();
 

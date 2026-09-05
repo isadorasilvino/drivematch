@@ -36,7 +36,9 @@ public sealed class CreateAvailabilityHandler
             instructorProfile.Id,
             command.DayOfWeek,
             command.StartTime,
-            command.EndTime);
+            command.EndTime,
+            command.LessonDurationMinutes,
+            command.BreakDurationMinutes);
 
         await _availabilityRepository.AddAsync(
             availability,
@@ -49,6 +51,8 @@ public sealed class CreateAvailabilityHandler
             availability.InstructorProfileId,
             availability.DayOfWeek,
             availability.StartTime,
-            availability.EndTime);
+            availability.EndTime,
+            availability.LessonDurationMinutes,
+            availability.BreakDurationMinutes);
     }
 }

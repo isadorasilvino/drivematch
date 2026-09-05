@@ -165,7 +165,9 @@ public class ChangeAvailabilityStatusHandlerTests
             instructorProfileId,
             DayOfWeek.Monday,
             new TimeOnly(8, 0),
-            new TimeOnly(12, 0));
+            new TimeOnly(12, 0),
+            60,
+            10);
     }
 
     private static InstructorProfile CreateInstructorProfile(

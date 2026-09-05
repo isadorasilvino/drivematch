@@ -4,4 +4,6 @@ public sealed record CreateAvailabilityCommand(
     Guid UserId,
     DayOfWeek DayOfWeek,
     TimeOnly StartTime,
-    TimeOnly EndTime);
+    TimeOnly EndTime,
+    int LessonDurationMinutes,
+    int BreakDurationMinutes);

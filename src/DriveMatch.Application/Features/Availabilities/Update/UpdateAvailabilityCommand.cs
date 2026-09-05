@@ -5,4 +5,6 @@ public sealed record UpdateAvailabilityCommand(
     Guid UserId,
     DayOfWeek DayOfWeek,
     TimeOnly StartTime,
-    TimeOnly EndTime);
+    TimeOnly EndTime,
+    int LessonDurationMinutes,
+    int BreakDurationMinutes);
