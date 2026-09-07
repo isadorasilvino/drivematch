@@ -1,6 +1,6 @@
-﻿namespace DriveMatch.Application.Features.Instructors.Search;
+﻿namespace DriveMatch.Application.Abstractions.Persistence;
 
-public sealed record SearchInstructorResult(
+public sealed record InstructorSearchItem(
     Guid InstructorProfileId,
     Guid UserId,
     string Name,

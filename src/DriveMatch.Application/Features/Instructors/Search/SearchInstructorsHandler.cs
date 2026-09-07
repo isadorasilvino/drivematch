@@ -29,14 +29,15 @@ public sealed class SearchInstructorsHandler
 
         return instructors
             .Select(instructor => new SearchInstructorResult(
-                instructor.Id,
+                instructor.InstructorProfileId,
                 instructor.UserId,
+                instructor.Name,
                 instructor.Description,
                 instructor.ExperienceYears,
                 instructor.City,
                 instructor.State,
-                instructor.PricePerLesson.Amount,
-                instructor.PricePerLesson.Currency,
+                instructor.PricePerLesson,
+                instructor.Currency,
                 instructor.AcceptsBeginners,
                 instructor.AcceptsExperiencedStudents,
                 instructor.AcceptsStudentVehicle))

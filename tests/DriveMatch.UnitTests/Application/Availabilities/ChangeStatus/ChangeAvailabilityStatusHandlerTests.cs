@@ -273,7 +273,7 @@ public class ChangeAvailabilityStatusHandlerTests
                 _profile?.UserId == userId);
         }
 
-        public Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+        public Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
             string city,
             string state,
             ExperienceLevel experienceLevel,
@@ -281,10 +281,8 @@ public class ChangeAvailabilityStatusHandlerTests
             decimal? maxPricePerLesson,
             CancellationToken cancellationToken = default)
         {
-            IReadOnlyCollection<InstructorProfile> result =
-                Array.Empty<InstructorProfile>();
-
-            return Task.FromResult(result);
+            return Task.FromResult<IReadOnlyCollection<InstructorSearchItem>>(
+                Array.Empty<InstructorSearchItem>());
         }
 
         public Task AddAsync(

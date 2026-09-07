@@ -17,7 +17,7 @@ public interface IInstructorProfileRepository
         Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+    Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
         string city,
         string state,
         ExperienceLevel experienceLevel,

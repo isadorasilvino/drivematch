@@ -2,7 +2,6 @@
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
-using DriveMatch.Domain.ValueObjects;
 
 namespace DriveMatch.UnitTests.Application.Instructors.Search;
 
@@ -33,19 +32,22 @@ public class SearchInstructorsHandlerTests
     [Fact]
     public async Task HandleAsync_ShouldMapRepositoryResults()
     {
-        var instructor = new InstructorProfile(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            "Instrutor experiente.",
+        var instructorProfileId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+
+        var instructor = new InstructorSearchItem(
+            instructorProfileId,
+            userId,
+            "Mariana Souza",
+            "Instrutora experiente.",
             5,
             "Belo Horizonte",
             "MG",
-            new Money(120m),
+            120m,
+            "BRL",
             true,
             true,
             true);
-
-        instructor.Activate();
 
         var repository = new FakeInstructorProfileRepository(
             new[] { instructor });
@@ -62,9 +64,10 @@ public class SearchInstructorsHandlerTests
 
         var item = Assert.Single(result);
 
-        Assert.Equal(instructor.Id, item.InstructorProfileId);
-        Assert.Equal(instructor.UserId, item.UserId);
-        Assert.Equal(instructor.Description, item.Description);
+        Assert.Equal(instructorProfileId, item.InstructorProfileId);
+        Assert.Equal(userId, item.UserId);
+        Assert.Equal("Mariana Souza", item.Name);
+        Assert.Equal("Instrutora experiente.", item.Description);
         Assert.Equal(5, item.ExperienceYears);
         Assert.Equal("Belo Horizonte", item.City);
         Assert.Equal("MG", item.State);
@@ -95,12 +98,12 @@ public class SearchInstructorsHandlerTests
     private sealed class FakeInstructorProfileRepository
         : IInstructorProfileRepository
     {
-        private readonly IReadOnlyCollection<InstructorProfile> _results;
+        private readonly IReadOnlyCollection<InstructorSearchItem> _results;
 
         public FakeInstructorProfileRepository(
-            IReadOnlyCollection<InstructorProfile>? results = null)
+            IReadOnlyCollection<InstructorSearchItem>? results = null)
         {
-            _results = results ?? Array.Empty<InstructorProfile>();
+            _results = results ?? Array.Empty<InstructorSearchItem>();
         }
 
         public string? LastCity { get; private set; }
@@ -123,7 +126,7 @@ public class SearchInstructorsHandlerTests
             return Task.FromResult(false);
         }
 
-        public Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+        public Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
             string city,
             string state,
             ExperienceLevel experienceLevel,

@@ -166,7 +166,7 @@ public class CreateAvailabilityHandlerTests
             return Task.CompletedTask;
         }
 
-        public Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+        public Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
             string city,
             string state,
             ExperienceLevel experienceLevel,
@@ -174,8 +174,8 @@ public class CreateAvailabilityHandlerTests
             decimal? maxPricePerLesson,
             CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<IReadOnlyCollection<InstructorProfile>>(
-                Array.Empty<InstructorProfile>());
+            return Task.FromResult<IReadOnlyCollection<InstructorSearchItem>>(
+                Array.Empty<InstructorSearchItem>());
         }
 
         public Task<InstructorProfile?> GetByIdAsync(

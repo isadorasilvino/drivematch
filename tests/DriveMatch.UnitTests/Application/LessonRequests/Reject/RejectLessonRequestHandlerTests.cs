@@ -243,7 +243,7 @@ public class RejectLessonRequestHandlerTests
                 _profile?.UserId == userId);
         }
 
-        public Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+        public Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
             string city,
             string state,
             ExperienceLevel experienceLevel,
@@ -251,12 +251,8 @@ public class RejectLessonRequestHandlerTests
             decimal? maxPricePerLesson,
             CancellationToken cancellationToken = default)
         {
-            IReadOnlyCollection<InstructorProfile> result =
-                _profile is null
-                    ? []
-                    : [_profile];
-
-            return Task.FromResult(result);
+            return Task.FromResult<IReadOnlyCollection<InstructorSearchItem>>(
+                Array.Empty<InstructorSearchItem>());
         }
 
         public Task AddAsync(

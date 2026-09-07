@@ -47,7 +47,7 @@ public sealed class InstructorProfileRepository
                 cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<InstructorProfile>> SearchAsync(
+    public async Task<IReadOnlyCollection<InstructorSearchItem>> SearchAsync(
         string city,
         string state,
         ExperienceLevel experienceLevel,
@@ -89,6 +89,23 @@ public sealed class InstructorProfileRepository
 
         return await query
             .OrderBy(profile => profile.PricePerLesson.Amount)
+            .Join(
+                _context.Users.AsNoTracking(),
+                profile => profile.UserId,
+                user => user.Id,
+                (profile, user) => new InstructorSearchItem(
+                    profile.Id,
+                    profile.UserId,
+                    user.Name,
+                    profile.Description,
+                    profile.ExperienceYears,
+                    profile.City,
+                    profile.State,
+                    profile.PricePerLesson.Amount,
+                    profile.PricePerLesson.Currency,
+                    profile.AcceptsBeginners,
+                    profile.AcceptsExperiencedStudents,
+                    profile.AcceptsStudentVehicle))
             .ToArrayAsync(cancellationToken);
     }
 
