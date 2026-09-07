@@ -11,7 +11,7 @@ import { RegisterComponent } from './features/auth/register/register.component';
 import { AvailabilityComponent } from './features/instructor/availability/availability.component';
 import { StudentHomeComponent } from './features/student/student-home.component';
 import { ProfileComponent } from './features/student/profile/profile.component';
-
+import { InstructorSearchComponent } from './features/student/instructors/instructor-search.component';
 import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
 
 export const routes: Routes = [
@@ -64,6 +64,15 @@ export const routes: Routes = [
       authGuard,
       roleGuard(['Instructor']),
       instructorProfileGuard,
+    ],
+  },
+  {
+    path: 'student/instructors',
+    component: InstructorSearchComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+      studentProfileGuard,
     ],
   },
   {

@@ -1,0 +1,274 @@
+<div class="search-page">
+  <header class="search-header">
+    <div class="search-header__content">
+      <button
+        type="button"
+        class="back-button"
+        (click)="goBack()">
+        ← Voltar
+      </button>
+
+      <div>
+        <span class="search-eyebrow">
+          Encontrar instrutores
+        </span>
+
+        <h1>
+          Encontre alguém compatível com você
+        </h1>
+
+        <p>
+          Ajuste os filtros e compare instrutores disponíveis
+          na sua região.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="dm-button"
+        (click)="editProfile()">
+        Editar perfil
+      </button>
+    </div>
+  </header>
+
+  <main class="search-content">
+    <section class="filters-card">
+      @if (isLoadingProfile()) {
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Carregando suas preferências...</p>
+        </div>
+      } @else {
+        <form
+          class="filters-form"
+          (ngSubmit)="search()">
+
+          <div class="filter-grid">
+            <div class="dm-field">
+              <label class="dm-label" for="city">
+                Cidade
+              </label>
+
+              <input
+                id="city"
+                name="city"
+                class="dm-input"
+                type="text"
+                [(ngModel)]="city">
+            </div>
+
+            <div class="dm-field">
+              <label class="dm-label" for="state">
+                Estado
+              </label>
+
+              <select
+                id="state"
+                name="state"
+                class="dm-select"
+                [(ngModel)]="state">
+
+                @for (
+                  stateOption of states;
+                  track stateOption.code
+                ) {
+                  <option [value]="stateOption.code">
+                    {{ stateOption.code }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="dm-field">
+              <label
+                class="dm-label"
+                for="experienceLevel">
+                Sua experiência
+              </label>
+
+              <select
+                id="experienceLevel"
+                name="experienceLevel"
+                class="dm-select"
+                [(ngModel)]="experienceLevel">
+
+                <option value="Beginner">
+                  Estou começando
+                </option>
+
+                <option value="Experienced">
+                  Já tenho experiência
+                </option>
+              </select>
+            </div>
+
+            <div class="dm-field">
+              <label
+                class="dm-label"
+                for="maxPricePerLesson">
+                Valor máximo por aula
+              </label>
+
+              <input
+                id="maxPricePerLesson"
+                name="maxPricePerLesson"
+                class="dm-input"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Sem limite"
+                [(ngModel)]="maxPricePerLesson">
+            </div>
+          </div>
+
+          <label class="vehicle-filter">
+            <input
+              type="checkbox"
+              name="usesStudentVehicle"
+              [(ngModel)]="usesStudentVehicle">
+
+            <span>
+              Quero usar meu próprio veículo
+            </span>
+          </label>
+
+          @if (errorMessage()) {
+            <p class="dm-field-error" role="alert">
+              {{ errorMessage() }}
+            </p>
+          }
+
+          <button
+            class="dm-button dm-button--primary search-button"
+            type="submit"
+            [disabled]="isSearching()">
+
+            {{
+              isSearching()
+                ? 'Buscando...'
+                : 'Buscar instrutores'
+            }}
+          </button>
+        </form>
+      }
+    </section>
+
+    @if (isSearching()) {
+      <div class="results-state">
+        <div class="loading-spinner"></div>
+        <p>Buscando instrutores...</p>
+      </div>
+    } @else if (
+      hasSearched() &&
+      instructors().length === 0
+    ) {
+      <section class="empty-state">
+        <span class="empty-state__icon">
+          ⌕
+        </span>
+
+        <h2>
+          Nenhum instrutor encontrado
+        </h2>
+
+        <p>
+          Tente ampliar os filtros ou alterar o valor máximo
+          por aula.
+        </p>
+      </section>
+    } @else if (instructors().length > 0) {
+      <section class="results-section">
+        <div class="results-heading">
+          <div>
+            <span class="search-eyebrow">
+              Resultados
+            </span>
+
+            <h2>
+              {{
+                instructors().length === 1
+                  ? '1 instrutor encontrado'
+                  : instructors().length +
+                    ' instrutores encontrados'
+              }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="instructor-grid">
+          @for (
+            instructor of instructors();
+            track instructor.instructorProfileId
+          ) {
+            <article class="instructor-card">
+              <header class="instructor-card__header">
+                <div class="instructor-avatar">
+                  {{ instructor.name.charAt(0).toUpperCase() }}
+                </div>
+
+                <div>
+                  <h3>{{ instructor.name }}</h3>
+
+                  <span class="location">
+                    {{ instructor.city }} ·
+                    {{ instructor.state }}
+                  </span>
+                </div>
+              </header>
+
+              <p class="description">
+                {{ instructor.description }}
+              </p>
+
+              <div class="instructor-tags">
+                <span class="tag">
+                  {{ instructor.experienceYears }}
+                  {{
+                    instructor.experienceYears === 1
+                      ? 'ano de experiência'
+                      : 'anos de experiência'
+                  }}
+                </span>
+
+                <span class="tag">
+                  {{ experienceLabel(instructor) }}
+                </span>
+
+                @if (instructor.acceptsStudentVehicle) {
+                  <span class="tag">
+                    Aceita seu veículo
+                  </span>
+                }
+              </div>
+
+              <footer class="instructor-card__footer">
+                <div class="price">
+                  <span>A partir de</span>
+
+                  <strong>
+                    {{
+                      formatPrice(
+                        instructor.pricePerLesson,
+                        instructor.currency
+                      )
+                    }}
+                  </strong>
+
+                  <span>por aula</span>
+                </div>
+
+                <button
+                  type="button"
+                  class="dm-button dm-button--primary"
+                  disabled>
+                  Ver horários
+                </button>
+              </footer>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </main>
+</div>
