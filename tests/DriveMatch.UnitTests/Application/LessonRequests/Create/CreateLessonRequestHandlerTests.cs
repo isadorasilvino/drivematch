@@ -1,5 +1,6 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
 using DriveMatch.Application.Features.LessonRequests.Create;
+using DriveMatch.Application.Abstractions.Time;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
 using DriveMatch.Domain.ValueObjects;
@@ -22,7 +23,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(true),
             lessonRequestRepository,
-            unitOfWork);
+            unitOfWork,
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         var command = new CreateLessonRequestCommand(
             studentProfile.UserId,
@@ -56,7 +59,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(true),
             new FakeLessonRequestRepository(),
-            new FakeUnitOfWork());
+            new FakeUnitOfWork(),
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         await Assert.ThrowsAsync<StudentProfileNotFoundException>(
             () => handler.HandleAsync(
@@ -75,7 +80,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(null),
             new FakeAvailabilityRepository(true),
             new FakeLessonRequestRepository(),
-            new FakeUnitOfWork());
+            new FakeUnitOfWork(),
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         await Assert.ThrowsAsync<InstructorProfileNotFoundException>(
             () => handler.HandleAsync(
@@ -95,7 +102,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(true),
             new FakeLessonRequestRepository(),
-            new FakeUnitOfWork());
+            new FakeUnitOfWork(),
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         await Assert.ThrowsAsync<InstructorNotActiveException>(
             () => handler.HandleAsync(CreateCommand(
@@ -127,7 +136,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(true),
             new FakeLessonRequestRepository(),
-            new FakeUnitOfWork());
+            new FakeUnitOfWork(),
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         var command = new CreateLessonRequestCommand(
             studentProfile.UserId,
@@ -153,7 +164,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(false),
             new FakeLessonRequestRepository(),
-            new FakeUnitOfWork());
+            new FakeUnitOfWork(),
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         await Assert.ThrowsAsync<InstructorUnavailableException>(
             () => handler.HandleAsync(
@@ -176,7 +189,9 @@ public class CreateLessonRequestHandlerTests
             new FakeInstructorProfileRepository(instructorProfile),
             new FakeAvailabilityRepository(false),
             lessonRequestRepository,
-            unitOfWork);
+            unitOfWork,
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
 
         await Assert.ThrowsAsync<InstructorUnavailableException>(
             () => handler.HandleAsync(
@@ -187,6 +202,108 @@ public class CreateLessonRequestHandlerTests
         Assert.Null(lessonRequestRepository.AddedLessonRequest);
         Assert.False(unitOfWork.SaveChangesCalled);
     }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowInstructorUnavailableException_WhenRequestedIntervalIsNotAValidSlot()
+    {
+        var studentProfile = CreateStudentProfile();
+        var instructorProfile = CreateActiveInstructorProfile();
+
+        var lessonRequestRepository =
+            new FakeLessonRequestRepository();
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CreateLessonRequestHandler(
+            new FakeStudentProfileRepository(studentProfile),
+            new FakeInstructorProfileRepository(instructorProfile),
+            new FakeAvailabilityRepository(true),
+            lessonRequestRepository,
+            unitOfWork,
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 30, 12, 0, 0)));
+
+        var command = new CreateLessonRequestCommand(
+            studentProfile.UserId,
+            instructorProfile.Id,
+            new DateOnly(2026, 8, 31),
+            new TimeOnly(14, 10),
+            new TimeOnly(15, 10),
+            false,
+            null);
+
+        await Assert.ThrowsAsync<InstructorUnavailableException>(
+            () => handler.HandleAsync(command));
+
+        Assert.Null(
+            lessonRequestRepository.AddedLessonRequest);
+
+        Assert.False(
+            unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowInstructorUnavailableException_WhenRequestedDateIsInThePast()
+    {
+        var studentProfile = CreateStudentProfile();
+        var instructorProfile = CreateActiveInstructorProfile();
+
+        var lessonRequestRepository =
+            new FakeLessonRequestRepository();
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CreateLessonRequestHandler(
+            new FakeStudentProfileRepository(studentProfile),
+            new FakeInstructorProfileRepository(instructorProfile),
+            new FakeAvailabilityRepository(true),
+            lessonRequestRepository,
+            unitOfWork,
+            new FakeDateTimeProvider(
+                new DateTime(2026, 9, 1, 12, 0, 0)));
+
+        var command = CreateCommand(
+            studentProfile.UserId,
+            instructorProfile.Id);
+
+        await Assert.ThrowsAsync<InstructorUnavailableException>(
+            () => handler.HandleAsync(command));
+
+        Assert.Null(lessonRequestRepository.AddedLessonRequest);
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrowInstructorUnavailableException_WhenRequestedSlotHasAlreadyStartedToday()
+    {
+        var studentProfile = CreateStudentProfile();
+        var instructorProfile = CreateActiveInstructorProfile();
+
+        var lessonRequestRepository =
+            new FakeLessonRequestRepository();
+
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new CreateLessonRequestHandler(
+            new FakeStudentProfileRepository(studentProfile),
+            new FakeInstructorProfileRepository(instructorProfile),
+            new FakeAvailabilityRepository(true),
+            lessonRequestRepository,
+            unitOfWork,
+            new FakeDateTimeProvider(
+                new DateTime(2026, 8, 31, 14, 30, 0)));
+
+        var command = CreateCommand(
+            studentProfile.UserId,
+            instructorProfile.Id);
+
+        await Assert.ThrowsAsync<InstructorUnavailableException>(
+            () => handler.HandleAsync(command));
+
+        Assert.Null(lessonRequestRepository.AddedLessonRequest);
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
 
     private static CreateLessonRequestCommand CreateCommand(
         Guid userId,
@@ -332,7 +449,7 @@ public class CreateLessonRequestHandlerTests
     }
 
     private sealed class FakeAvailabilityRepository
-        : IAvailabilityRepository
+    : IAvailabilityRepository
     {
         private readonly bool _hasAvailability;
 
@@ -348,11 +465,42 @@ public class CreateLessonRequestHandlerTests
             return Task.FromResult<Availability?>(null);
         }
 
-        public Task<bool> HasAvailabilityAsync(
+        public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
+            Guid instructorProfileId,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                Array.Empty<Availability>());
+        }
+
+        public Task<IReadOnlyCollection<Availability>> GetActiveByInstructorProfileIdAndDayAsync(
             Guid instructorProfileId,
             DayOfWeek dayOfWeek,
-            TimeOnly startTime,
-            TimeOnly endTime,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_hasAvailability)
+            {
+                return Task.FromResult<IReadOnlyCollection<Availability>>(
+                    Array.Empty<Availability>());
+            }
+
+            IReadOnlyCollection<Availability> availabilities =
+            [
+                new Availability(
+                Guid.NewGuid(),
+                instructorProfileId,
+                dayOfWeek,
+                new TimeOnly(14, 0),
+                new TimeOnly(18, 0),
+                60,
+                0)
+            ];
+
+            return Task.FromResult(availabilities);
+        }
+
+        public Task<bool> HasActiveAvailabilityAsync(
+            Guid instructorProfileId,
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_hasAvailability);
@@ -363,21 +511,6 @@ public class CreateLessonRequestHandlerTests
             CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
-        }
-
-        public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
-            Guid instructorProfileId,
-            CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult<IReadOnlyCollection<Availability>>(
-                Array.Empty<Availability>());
-        }
-
-        public Task<bool> HasActiveAvailabilityAsync(
-            Guid instructorProfileId,
-            CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(false);
         }
     }
 
@@ -412,5 +545,15 @@ public class CreateLessonRequestHandlerTests
             SaveChangesCalled = true;
             return Task.FromResult(1);
         }
+    }
+
+    private sealed class FakeDateTimeProvider : IDateTimeProvider
+    {
+        public FakeDateTimeProvider(DateTime localNow)
+        {
+            LocalNow = localNow;
+        }
+
+        public DateTime LocalNow { get; }
     }
 }

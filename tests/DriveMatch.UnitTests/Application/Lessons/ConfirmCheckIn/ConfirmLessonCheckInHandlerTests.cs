@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Persistence.Models;
 using DriveMatch.Application.Features.Lessons;
 using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 using DriveMatch.Domain.Entities;
@@ -291,6 +292,15 @@ public class ConfirmLessonCheckInHandlerTests
             CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyCollection<LessonScheduleItem>> GetBlockingScheduleAsync(
+            Guid instructorProfileId,
+            DateOnly scheduledDate,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<LessonScheduleItem>>(
+                Array.Empty<LessonScheduleItem>());
         }
     }
 

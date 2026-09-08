@@ -241,16 +241,6 @@ public class UpdateAvailabilityHandlerTests
             return Task.CompletedTask;
         }
 
-        public Task<bool> HasAvailabilityAsync(
-            Guid instructorProfileId,
-            DayOfWeek dayOfWeek,
-            TimeOnly startTime,
-            TimeOnly endTime,
-            CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(false);
-        }
-
         public Task<IReadOnlyCollection<Availability>> GetByInstructorProfileIdAsync(
             Guid instructorProfileId,
             CancellationToken cancellationToken = default)
@@ -264,6 +254,15 @@ public class UpdateAvailabilityHandlerTests
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult(false);
+        }
+
+        public Task<IReadOnlyCollection<Availability>> GetActiveByInstructorProfileIdAndDayAsync(
+            Guid instructorProfileId,
+            DayOfWeek dayOfWeek,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                Array.Empty<Availability>());
         }
     }
 

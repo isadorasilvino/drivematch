@@ -22,6 +22,7 @@ using DriveMatch.Application.Features.Lessons.StartCheckIn;
 using DriveMatch.Application.Features.Reviews.Create;
 using DriveMatch.Application.Features.Auth.Login;
 using Microsoft.Extensions.DependencyInjection;
+using DriveMatch.Application.Features.Availabilities.GetAvailableSlots;
 
 namespace DriveMatch.Application.DependencyInjection;
 
@@ -55,6 +56,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<LoginHandler>();
         services.AddScoped<GetStudentProfileHandler>();
         services.AddScoped<GetMyAvailabilitiesHandler>();
+        services.AddScoped<GetAvailableSlotsHandler>();
 
         return services;
     }

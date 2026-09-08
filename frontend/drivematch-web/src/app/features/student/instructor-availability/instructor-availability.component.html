@@ -1,0 +1,144 @@
+<div class="availability-page">
+    <header class="page-header">
+        <div class="page-header__content">
+            <button type="button" class="dm-button dm-button--ghost back-button" (click)="goBack()">
+                ← Voltar aos instrutores
+            </button>
+
+            <span class="page-eyebrow">
+                Agendar aula
+            </span>
+
+            <h1>Escolha seu horário</h1>
+
+            <p>
+                Consulte a agenda do instrutor e selecione o melhor
+                horário para sua aula.
+            </p>
+        </div>
+    </header>
+
+    <main class="availability-content">
+        <section class="dm-card date-card">
+            <div class="date-card__heading">
+                <div>
+                    <h2>Quando você quer fazer a aula?</h2>
+                    <p>
+                        Escolha uma data para consultar a agenda disponível.
+                    </p>
+                </div>
+            </div>
+
+            <form class="date-form" (ngSubmit)="loadSlots()">
+
+                <div class="dm-field date-field">
+                    <label class="dm-label" for="lessonDate">
+                        Data da aula
+                    </label>
+
+                    <input id="lessonDate" name="lessonDate" class="dm-input" type="date" [min]="minimumDate"
+                        [(ngModel)]="selectedDate">
+                </div>
+
+                <button type="submit" class="dm-button dm-button--primary" [disabled]="isLoading()">
+                    {{ isLoading() ? 'Consultando...' : 'Ver horários' }}
+                </button>
+            </form>
+
+            @if (errorMessage()) {
+            <p class="dm-field-error message" role="alert">
+                {{ errorMessage() }}
+            </p>
+            }
+        </section>
+
+        @if (isLoading()) {
+        <section class="results-state">
+            <div class="loading-spinner"></div>
+            <p>Consultando horários disponíveis...</p>
+        </section>
+        } @else if (
+        hasSearched() &&
+        slots().length === 0 &&
+        !errorMessage()
+        ) {
+        <section class="dm-card empty-state">
+            <div class="empty-state__icon">○</div>
+
+            <h2>Nenhum horário neste dia</h2>
+
+            <p>
+                O instrutor não possui horários disponíveis nessa data.
+                Escolha outro dia para continuar.
+            </p>
+        </section>
+        } @else if (slots().length > 0) {
+        <section class="dm-card slots-section">
+            <div class="slots-heading">
+                <div>
+                    <span class="page-eyebrow">
+                        {{ formatSelectedDate() }}
+                    </span>
+
+                    <h2>
+                        {{
+                        slots().length === 1
+                        ? '1 horário disponível'
+                        : slots().length + ' horários disponíveis'
+                        }}
+                    </h2>
+                </div>
+
+                <span class="slots-heading__hint">
+                    Selecione um horário
+                </span>
+            </div>
+
+            <div class="slots-grid">
+                @for (
+                slot of slots();
+                track slot.startTime + slot.endTime
+                ) {
+                <button type="button" class="slot-option" [class.slot-option--selected]="isSelected(slot)"
+                    [attr.aria-pressed]="isSelected(slot)" (click)="selectSlot(slot)">
+
+                    <span class="slot-option__time">
+                        {{ formatTime(slot.startTime) }}
+                    </span>
+
+                    <span class="slot-option__duration">
+                        até {{ formatTime(slot.endTime) }}
+                    </span>
+
+                    @if (isSelected(slot)) {
+                    <span class="slot-option__selected">
+                        Selecionado
+                    </span>
+                    }
+                </button>
+                }
+            </div>
+
+            @if (selectedSlot(); as slot) {
+            <div class="selection-summary">
+                <div>
+                    <span class="selection-summary__label">
+                        Horário escolhido
+                    </span>
+
+                    <strong>
+                        {{ formatTime(slot.startTime) }}
+                        –
+                        {{ formatTime(slot.endTime) }}
+                    </strong>
+                </div>
+
+                <span class="selection-summary__next">
+                    Próxima etapa: solicitar a aula
+                </span>
+            </div>
+            }
+        </section>
+        }
+    </main>
+</div>

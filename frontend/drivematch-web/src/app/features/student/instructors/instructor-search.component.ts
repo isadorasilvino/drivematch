@@ -171,6 +171,16 @@ export class InstructorSearchComponent implements OnInit {
     }).format(value);
   }
 
+  viewAvailability(
+    instructor: InstructorSearchResult,
+  ): void {
+    void this.router.navigate([
+      '/student/instructors',
+      instructor.instructorProfileId,
+      'availability',
+    ]);
+  }
+
   private loadProfile(): void {
     this.studentProfileService.getProfile().subscribe({
       next: (profile) => {

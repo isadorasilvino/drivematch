@@ -4,6 +4,7 @@ using DriveMatch.Application.Features.Instructors.CreateProfile;
 using DriveMatch.Application.Features.Instructors.GetProfile;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
+using DriveMatch.Application.Features.Availabilities.GetAvailableSlots;
 using DriveMatch.Domain.Enums;
 using System.Security.Claims;
 using ChangeStatusInstructorNotFoundException =
@@ -12,6 +13,11 @@ using GetInstructorNotFoundException =
     DriveMatch.Application.Features.Instructors.GetProfile.InstructorProfileNotFoundException;
 using UpdateInstructorNotFoundException =
     DriveMatch.Application.Features.Instructors.UpdateProfile.InstructorProfileNotFoundException;
+using GetAvailableSlotsInstructorNotFoundException =
+    DriveMatch.Application.Features.Availabilities.GetAvailableSlots.InstructorProfileNotFoundException;
+using GetAvailableSlotsInstructorUnavailableException =
+    DriveMatch.Application.Features.Availabilities.GetAvailableSlots.InstructorUnavailableException;
+
 
 namespace DriveMatch.Api.Endpoints;
 
@@ -51,6 +57,13 @@ public static class InstructorEndpoints
             .WithName("SearchInstructors")
             .Produces<IReadOnlyCollection<SearchInstructorResult>>(
                 StatusCodes.Status200OK);
+
+        group.MapGet("/{instructorProfileId:guid}/available-slots", GetAvailableSlotsAsync)
+            .WithName("GetInstructorAvailableSlots")
+            .Produces<IReadOnlyCollection<AvailableSlotResult>>(
+                StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("/profile", GetProfileAsync)
             .WithName("GetInstructorProfile")
@@ -202,6 +215,38 @@ public static class InstructorEndpoints
             cancellationToken);
 
         return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetAvailableSlotsAsync(
+        Guid instructorProfileId,
+        DateOnly date,
+        GetAvailableSlotsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await handler.HandleAsync(
+                new GetAvailableSlotsQuery(
+                    instructorProfileId,
+                    date),
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (GetAvailableSlotsInstructorNotFoundException exception)
+        {
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
+        catch (GetAvailableSlotsInstructorUnavailableException exception)
+        {
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
+        }
     }
 
     public sealed record ChangeInstructorProfileStatusRequest(

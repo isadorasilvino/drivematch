@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Persistence.Models;
 using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Application.Features.LessonRequests.Accept;
 using DriveMatch.Domain.Entities;
@@ -218,6 +219,43 @@ public class AcceptLessonRequestHandlerTests
         Assert.False(unitOfWork.SaveChangesCalled);
     }
 
+    [Fact]
+    public async Task HandleAsync_ShouldThrowInstructorUnavailableException_WhenRequestedIntervalIsNotAValidSlot()
+    {
+        var request = new LessonRequest(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            new DateOnly(2026, 8, 31),
+            new TimeOnly(14, 10),
+            new TimeOnly(15, 10),
+            false,
+            null);
+
+        var userId = Guid.NewGuid();
+        var lessonRepository = new FakeLessonRepository();
+        var unitOfWork = new FakeUnitOfWork();
+
+        var handler = new AcceptLessonRequestHandler(
+            new FakeLessonRequestRepository(request),
+            new FakeAvailabilityRepository(true),
+            lessonRepository,
+            new FakeInstructorProfileRepository(
+                CreateInstructorProfile(
+                    request.InstructorId,
+                    userId)),
+            unitOfWork);
+
+        await Assert.ThrowsAsync<InstructorUnavailableException>(
+            () => handler.HandleAsync(
+                new AcceptLessonRequestCommand(
+                    request.Id,
+                    userId)));
+
+        Assert.Null(lessonRepository.AddedLesson);
+        Assert.False(unitOfWork.SaveChangesCalled);
+    }
+
     private static LessonRequest CreateLessonRequest()
     {
         return new LessonRequest(
@@ -356,22 +394,13 @@ public class AcceptLessonRequestHandlerTests
                 Array.Empty<Availability>());
         }
 
-        public Task<bool> HasAvailabilityAsync(
-            Guid instructorProfileId,
-            DayOfWeek dayOfWeek,
-            TimeOnly startTime,
-            TimeOnly endTime,
-            CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(_hasAvailability);
-        }
-
         public Task AddAsync(
             Availability availability,
             CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
+
         public Task<bool> HasActiveAvailabilityAsync(
             Guid instructorProfileId,
             CancellationToken cancellationToken = default)
@@ -379,6 +408,29 @@ public class AcceptLessonRequestHandlerTests
             return Task.FromResult(false);
         }
 
+        public Task<IReadOnlyCollection<Availability>> GetActiveByInstructorProfileIdAndDayAsync(
+            Guid instructorProfileId,
+            DayOfWeek dayOfWeek,
+            CancellationToken cancellationToken = default)
+        {
+            if (!_hasAvailability)
+            {
+                return Task.FromResult<IReadOnlyCollection<Availability>>(
+                    Array.Empty<Availability>());
+            }
+
+            var availability = new Availability(
+                Guid.NewGuid(),
+                instructorProfileId,
+                dayOfWeek,
+                new TimeOnly(14, 0),
+                new TimeOnly(18, 0),
+                lessonDurationMinutes: 60,
+                breakDurationMinutes: 0);
+
+            return Task.FromResult<IReadOnlyCollection<Availability>>(
+                [availability]);
+        }
     }
 
     private sealed class FakeLessonRepository
@@ -410,6 +462,15 @@ public class AcceptLessonRequestHandlerTests
         {
             AddedLesson = lesson;
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyCollection<LessonScheduleItem>> GetBlockingScheduleAsync(
+            Guid instructorProfileId,
+            DateOnly scheduledDate,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<LessonScheduleItem>>(
+                Array.Empty<LessonScheduleItem>());
         }
     }
 

@@ -13,6 +13,7 @@ import { StudentHomeComponent } from './features/student/student-home.component'
 import { ProfileComponent } from './features/student/profile/profile.component';
 import { InstructorSearchComponent } from './features/student/instructors/instructor-search.component';
 import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
+import { InstructorAvailabilityComponent } from './features/student/instructor-availability/instructor-availability.component';
 
 export const routes: Routes = [
   {
@@ -69,6 +70,15 @@ export const routes: Routes = [
   {
     path: 'student/instructors',
     component: InstructorSearchComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+      studentProfileGuard,
+    ],
+  },
+  {
+    path: 'student/instructors/:instructorProfileId/availability',
+    component: InstructorAvailabilityComponent,
     canActivate: [
       authGuard,
       roleGuard(['Student']),

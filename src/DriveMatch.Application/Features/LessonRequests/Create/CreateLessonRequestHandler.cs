@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Time;
 using DriveMatch.Domain.Entities;
 using DriveMatch.Domain.Enums;
 
@@ -11,19 +12,22 @@ public sealed class CreateLessonRequestHandler
     private readonly IAvailabilityRepository _availabilityRepository;
     private readonly ILessonRequestRepository _lessonRequestRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
     public CreateLessonRequestHandler(
         IStudentProfileRepository studentProfileRepository,
         IInstructorProfileRepository instructorProfileRepository,
         IAvailabilityRepository availabilityRepository,
         ILessonRequestRepository lessonRequestRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IDateTimeProvider dateTimeProvider)
     {
         _studentProfileRepository = studentProfileRepository;
         _instructorProfileRepository = instructorProfileRepository;
         _availabilityRepository = availabilityRepository;
         _lessonRequestRepository = lessonRequestRepository;
         _unitOfWork = unitOfWork;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<CreateLessonRequestResult> HandleAsync(
@@ -59,15 +63,29 @@ public sealed class CreateLessonRequestHandler
                 instructorProfile.Id);
         }
 
-        var hasAvailability =
-            await _availabilityRepository.HasAvailabilityAsync(
+        var now = _dateTimeProvider.LocalNow;
+        var today = DateOnly.FromDateTime(now);
+        var currentTime = TimeOnly.FromDateTime(now);
+
+        if (command.RequestedDate < today ||
+            (command.RequestedDate == today &&
+            command.StartTime <= currentTime))
+        {
+            throw new InstructorUnavailableException();
+        }
+
+        var availabilities =
+            await _availabilityRepository.GetActiveByInstructorProfileIdAndDayAsync(
                 instructorProfile.Id,
                 command.RequestedDate.DayOfWeek,
-                command.StartTime,
-                command.EndTime,
                 cancellationToken);
 
-        if (!hasAvailability)
+        var hasValidSlot = availabilities.Any(
+            availability => availability.ContainsSlot(
+                command.StartTime,
+                command.EndTime));
+
+        if (!hasValidSlot)
             throw new InstructorUnavailableException();
 
         var lessonRequest = new LessonRequest(

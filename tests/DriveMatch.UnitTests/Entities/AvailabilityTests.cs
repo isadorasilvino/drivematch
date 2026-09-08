@@ -300,6 +300,176 @@ public class AvailabilityTests
         Assert.True(availability.IsActive);
     }
 
+    [Fact]
+    public void GetSlots_ShouldGenerateSlotsUsingLessonDurationAndBreak()
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(10, 0),
+            new TimeOnly(14, 0),
+            45,
+            15);
+
+        var slots = availability.GetSlots().ToArray();
+
+        Assert.Equal(4, slots.Length);
+
+        Assert.Equal(
+            new TimeOnly(10, 0),
+            slots[0].StartTime);
+        Assert.Equal(
+            new TimeOnly(10, 45),
+            slots[0].EndTime);
+
+        Assert.Equal(
+            new TimeOnly(11, 0),
+            slots[1].StartTime);
+        Assert.Equal(
+            new TimeOnly(11, 45),
+            slots[1].EndTime);
+
+        Assert.Equal(
+            new TimeOnly(12, 0),
+            slots[2].StartTime);
+        Assert.Equal(
+            new TimeOnly(12, 45),
+            slots[2].EndTime);
+
+        Assert.Equal(
+            new TimeOnly(13, 0),
+            slots[3].StartTime);
+        Assert.Equal(
+            new TimeOnly(13, 45),
+            slots[3].EndTime);
+    }
+
+    [Fact]
+    public void GetSlots_ShouldGenerateConsecutiveSlots_WhenBreakIsZero()
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(8, 0),
+            new TimeOnly(10, 0),
+            60,
+            0);
+
+        var slots = availability.GetSlots().ToArray();
+
+        Assert.Equal(2, slots.Length);
+
+        Assert.Equal(
+            new TimeOnly(8, 0),
+            slots[0].StartTime);
+        Assert.Equal(
+            new TimeOnly(9, 0),
+            slots[0].EndTime);
+
+        Assert.Equal(
+            new TimeOnly(9, 0),
+            slots[1].StartTime);
+        Assert.Equal(
+            new TimeOnly(10, 0),
+            slots[1].EndTime);
+    }
+
+    [Fact]
+    public void GetSlots_ShouldIncludeLastLesson_WhenLessonFitsExactly()
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(10, 0),
+            new TimeOnly(11, 45),
+            45,
+            15);
+
+        var slots = availability.GetSlots().ToArray();
+
+        Assert.Equal(2, slots.Length);
+
+        Assert.Equal(
+            new TimeOnly(11, 0),
+            slots[1].StartTime);
+        Assert.Equal(
+            new TimeOnly(11, 45),
+            slots[1].EndTime);
+    }
+
+    [Fact]
+    public void GetSlots_ShouldNotRequireBreakAfterLastLesson()
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(10, 0),
+            new TimeOnly(10, 45),
+            45,
+            30);
+
+        var slots = availability.GetSlots().ToArray();
+
+        Assert.Single(slots);
+
+        Assert.Equal(
+            new TimeOnly(10, 0),
+            slots[0].StartTime);
+        Assert.Equal(
+            new TimeOnly(10, 45),
+            slots[0].EndTime);
+    }
+
+    [Fact]
+    public void ContainsSlot_ShouldReturnTrue_WhenIntervalMatchesGeneratedSlot()
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(10, 0),
+            new TimeOnly(14, 0),
+            45,
+            15);
+
+        var result = availability.ContainsSlot(
+            new TimeOnly(11, 0),
+            new TimeOnly(11, 45));
+
+        Assert.True(result);
+    }
+
+    [Theory]
+    [InlineData(10, 10, 10, 55)]
+    [InlineData(10, 0, 10, 30)]
+    [InlineData(10, 15, 11, 0)]
+    [InlineData(13, 30, 14, 0)]
+    public void ContainsSlot_ShouldReturnFalse_WhenIntervalDoesNotMatchGeneratedSlot(
+        int startHour,
+        int startMinute,
+        int endHour,
+        int endMinute)
+    {
+        var availability = new Availability(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DayOfWeek.Monday,
+            new TimeOnly(10, 0),
+            new TimeOnly(14, 0),
+            45,
+            15);
+
+        var result = availability.ContainsSlot(
+            new TimeOnly(startHour, startMinute),
+            new TimeOnly(endHour, endMinute));
+
+        Assert.False(result);
+    }
+
     private static Availability CreateAvailability()
     {
         return new Availability(

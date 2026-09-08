@@ -1,5 +1,6 @@
 ﻿using DriveMatch.Domain.Common;
 using DriveMatch.Domain.Exceptions;
+using DriveMatch.Domain.ValueObjects;
 
 namespace DriveMatch.Domain.Entities;
 
@@ -93,6 +94,41 @@ public class Availability : Entity
     public void Deactivate()
     {
         IsActive = false;
+    }
+
+    public IReadOnlyCollection<AvailabilitySlot> GetSlots()
+    {
+        var slots = new List<AvailabilitySlot>();
+
+        var currentStartTime = StartTime;
+
+        while (true)
+        {
+            var currentEndTime =
+                currentStartTime.AddMinutes(LessonDurationMinutes);
+
+            if (currentEndTime > EndTime)
+                break;
+
+            slots.Add(
+                new AvailabilitySlot(
+                    currentStartTime,
+                    currentEndTime));
+
+            currentStartTime = currentEndTime
+                .AddMinutes(BreakDurationMinutes);
+        }
+
+        return slots;
+    }
+
+    public bool ContainsSlot(
+        TimeOnly startTime,
+        TimeOnly endTime)
+    {
+        return GetSlots().Any(slot =>
+            slot.StartTime == startTime &&
+            slot.EndTime == endTime);
     }
 
     private static void Validate(

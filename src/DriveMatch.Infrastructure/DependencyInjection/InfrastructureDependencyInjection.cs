@@ -1,5 +1,6 @@
-﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Persistence;
 using DriveMatch.Application.Abstractions.Services;
+using DriveMatch.Application.Abstractions.Time;
 using DriveMatch.Infrastructure.Persistence;
 using DriveMatch.Infrastructure.Repositories;
 using DriveMatch.Infrastructure.Services;
@@ -23,6 +24,31 @@ public static class InfrastructureDependencyInjection
         services.AddDbContext<DriveMatchDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        var schedulingTimeZoneId =
+            configuration["Scheduling:TimeZoneId"]
+            ?? throw new InvalidOperationException(
+                "O fuso horário da agenda não foi configurado.");
+
+        TimeZoneInfo schedulingTimeZone;
+
+        try
+        {
+            schedulingTimeZone =
+                TimeZoneInfo.FindSystemTimeZoneById(schedulingTimeZoneId);
+        }
+        catch (TimeZoneNotFoundException exception)
+        {
+            throw new InvalidOperationException(
+                $"O fuso horário '{schedulingTimeZoneId}' não foi encontrado.",
+                exception);
+        }
+        catch (InvalidTimeZoneException exception)
+        {
+            throw new InvalidOperationException(
+                $"O fuso horário '{schedulingTimeZoneId}' é inválido.",
+                exception);
+        }
+
         services.AddScoped<IUnitOfWork>(
             provider => provider.GetRequiredService<DriveMatchDbContext>());
 
@@ -37,6 +63,9 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<ITokenService, JwtTokenService>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+        services.AddSingleton(schedulingTimeZone);
+        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
         return services;
     }

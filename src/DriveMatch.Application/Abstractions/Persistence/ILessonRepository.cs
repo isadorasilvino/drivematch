@@ -1,4 +1,5 @@
 ﻿using DriveMatch.Domain.Entities;
+using DriveMatch.Application.Abstractions.Persistence.Models;
 
 namespace DriveMatch.Application.Abstractions.Persistence;
 
@@ -17,5 +18,10 @@ public interface ILessonRepository
 
     Task AddAsync(
         Lesson lesson,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<LessonScheduleItem>> GetBlockingScheduleAsync(
+        Guid instructorProfileId,
+        DateOnly scheduledDate,
         CancellationToken cancellationToken = default);
 }

@@ -48,15 +48,18 @@ public sealed class AcceptLessonRequestHandler
             throw new LessonRequestForbiddenException();
         }
 
-        var hasAvailability =
-            await _availabilityRepository.HasAvailabilityAsync(
+        var availabilities =
+            await _availabilityRepository.GetActiveByInstructorProfileIdAndDayAsync(
                 lessonRequest.InstructorId,
                 lessonRequest.RequestedDate.DayOfWeek,
-                lessonRequest.StartTime,
-                lessonRequest.EndTime,
                 cancellationToken);
 
-        if (!hasAvailability)
+        var hasValidSlot = availabilities.Any(
+            availability => availability.ContainsSlot(
+                lessonRequest.StartTime,
+                lessonRequest.EndTime));
+
+        if (!hasValidSlot)
             throw new InstructorUnavailableException();
 
         var hasConflict = await _lessonRepository.HasConflictAsync(

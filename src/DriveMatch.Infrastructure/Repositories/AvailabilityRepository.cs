@@ -50,23 +50,6 @@ public sealed class AvailabilityRepository
             cancellationToken);
     }
 
-    public Task<bool> HasAvailabilityAsync(
-        Guid instructorProfileId,
-        DayOfWeek dayOfWeek,
-        TimeOnly startTime,
-        TimeOnly endTime,
-        CancellationToken cancellationToken = default)
-    {
-        return _context.Availabilities.AnyAsync(
-            availability =>
-                availability.InstructorProfileId == instructorProfileId &&
-                availability.DayOfWeek == dayOfWeek &&
-                availability.IsActive &&
-                availability.StartTime <= startTime &&
-                availability.EndTime >= endTime,
-            cancellationToken);
-    }
-
     public async Task AddAsync(
         Availability availability,
         CancellationToken cancellationToken = default)
@@ -74,5 +57,20 @@ public sealed class AvailabilityRepository
         await _context.Availabilities.AddAsync(
             availability,
             cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<Availability>> GetActiveByInstructorProfileIdAndDayAsync(
+        Guid instructorProfileId,
+        DayOfWeek dayOfWeek,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Availabilities
+            .AsNoTracking()
+            .Where(availability =>
+                availability.InstructorProfileId == instructorProfileId &&
+                availability.DayOfWeek == dayOfWeek &&
+                availability.IsActive)
+            .OrderBy(availability => availability.StartTime)
+            .ToArrayAsync(cancellationToken);
     }
 }
