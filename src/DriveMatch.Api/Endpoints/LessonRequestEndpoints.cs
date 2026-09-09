@@ -3,6 +3,8 @@ using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Application.Features.LessonRequests.Accept;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Reject;
+using DriveMatch.Application.Features.LessonRequests.GetMine;
+using DriveMatch.Application.Features.LessonRequests.GetReceived;
 using System.Security.Claims;
 
 using AcceptNotFoundException =
@@ -46,6 +48,20 @@ public static class LessonRequestEndpoints
             .Produces<RejectLessonRequestResult>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
+
+        group.MapGet("/mine", GetMineAsync)
+            .WithName("GetMyLessonRequests")
+            .Produces<IReadOnlyCollection<LessonRequestListResult>>(
+                StatusCodes.Status200OK)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
+
+        group.MapGet("/received", GetReceivedAsync)
+            .WithName("GetReceivedLessonRequests")
+            .Produces<IReadOnlyCollection<LessonRequestListResult>>(
+                StatusCodes.Status200OK)
             .RequireAuthorization(policy =>
                 policy.RequireRole("Instructor"));
 
@@ -114,6 +130,34 @@ public static class LessonRequestEndpoints
                 error = exception.Message
             });
         }
+    }
+
+    private static async Task<IResult> GetMineAsync(
+        ClaimsPrincipal user,
+        GetMineLessonRequestsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var userId = user.GetUserId();
+
+        var result = await handler.HandleAsync(
+            new GetMineLessonRequestsQuery(userId),
+            cancellationToken);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetReceivedAsync(
+        ClaimsPrincipal user,
+        GetReceivedLessonRequestsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var userId = user.GetUserId();
+
+        var result = await handler.HandleAsync(
+            new GetReceivedLessonRequestsQuery(userId),
+            cancellationToken);
+
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> AcceptAsync(

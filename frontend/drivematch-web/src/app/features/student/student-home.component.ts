@@ -2,100 +2,108 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-student-home',
-  standalone: true,
-  template: `
-    <main class="student-home">
-      <section class="student-home__content">
-        <span class="student-home__eyebrow">
-          Área do aluno
-        </span>
+    selector: 'app-student-home',
+    standalone: true,
+    template: `
+        <main class="student-home">
+            <section class="dm-card student-home__content">
+                <span class="student-home__eyebrow">
+                    Área do aluno
+                </span>
 
-        <h1>Pronto para praticar?</h1>
+                <h1>Pronto para praticar?</h1>
 
-        <p>
-          Encontre instrutores compatíveis com seu perfil
-          e suas preferências.
-        </p>
+                <p>
+                    Encontre instrutores compatíveis com seu perfil
+                    e acompanhe suas solicitações de aula.
+                </p>
 
-        <div class="student-home__actions">
-          <button
-            type="button"
-            class="dm-button dm-button--primary"
-            (click)="findInstructors()">
-            Encontrar instrutores
-          </button>
+                <div class="student-home__actions">
+                    <button
+                        type="button"
+                        class="dm-button dm-button--primary"
+                        (click)="findInstructors()">
+                        Encontrar instrutores
+                    </button>
 
-          <button
-            type="button"
-            class="dm-button"
-            (click)="editProfile()">
-            Editar perfil
-          </button>
-        </div>
-      </section>
-    </main>
-  `,
-  styles: `
-    :host {
-      display: block;
-      min-height: 100dvh;
-    }
+                    <button
+                        type="button"
+                        class="dm-button dm-button--secondary"
+                        (click)="viewRequests()">
+                        Minhas solicitações
+                    </button>
 
-    .student-home {
-      display: grid;
-      min-height: 100dvh;
-      place-items: center;
-      padding: 1.5rem;
-      background: var(--dm-color-background);
-    }
+                    <button
+                        type="button"
+                        class="dm-button dm-button--ghost"
+                        (click)="editProfile()">
+                        Editar perfil
+                    </button>
+                </div>
+            </section>
+        </main>
+    `,
+    styles: `
+        :host {
+            display: block;
+            min-height: 100dvh;
+        }
 
-    .student-home__content {
-      width: 100%;
-      max-width: 42rem;
-      padding: 2rem;
-      border: 1px solid var(--dm-color-border);
-      border-radius: 1.5rem;
-      background: #fff;
-    }
+        .student-home {
+            display: grid;
+            min-height: 100dvh;
+            place-items: center;
+            padding: var(--dm-space-5);
+            background: var(--dm-background);
+        }
 
-    .student-home__eyebrow {
-      color: var(--dm-color-primary);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+        .student-home__content {
+            width: 100%;
+            max-width: 42rem;
+            padding: var(--dm-space-8);
+        }
 
-    h1 {
-      margin: 0.5rem 0 0.75rem;
-      color: var(--dm-color-text);
-      font-size: clamp(2rem, 6vw, 3rem);
-      line-height: 1.05;
-    }
+        .student-home__eyebrow {
+            color: var(--dm-primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
-    p {
-      margin: 0;
-      color: var(--dm-color-secondary);
-      line-height: 1.6;
-    }
+        h1 {
+            margin: var(--dm-space-3) 0 var(--dm-space-3);
+            color: var(--dm-text);
+            font-size: clamp(2rem, 6vw, 3rem);
+            line-height: 1.05;
+        }
 
-    .student-home__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 2rem;
-    }
-  `,
+        p {
+            margin: 0;
+            color: var(--dm-text-secondary);
+            line-height: 1.6;
+        }
+
+        .student-home__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--dm-space-3);
+            margin-top: var(--dm-space-6);
+        }
+    `,
 })
 export class StudentHomeComponent {
-  private readonly router = inject(Router);
+    private readonly router = inject(Router);
 
-  findInstructors(): void {
-    void this.router.navigate(['/student/instructors']);
-  }
+    findInstructors(): void {
+        void this.router.navigate(['/student/instructors']);
+    }
 
-  editProfile(): void {
-    void this.router.navigate(['/student/profile']);
-  }
+    viewRequests(): void {
+        void this.router.navigate(['/student/lesson-requests']);
+    }
+
+    editProfile(): void {
+        void this.router.navigate(['/student/profile']);
+    }
 }

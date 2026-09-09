@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
     Component,
@@ -13,6 +14,12 @@ import {
     AvailableSlot,
     InstructorAvailabilityService,
 } from '../../../core/student/instructor-availability.service';
+
+import {
+    StudentProfileService,
+} from '../../../core/student/student-profile.service';
+
+import { LessonRequestService } from '../../../core/lesson-request/lesson-request.service';
 
 @Component({
     selector: 'app-instructor-availability',
@@ -29,13 +36,21 @@ export class InstructorAvailabilityComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly availabilityService =
         inject(InstructorAvailabilityService);
+    private readonly lessonRequestService =
+        inject(LessonRequestService);
+    private readonly studentProfileService =
+        inject(StudentProfileService);
 
     readonly slots = signal<AvailableSlot[]>([]);
     readonly isLoading = signal(false);
     readonly hasSearched = signal(false);
     readonly errorMessage = signal<string | null>(null);
     readonly selectedSlot = signal<AvailableSlot | null>(null);
-
+    readonly isRequesting = signal(false);
+    readonly requestSuccess = signal(false);
+    readonly canUseOwnVehicle = signal(false);
+    readonly usesStudentVehicle = signal(false);
+    readonly studentMessage = signal('');
 
     instructorProfileId = '';
     selectedDate = '';
@@ -44,6 +59,15 @@ export class InstructorAvailabilityComponent implements OnInit {
     ngOnInit(): void {
         this.instructorProfileId =
             this.route.snapshot.paramMap.get('instructorProfileId') ?? '';
+
+        this.studentProfileService.getProfile().subscribe({
+            next: (profile) => {
+                this.canUseOwnVehicle.set(
+                    profile.ownsVehicle &&
+                    profile.hasOwnVehicleForLessons,
+                );
+            },
+        });
 
         if (!this.instructorProfileId) {
             void this.router.navigate(['/student/instructors']);
@@ -59,6 +83,9 @@ export class InstructorAvailabilityComponent implements OnInit {
         this.slots.set([]);
         this.hasSearched.set(false);
         this.selectedSlot.set(null);
+        this.requestSuccess.set(false);
+        this.usesStudentVehicle.set(false);
+        this.studentMessage.set('');
 
         if (!this.selectedDate) {
             this.errorMessage.set(
@@ -148,6 +175,53 @@ export class InstructorAvailabilityComponent implements OnInit {
 
         return selected?.startTime === slot.startTime &&
             selected?.endTime === slot.endTime;
+    }
+
+    requestLesson(): void {
+        const slot = this.selectedSlot();
+
+        if (!slot || !this.selectedDate || this.isRequesting()) {
+            return;
+        }
+
+        this.errorMessage.set(null);
+        this.requestSuccess.set(false);
+        this.isRequesting.set(true);
+
+        this.lessonRequestService
+            .create({
+                instructorProfileId: this.instructorProfileId,
+                requestedDate: this.selectedDate,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                usesStudentVehicle: this.usesStudentVehicle(),
+                studentMessage:
+                    this.studentMessage().trim() || null,
+            })
+            .pipe(
+                finalize(() => this.isRequesting.set(false)),
+            )
+            .subscribe({
+                next: () => {
+                    this.requestSuccess.set(true);
+                },
+
+                error: (error: HttpErrorResponse) => {
+                    const apiMessage =
+                        typeof error.error?.error === 'string'
+                            ? error.error.error
+                            : null;
+
+                    this.errorMessage.set(
+                        apiMessage ??
+                        'Não foi possível solicitar a aula. Tente novamente.',
+                    );
+                },
+            });
+    }
+
+    goToMyRequests(): void {
+        void this.router.navigate(['/student/lesson-requests']);
     }
 
     private toDateInputValue(date: Date): string {

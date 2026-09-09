@@ -1,0 +1,51 @@
+<article class="dm-card request-card">
+    <div class="request-card__header">
+        <div>
+            <span class="request-card__person-label">
+                {{ personLabel() }}
+            </span>
+
+            <h2>{{ personName() }}</h2>
+        </div>
+
+        <span class="status-badge" [attr.data-status]="request().status">
+            {{ statusLabel(request().status) }}
+        </span>
+    </div>
+
+    <div class="request-card__details">
+        <div class="detail">
+            <span>Data</span>
+            <strong>{{ formatDate(request().requestedDate) }}</strong>
+        </div>
+
+        <div class="detail">
+            <span>Horário</span>
+            <strong>
+                {{ formatTime(request().startTime) }}
+                –
+                {{ formatTime(request().endTime) }}
+            </strong>
+        </div>
+
+        <div class="detail">
+            <span>Veículo</span>
+            <strong>
+                {{
+                request().usesStudentVehicle
+                ? 'Veículo do aluno'
+                : 'Veículo do instrutor'
+                }}
+            </strong>
+        </div>
+    </div>
+
+    @if (request().studentMessage) {
+    <div class="request-card__message">
+        <span>Mensagem do aluno</span>
+        <p>{{ request().studentMessage }}</p>
+    </div>
+    }
+
+    <ng-content></ng-content>
+</article>

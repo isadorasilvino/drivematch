@@ -1,0 +1,53 @@
+<div class="requests-page">
+    <header class="requests-header">
+        <div class="requests-header__content">
+            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
+                ← Voltar
+            </button>
+
+            <span class="page-eyebrow">Minhas aulas</span>
+
+            <h1>Minhas solicitações</h1>
+
+            <p>
+                Acompanhe as solicitações enviadas aos seus instrutores.
+            </p>
+        </div>
+    </header>
+
+    <main class="requests-content">
+        @if (isLoading()) {
+        <section class="requests-state">
+            <p>Carregando solicitações...</p>
+        </section>
+        } @else if (errorMessage()) {
+        <section class="dm-card requests-state">
+            <h2>Não foi possível carregar</h2>
+            <p>{{ errorMessage() }}</p>
+
+            <button type="button" class="dm-button dm-button--secondary" (click)="loadRequests()">
+                Tentar novamente
+            </button>
+        </section>
+        } @else if (requests().length === 0) {
+        <section class="dm-card requests-state">
+            <h2>Você ainda não solicitou nenhuma aula</h2>
+
+            <p>
+                Encontre um instrutor e escolha um horário para começar.
+            </p>
+
+            <button type="button" class="dm-button dm-button--primary" (click)="findInstructors()">
+                Encontrar instrutores
+            </button>
+        </section>
+        } @else {
+        <div class="requests-list">
+            @for (request of requests(); track request.lessonRequestId) {
+            <app-lesson-request-card [request]="request" personLabel="Instrutor" [personName]="request.instructorName">
+            </app-lesson-request-card>
+            }
+        </div>
+        }
+    </main>
+</div>

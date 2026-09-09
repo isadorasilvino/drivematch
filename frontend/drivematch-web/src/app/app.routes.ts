@@ -15,6 +15,15 @@ import { InstructorSearchComponent } from './features/student/instructors/instru
 import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
 import { InstructorAvailabilityComponent } from './features/student/instructor-availability/instructor-availability.component';
 
+
+import {
+  StudentLessonRequestsComponent,
+} from './features/student/lesson-requests/lesson-requests.component';
+
+import {
+  InstructorLessonRequestsComponent,
+} from './features/instructor/lesson-requests/lesson-requests.component';
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -85,6 +94,27 @@ export const routes: Routes = [
       studentProfileGuard,
     ],
   },
+
+  {
+    path: 'student/lesson-requests',
+    component: StudentLessonRequestsComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+      studentProfileGuard,
+    ],
+  },
+
+  {
+    path: 'instructor/lesson-requests',
+    component: InstructorLessonRequestsComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Instructor']),
+      instructorProfileGuard,
+    ],
+  },
+
   {
     path: '',
     redirectTo: 'login',

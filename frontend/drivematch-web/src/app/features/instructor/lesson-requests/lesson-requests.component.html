@@ -1,0 +1,69 @@
+<div class="requests-page">
+    <header class="requests-header">
+        <div class="requests-header__content">
+            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
+                ← Voltar
+            </button>
+
+            <span class="page-eyebrow">Agenda</span>
+
+            <h1>Solicitações recebidas</h1>
+
+            <p>
+                Analise os pedidos dos alunos e confirme os horários
+                que você pode atender.
+            </p>
+        </div>
+    </header>
+
+    <main class="requests-content">
+        @if (errorMessage()) {
+        <div class="action-error" role="alert">
+            {{ errorMessage() }}
+        </div>
+        }
+
+        @if (isLoading()) {
+        <section class="requests-state">
+            <p>Carregando solicitações...</p>
+        </section>
+        } @else if (requests().length === 0) {
+        <section class="dm-card requests-state">
+            <h2>Nenhuma solicitação recebida</h2>
+
+            <p>
+                Quando um aluno solicitar uma aula, ela aparecerá aqui.
+            </p>
+        </section>
+        } @else {
+        <div class="requests-list">
+            @for (request of requests(); track request.lessonRequestId) {
+            <app-lesson-request-card [request]="request" personLabel="Aluno" [personName]="request.studentName">
+
+                @if (request.status === 'Pending') {
+                <div class="request-actions">
+                    <button type="button" class="dm-button dm-button--secondary" [disabled]="actionRequestId() !== null"
+                        (click)="reject(request)">
+                        {{
+                        isProcessing(request.lessonRequestId)
+                        ? 'Processando...'
+                        : 'Recusar'
+                        }}
+                    </button>
+
+                    <button type="button" class="dm-button dm-button--primary" [disabled]="actionRequestId() !== null"
+                        (click)="accept(request)">
+                        {{
+                        isProcessing(request.lessonRequestId)
+                        ? 'Processando...'
+                        : 'Aceitar'
+                        }}
+                    </button>
+                </div>
+                }
+            </app-lesson-request-card>
+            }
+        </div>
+        }
+    </main>
+</div>

@@ -14,6 +14,8 @@ using DriveMatch.Application.Features.Instructors.GetProfile;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Accept;
 using DriveMatch.Application.Features.LessonRequests.Reject;
+using DriveMatch.Application.Features.LessonRequests.GetMine;
+using DriveMatch.Application.Features.LessonRequests.GetReceived;
 using DriveMatch.Application.Features.Lessons.Cancel;
 using DriveMatch.Application.Features.Lessons.Complete;
 using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
@@ -57,6 +59,8 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetStudentProfileHandler>();
         services.AddScoped<GetMyAvailabilitiesHandler>();
         services.AddScoped<GetAvailableSlotsHandler>();
+        services.AddScoped<GetMineLessonRequestsHandler>();
+        services.AddScoped<GetReceivedLessonRequestsHandler>();
 
         return services;
     }

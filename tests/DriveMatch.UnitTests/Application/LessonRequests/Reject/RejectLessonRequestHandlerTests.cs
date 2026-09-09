@@ -177,6 +177,30 @@ public class RejectLessonRequestHandlerTests
         {
             return Task.CompletedTask;
         }
+
+        public Task<IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>> GetByStudentUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyCollection<
+                DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>
+                result = Array.Empty<
+                    DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>();
+
+            return Task.FromResult(result);
+        }
+
+        public Task<IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>> GetByInstructorUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyCollection<
+                DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>
+                result = Array.Empty<
+                    DriveMatch.Application.Abstractions.Persistence.Models.LessonRequestListItem>();
+
+            return Task.FromResult(result);
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

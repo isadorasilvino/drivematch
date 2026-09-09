@@ -120,6 +120,45 @@
             </div>
 
             @if (selectedSlot(); as slot) {
+            <div class="request-options">
+                <div class="dm-field">
+                    <label class="dm-label" for="lessonVehicle">
+                        Veículo para a aula
+                    </label>
+
+                    <select id="lessonVehicle" name="lessonVehicle" class="dm-select" [ngModel]="usesStudentVehicle()"
+                        (ngModelChange)="usesStudentVehicle.set($event)">
+                        <option [ngValue]="false">
+                            Veículo do instrutor
+                        </option>
+
+                        @if (canUseOwnVehicle()) {
+                        <option [ngValue]="true">
+                            Meu veículo
+                        </option>
+                        }
+                    </select>
+
+                    @if (!canUseOwnVehicle()) {
+                    <span class="dm-field-hint">
+                        O uso do seu próprio veículo não está habilitado
+                        no seu perfil.
+                    </span>
+                    }
+                </div>
+
+                <div class="dm-field">
+                    <label class="dm-label" for="studentMessage">
+                        Mensagem para o instrutor
+                        <span class="optional-label">(opcional)</span>
+                    </label>
+
+                    <textarea id="studentMessage" name="studentMessage" class="dm-textarea" rows="3" maxlength="500"
+                        placeholder="Ex.: gostaria de praticar baliza e estacionamento." [ngModel]="studentMessage()"
+                        (ngModelChange)="studentMessage.set($event)">
+        </textarea>
+                </div>
+            </div>
             <div class="selection-summary">
                 <div>
                     <span class="selection-summary__label">
@@ -133,10 +172,31 @@
                     </strong>
                 </div>
 
-                <span class="selection-summary__next">
-                    Próxima etapa: solicitar a aula
-                </span>
+                @if (!requestSuccess()) {
+                <button type="button" class="dm-button dm-button--primary" [disabled]="isRequesting()"
+                    (click)="requestLesson()">
+                    {{
+                    isRequesting()
+                    ? 'Solicitando...'
+                    : 'Solicitar aula'
+                    }}
+                </button>
+                }
             </div>
+
+            @if (requestSuccess()) {
+            <div class="request-success" role="status">
+                <strong>Solicitação enviada!</strong>
+
+                <span>
+                    Agora é só aguardar a resposta do instrutor.
+                </span>
+
+                <button type="button" class="dm-button dm-button--secondary" (click)="goToMyRequests()">
+                    Ver minhas solicitações
+                </button>
+            </div>
+            }
             }
         </section>
         }
