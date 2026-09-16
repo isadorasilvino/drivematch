@@ -30,6 +30,13 @@ import { Router } from '@angular/router';
                     <button
                         type="button"
                         class="dm-button dm-button--secondary"
+                        (click)="viewLessons()">
+                        Minhas aulas
+                    </button>
+
+                    <button
+                        type="button"
+                        class="dm-button dm-button--secondary"
                         (click)="manageAvailability()">
                         Minha disponibilidade
                     </button>
@@ -98,6 +105,10 @@ export class InstructorHomeComponent {
 
     viewRequests(): void {
         void this.router.navigate(['/instructor/lesson-requests']);
+    }
+
+    viewLessons(): void {
+        void this.router.navigate(['/instructor/lessons']);
     }
 
     manageAvailability(): void {

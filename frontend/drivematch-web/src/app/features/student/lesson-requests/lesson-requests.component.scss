@@ -64,3 +64,19 @@
         margin-top: var(--dm-space-3);
     }
 }
+.request-actions {
+    display: flex;
+    align-items: center;
+    margin-top: var(--dm-space-4);
+}
+
+.request-actions__icon {
+    flex: 0 0 auto;
+    width: 1rem;
+    font-size: 0.875rem;
+}
+
+.request-actions .dm-action--danger {
+    gap: var(--dm-space-2);
+    font-size: 0.9375rem;
+}

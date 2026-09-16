@@ -1,0 +1,38 @@
+<article class="dm-card lesson-card">
+    <div class="lesson-card__header">
+        <div>
+            <span class="lesson-card__person-label">
+                {{ personLabel() }}
+            </span>
+
+            <h2>{{ personName() }}</h2>
+        </div>
+
+        <span class="status-badge" [attr.data-status]="lesson().status">
+            {{ statusLabel(lesson().status) }}
+        </span>
+    </div>
+
+    <div class="lesson-card__details">
+        <div class="detail">
+            <span>Data</span>
+            <strong>{{ formatDate(lesson().scheduledDate) }}</strong>
+        </div>
+
+        <div class="detail">
+            <span>Horário</span>
+            <strong>
+                {{ formatTime(lesson().startTime) }}
+                –
+                {{ formatTime(lesson().endTime) }}
+            </strong>
+        </div>
+
+        <div class="detail">
+            <span>Situação</span>
+            <strong>{{ statusLabel(lesson().status) }}</strong>
+        </div>
+    </div>
+
+    <ng-content></ng-content>
+</article>

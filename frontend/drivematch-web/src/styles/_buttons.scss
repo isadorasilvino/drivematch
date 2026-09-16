@@ -78,3 +78,44 @@
 .dm-button--full {
   width: 100%;
 }
+.dm-action--danger {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--dm-danger);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        color var(--dm-transition-fast),
+        opacity var(--dm-transition-fast);
+
+    &:hover:not(:disabled) {
+        text-decoration: underline;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+}
+
+.dm-alert {
+    width: 100%;
+    padding: var(--dm-space-3) var(--dm-space-4);
+    border: 1px solid var(--dm-border);
+    border-radius: var(--dm-radius-md);
+    font-size: 0.875rem;
+
+    p {
+        margin: 0;
+    }
+}
+
+.dm-alert--danger {
+    border-color: var(--dm-danger);
+    background: var(--dm-danger-soft);
+    color: var(--dm-danger);
+}

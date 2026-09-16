@@ -1,4 +1,4 @@
-﻿using DriveMatch.Application.Features.Instructors.CreateProfile;
+using DriveMatch.Application.Features.Instructors.CreateProfile;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
 using DriveMatch.Application.Features.Students.CreateProfile;
 using DriveMatch.Application.Features.Students.UpdateProfile;
@@ -13,6 +13,7 @@ using DriveMatch.Application.Features.Instructors.ChangeStatus;
 using DriveMatch.Application.Features.Instructors.GetProfile;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Accept;
+using DriveMatch.Application.Features.LessonRequests.Cancel;
 using DriveMatch.Application.Features.LessonRequests.Reject;
 using DriveMatch.Application.Features.LessonRequests.GetMine;
 using DriveMatch.Application.Features.LessonRequests.GetReceived;
@@ -21,6 +22,8 @@ using DriveMatch.Application.Features.Lessons.Complete;
 using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 using DriveMatch.Application.Features.Lessons.MarkAsNotAttended;
 using DriveMatch.Application.Features.Lessons.StartCheckIn;
+using DriveMatch.Application.Features.Lessons.GetMine;
+using DriveMatch.Application.Features.Lessons.GetInstructorLessons;
 using DriveMatch.Application.Features.Reviews.Create;
 using DriveMatch.Application.Features.Auth.Login;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +52,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<CreateLessonRequestHandler>();
         services.AddScoped<AcceptLessonRequestHandler>();
         services.AddScoped<RejectLessonRequestHandler>();
+    services.AddScoped<CancelLessonRequestHandler>();
         services.AddScoped<StartLessonCheckInHandler>();
         services.AddScoped<ConfirmLessonCheckInHandler>();
         services.AddScoped<CompleteLessonHandler>();
@@ -61,6 +65,8 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetAvailableSlotsHandler>();
         services.AddScoped<GetMineLessonRequestsHandler>();
         services.AddScoped<GetReceivedLessonRequestsHandler>();
+        services.AddScoped<GetMineLessonsHandler>();
+        services.AddScoped<GetInstructorLessonsHandler>();
 
         return services;
     }

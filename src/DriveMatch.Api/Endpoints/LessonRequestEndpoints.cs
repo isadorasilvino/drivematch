@@ -1,6 +1,7 @@
 using DriveMatch.Api.Extensions;
 using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Application.Features.LessonRequests.Accept;
+using DriveMatch.Application.Features.LessonRequests.Cancel;
 using DriveMatch.Application.Features.LessonRequests.Create;
 using DriveMatch.Application.Features.LessonRequests.Reject;
 using DriveMatch.Application.Features.LessonRequests.GetMine;
@@ -13,6 +14,8 @@ using AcceptNotFoundException =
 using RejectNotFoundException =
     DriveMatch.Application.Features.LessonRequests.Reject.LessonRequestNotFoundException;
 
+using CancelRequestNotFoundException =
+    DriveMatch.Application.Features.LessonRequests.Cancel.LessonRequestNotFoundException;
 namespace DriveMatch.Api.Endpoints;
 
 public static class LessonRequestEndpoints
@@ -51,6 +54,17 @@ public static class LessonRequestEndpoints
             .RequireAuthorization(policy =>
                 policy.RequireRole("Instructor"));
 
+        group.MapPatch(
+                "/{lessonRequestId:guid}/request-cancel",
+                CancelRequestAsync)
+            .WithName("CancelLessonRequest")
+            .Produces<CancelLessonRequestResult>(
+                StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
         group.MapGet("/mine", GetMineAsync)
             .WithName("GetMyLessonRequests")
             .Produces<IReadOnlyCollection<LessonRequestListResult>>(
@@ -239,6 +253,48 @@ public static class LessonRequestEndpoints
         }
     }
 
+    private static async Task<IResult> CancelRequestAsync(
+        ClaimsPrincipal user,
+        Guid lessonRequestId,
+        CancelLessonRequestHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var userId = user.GetUserId();
+
+            var result = await handler.HandleAsync(
+                new CancelLessonRequestCommand(
+                    lessonRequestId,
+                    userId),
+                cancellationToken);
+
+            return Results.Ok(result);
+        }
+        catch (CancelRequestNotFoundException exception)
+        {
+            return Results.NotFound(new
+            {
+                error = exception.Message
+            });
+        }
+        catch (LessonRequestForbiddenException exception)
+        {
+            return Results.Json(
+                new
+                {
+                    error = exception.Message
+                },
+                statusCode: StatusCodes.Status403Forbidden);
+        }
+        catch (DriveMatch.Domain.Exceptions.DomainException exception)
+        {
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
+        }
+    }
     public sealed record CreateLessonRequestRequest(
         Guid InstructorProfileId,
         DateOnly RequestedDate,

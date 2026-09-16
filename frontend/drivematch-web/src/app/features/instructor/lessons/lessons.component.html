@@ -1,0 +1,157 @@
+<div class="lessons-page">
+    <header class="lessons-header">
+        <div class="lessons-header__content">
+            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
+                ← Voltar
+            </button>
+
+            <span class="page-eyebrow">Agenda</span>
+
+            <h1>Minhas aulas</h1>
+
+            <p>
+                Acompanhe as aulas confirmadas com seus alunos.
+            </p>
+        </div>
+    </header>
+
+    <main class="lessons-content">
+        @if (isLoading()) {
+        <section class="lessons-state">
+            <p>Carregando aulas...</p>
+        </section>
+        } @else if (errorMessage()) {
+        <section class="dm-card lessons-state">
+            <h2>Não foi possível carregar</h2>
+            <p>{{ errorMessage() }}</p>
+
+            <button type="button" class="dm-button dm-button--secondary" (click)="loadLessons()">
+                Tentar novamente
+            </button>
+        </section>
+        } @else if (lessons().length === 0) {
+        <section class="dm-card lessons-state">
+            <h2>Nenhuma aula agendada</h2>
+
+            <p>
+                Quando uma solicitação for aceita,
+                a aula aparecerá aqui.
+            </p>
+        </section>
+        } @else {
+        @if (actionErrorMessage()) {
+        <section class="dm-card action-error">
+            <p>{{ actionErrorMessage() }}</p>
+        </section>
+        }
+
+        <div class="lessons-list">
+            @for (lesson of lessons(); track lesson.lessonId) {
+            <app-lesson-card [lesson]="lesson" personLabel="Aluno" [personName]="lesson.studentName">
+
+                <div class="lesson-actions">
+                    @if (lesson.status === 'Scheduled') {
+                        <button
+                            type="button"
+                            class="dm-button dm-button--primary"
+                            [disabled]="isProcessing(lesson.lessonId)"
+                            (click)="startCheckIn(lesson)">
+                            @if (isProcessing(lesson.lessonId)) {
+                                Processando...
+                            } @else {
+                                Iniciar check-in
+                            }
+                        </button>
+
+                        <app-destructive-action
+    [label]="isProcessing(lesson.lessonId) ? 'Cancelando...' : 'Cancelar aula'"
+    [disabled]="isProcessing(lesson.lessonId)"
+    (triggered)="cancelLesson(lesson)">
+</app-destructive-action>
+
+                        <button
+    type="button"
+    class="lesson-attendance-action"
+    [disabled]="isProcessing(lesson.lessonId)"
+    (click)="markAsNotAttended(lesson)">
+    <fa-icon
+        [icon]="faUserXmark"
+        aria-hidden="true">
+    </fa-icon>
+
+    <span>
+        {{ isProcessing(lesson.lessonId) ? 'Registrando...' : 'Não compareceu' }}
+    </span>
+</button>
+                    }
+                    @if (lesson.status === 'CheckIn') {
+                    @if (checkInFor(lesson.lessonId); as checkIn) {
+                    <div class="check-in-panel">
+                        <span class="check-in-panel__label">
+                            Código de check-in
+                        </span>
+
+                        <strong class="check-in-panel__token">
+                            {{ checkIn.token }}
+                        </strong>
+
+                        <span class="check-in-panel__expiration">
+                            Válido até
+                            {{ formatExpiration(checkIn.expiresAt) }}
+                        </span>
+
+                        @if (checkIn.qrCodeDataUrl) {
+    <div class="check-in-panel__qr">
+        <img
+            [src]="checkIn.qrCodeDataUrl"
+            alt="QR Code para check-in da aula" />
+
+        <p>
+            Peça ao aluno para escanear este QR Code.
+        </p>
+    </div>
+}
+<div class="check-in-panel__actions">
+                            <button type="button" class="dm-button dm-button--secondary"
+                                (click)="copyCheckInToken(checkIn.token)">
+                                Copiar código
+                            </button>
+
+                            <button type="button" class="dm-button dm-button--ghost"
+                                [disabled]="isProcessing(lesson.lessonId)" (click)="startCheckIn(lesson)">
+                                Gerar novo código
+                            </button>
+                        </div>
+                    </div>
+                    } @else {
+                    <div class="check-in-recovery">
+                        <p>
+                            O check-in já foi iniciado.
+                            Gere um novo código para continuar.
+                        </p>
+
+                        <button type="button" class="dm-button dm-button--primary"
+                            [disabled]="isProcessing(lesson.lessonId)" (click)="startCheckIn(lesson)">
+                            Gerar novo código
+                        </button>
+                    </div>
+                    }
+                    }
+
+                    @if (lesson.status === 'InProgress') {
+                    <button type="button" class="dm-button dm-button--primary"
+                        [disabled]="isProcessing(lesson.lessonId)" (click)="completeLesson(lesson)">
+                        @if (isProcessing(lesson.lessonId)) {
+                        Concluindo...
+                        } @else {
+                        Concluir aula
+                        }
+                    </button>
+                    }
+                </div>
+            </app-lesson-card>
+            }
+        </div>
+        }
+    </main>
+</div>

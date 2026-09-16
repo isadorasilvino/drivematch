@@ -1,0 +1,41 @@
+.destructive-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dm-space-2);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--dm-danger);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+}
+
+.destructive-action:hover:not(:disabled) {
+    opacity: 0.8;
+}
+
+.destructive-action:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.destructive-action:focus-visible {
+    outline: 2px solid var(--dm-danger);
+    outline-offset: 3px;
+    border-radius: var(--dm-radius-sm);
+}
+
+.destructive-action:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.destructive-action__icon {
+    flex: 0 0 auto;
+    width: 1rem;
+    font-size: 0.875rem;
+}

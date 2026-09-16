@@ -35,6 +35,13 @@ import { Router } from '@angular/router';
 
                     <button
                         type="button"
+                        class="dm-button dm-button--secondary"
+                        (click)="viewLessons()">
+                        Minhas aulas
+                    </button>
+
+                    <button
+                        type="button"
                         class="dm-button dm-button--ghost"
                         (click)="editProfile()">
                         Editar perfil
@@ -101,6 +108,10 @@ export class StudentHomeComponent {
 
     viewRequests(): void {
         void this.router.navigate(['/student/lesson-requests']);
+    }
+
+    viewLessons(): void {
+        void this.router.navigate(['/student/lessons']);
     }
 
     editProfile(): void {

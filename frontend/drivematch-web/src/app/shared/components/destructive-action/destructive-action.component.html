@@ -1,0 +1,14 @@
+<button
+    type="button"
+    class="destructive-action"
+    [disabled]="disabled()"
+    (click)="trigger()">
+
+    <fa-icon
+        class="destructive-action__icon"
+        [icon]="faTrashCan"
+        aria-hidden="true">
+    </fa-icon>
+
+    <span>{{ label() }}</span>
+</button>

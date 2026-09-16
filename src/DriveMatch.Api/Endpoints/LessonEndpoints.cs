@@ -1,10 +1,12 @@
-﻿using DriveMatch.Api.Extensions;
+using DriveMatch.Api.Extensions;
 using DriveMatch.Application.Features.Lessons;
 using DriveMatch.Application.Features.Lessons.Cancel;
 using DriveMatch.Application.Features.Lessons.Complete;
 using DriveMatch.Application.Features.Lessons.ConfirmCheckIn;
 using DriveMatch.Application.Features.Lessons.MarkAsNotAttended;
 using DriveMatch.Application.Features.Lessons.StartCheckIn;
+using DriveMatch.Application.Features.Lessons.GetMine;
+using DriveMatch.Application.Features.Lessons.GetInstructorLessons;
 using DriveMatch.Domain.Exceptions;
 using System.Security.Claims;
 
@@ -33,6 +35,18 @@ public static class LessonEndpoints
         var group = endpoints
             .MapGroup("/api/lessons")
             .WithTags("Lessons");
+
+        group.MapGet("/student", GetMineAsync)
+            .WithName("GetMineLessons")
+            .Produces<LessonListResult>(StatusCodes.Status200OK)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Student"));
+
+        group.MapGet("/instructor", GetInstructorLessonsAsync)
+            .WithName("GetInstructorLessons")
+            .Produces<LessonListResult>(StatusCodes.Status200OK)
+            .RequireAuthorization(policy =>
+                policy.RequireRole("Instructor"));
 
         group.MapPatch("/{lessonId:guid}/check-in/start", StartCheckInAsync)
             .WithName("StartLessonCheckIn")
@@ -68,7 +82,7 @@ public static class LessonEndpoints
             .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound)
             .RequireAuthorization(policy =>
-                policy.RequireRole("Instructor"));
+                policy.RequireRole("Student", "Instructor"));
 
         group.MapPatch("/{lessonId:guid}/not-attended", MarkAsNotAttendedAsync)
             .WithName("MarkLessonAsNotAttended")
@@ -114,6 +128,34 @@ public static class LessonEndpoints
         {
             return Results.BadRequest(new { error = exception.Message });
         }
+    }
+
+    private static async Task<IResult> GetMineAsync(
+        ClaimsPrincipal user,
+        GetMineLessonsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var userId = user.GetUserId();
+
+        var result = await handler.HandleAsync(
+            new GetMineLessonsQuery(userId),
+            cancellationToken);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetInstructorLessonsAsync(
+        ClaimsPrincipal user,
+        GetInstructorLessonsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var userId = user.GetUserId();
+
+        var result = await handler.HandleAsync(
+            new GetInstructorLessonsQuery(userId),
+            cancellationToken);
+
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> ConfirmCheckInAsync(

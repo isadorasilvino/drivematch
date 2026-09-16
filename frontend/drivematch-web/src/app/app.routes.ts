@@ -15,7 +15,6 @@ import { InstructorSearchComponent } from './features/student/instructors/instru
 import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
 import { InstructorAvailabilityComponent } from './features/student/instructor-availability/instructor-availability.component';
 
-
 import {
   StudentLessonRequestsComponent,
 } from './features/student/lesson-requests/lesson-requests.component';
@@ -24,6 +23,15 @@ import {
   InstructorLessonRequestsComponent,
 } from './features/instructor/lesson-requests/lesson-requests.component';
 
+import {
+  StudentLessonsComponent,
+} from './features/student/lessons/lessons.component';
+
+import {
+  InstructorLessonsComponent,
+} from './features/instructor/lessons/lessons.component';
+
+import { LessonCheckInComponent } from './features/student/lesson-check-in/lesson-check-in.component';
 export const routes: Routes = [
   {
     path: 'login',
@@ -94,7 +102,6 @@ export const routes: Routes = [
       studentProfileGuard,
     ],
   },
-
   {
     path: 'student/lesson-requests',
     component: StudentLessonRequestsComponent,
@@ -104,7 +111,6 @@ export const routes: Routes = [
       studentProfileGuard,
     ],
   },
-
   {
     path: 'instructor/lesson-requests',
     component: InstructorLessonRequestsComponent,
@@ -114,7 +120,33 @@ export const routes: Routes = [
       instructorProfileGuard,
     ],
   },
-
+  {
+    path: 'student/lessons/check-in',
+    component: LessonCheckInComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+      studentProfileGuard,
+    ],
+  },
+  {
+    path: 'student/lessons',
+    component: StudentLessonsComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Student']),
+      studentProfileGuard,
+    ],
+  },
+  {
+    path: 'instructor/lessons',
+    component: InstructorLessonsComponent,
+    canActivate: [
+      authGuard,
+      roleGuard(['Instructor']),
+      instructorProfileGuard,
+    ],
+  },
   {
     path: '',
     redirectTo: 'login',

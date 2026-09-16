@@ -1,0 +1,145 @@
+<div class="lessons-page">
+    <header class="lessons-header">
+        <div class="lessons-header__content">
+            <button
+                type="button"
+                class="dm-button dm-button--ghost"
+                (click)="goHome()">
+                ← Voltar
+            </button>
+
+            <span class="page-eyebrow">Minhas aulas</span>
+
+            <h1>Aulas agendadas</h1>
+
+            <p>
+                Acompanhe suas aulas e o andamento de cada encontro.
+            </p>
+        </div>
+    </header>
+
+    <main class="lessons-content">
+        @if (isLoading()) {
+            <section class="lessons-state">
+                <p>Carregando aulas...</p>
+            </section>
+        } @else if (errorMessage()) {
+            <section class="dm-card lessons-state">
+                <h2>Não foi possível carregar</h2>
+                <p>{{ errorMessage() }}</p>
+
+                <button
+                    type="button"
+                    class="dm-button dm-button--secondary"
+                    (click)="loadLessons()">
+                    Tentar novamente
+                </button>
+            </section>
+        } @else if (lessons().length === 0) {
+            <section class="dm-card lessons-state">
+                <h2>Você ainda não possui aulas agendadas</h2>
+
+                <p>
+                    Encontre um instrutor e solicite seu primeiro horário.
+                </p>
+
+                <button
+                    type="button"
+                    class="dm-button dm-button--primary"
+                    (click)="findInstructors()">
+                    Encontrar instrutores
+                </button>
+            </section>
+        } @else {
+            @if (actionErrorMessage()) {
+                <section class="dm-card action-error">
+                    <p>{{ actionErrorMessage() }}</p>
+                </section>
+            }
+
+            <div class="lessons-list">
+                @for (lesson of lessons(); track lesson.lessonId) {
+                    <app-lesson-card
+                        [lesson]="lesson"
+                        personLabel="Instrutor"
+                        [personName]="lesson.instructorName">
+
+                        @if (lesson.status === 'Scheduled') {
+                            <div class="lesson-actions">
+                                <app-destructive-action
+    [label]="isProcessing(lesson.lessonId) ? 'Cancelando...' : 'Cancelar aula'"
+    [disabled]="isProcessing(lesson.lessonId)"
+    (triggered)="cancelLesson(lesson)">
+</app-destructive-action>
+                            </div>
+                        }
+                        @if (lesson.status === 'CheckIn') {
+                            <div class="check-in-confirmation">
+                                <div>
+                                    <strong>Check-in disponível</strong>
+
+                                    <p>
+                                        Informe o código exibido pelo instrutor
+                                        para confirmar sua presença.
+                                    </p>
+                                </div>
+
+                                <div class="check-in-confirmation__form">
+                                    <label
+                                        class="dm-label"
+                                        [for]="'check-in-' + lesson.lessonId">
+                                        Código de check-in
+                                    </label>
+
+                                    <input
+                                        #checkInInput
+                                        class="dm-input check-in-confirmation__input"
+                                        type="text"
+                                        autocomplete="off"
+                                        spellcheck="false"
+                                        [id]="'check-in-' + lesson.lessonId"
+                                        [value]="checkInToken(lesson.lessonId)"
+                                        (input)="updateCheckInToken(
+                                            lesson.lessonId,
+                                            checkInInput.value
+                                        )"
+                                        placeholder="Digite ou cole o código" />
+
+                                    <button
+                                        type="button"
+                                        class="dm-button dm-button--primary"
+                                        [disabled]="isProcessing(lesson.lessonId)"
+                                        (click)="confirmCheckIn(lesson)">
+                                        @if (isProcessing(lesson.lessonId)) {
+                                            Confirmando...
+                                        } @else {
+                                            Confirmar presença
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                        @if (lesson.status === 'InProgress') {
+                            <div class="lesson-progress">
+                                <strong>Aula em andamento</strong>
+                                <p>
+                                    Seu check-in foi confirmado com sucesso.
+                                </p>
+                            </div>
+                        }
+
+                        @if (lesson.status === 'Completed') {
+                            <div class="lesson-completed">
+                                <strong>Aula concluída</strong>
+                                <p>
+                                    Esta aula foi finalizada pelo instrutor.
+                                </p>
+                            </div>
+                        }
+                    </app-lesson-card>
+                }
+            </div>
+        }
+    </main>
+</div>

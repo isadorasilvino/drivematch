@@ -1,7 +1,10 @@
 <div class="requests-page">
     <header class="requests-header">
         <div class="requests-header__content">
-            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
+            <button
+                type="button"
+                class="dm-button dm-button--ghost"
+                (click)="goHome()">
                 ← Voltar
             </button>
 
@@ -17,37 +20,64 @@
 
     <main class="requests-content">
         @if (isLoading()) {
-        <section class="requests-state">
-            <p>Carregando solicitações...</p>
-        </section>
+            <section class="requests-state">
+                <p>Carregando solicitações...</p>
+            </section>
         } @else if (errorMessage()) {
-        <section class="dm-card requests-state">
-            <h2>Não foi possível carregar</h2>
-            <p>{{ errorMessage() }}</p>
+            <section class="dm-card requests-state">
+                <h2>Não foi possível carregar</h2>
+                <p>{{ errorMessage() }}</p>
 
-            <button type="button" class="dm-button dm-button--secondary" (click)="loadRequests()">
-                Tentar novamente
-            </button>
-        </section>
+                <button
+                    type="button"
+                    class="dm-button dm-button--secondary"
+                    (click)="loadRequests()">
+                    Tentar novamente
+                </button>
+            </section>
         } @else if (requests().length === 0) {
-        <section class="dm-card requests-state">
-            <h2>Você ainda não solicitou nenhuma aula</h2>
+            <section class="dm-card requests-state">
+                <h2>Você ainda não solicitou nenhuma aula</h2>
 
-            <p>
-                Encontre um instrutor e escolha um horário para começar.
-            </p>
+                <p>
+                    Encontre um instrutor e escolha um horário para começar.
+                </p>
 
-            <button type="button" class="dm-button dm-button--primary" (click)="findInstructors()">
-                Encontrar instrutores
-            </button>
-        </section>
+                <button
+                    type="button"
+                    class="dm-button dm-button--primary"
+                    (click)="findInstructors()">
+                    Encontrar instrutores
+                </button>
+            </section>
         } @else {
-        <div class="requests-list">
-            @for (request of requests(); track request.lessonRequestId) {
-            <app-lesson-request-card [request]="request" personLabel="Instrutor" [personName]="request.instructorName">
-            </app-lesson-request-card>
+            @if (actionErrorMessage()) {
+                <div
+                    class="dm-alert dm-alert--danger"
+                    role="alert">
+                    <p>{{ actionErrorMessage() }}</p>
+                </div>
             }
-        </div>
+
+            <div class="requests-list">
+                @for (request of requests(); track request.lessonRequestId) {
+                    <app-lesson-request-card
+                        [request]="request"
+                        personLabel="Instrutor"
+                        [personName]="request.instructorName">
+
+                        @if (request.status === 'Pending') {
+                            <div class="request-actions">
+                                <app-destructive-action
+    [label]="isProcessing(request.lessonRequestId) ? 'Cancelando...' : 'Cancelar solicitação'"
+    [disabled]="isProcessing(request.lessonRequestId)"
+    (triggered)="cancelRequest(request)">
+</app-destructive-action>
+                            </div>
+                        }
+                    </app-lesson-request-card>
+                }
+            </div>
         }
     </main>
 </div>

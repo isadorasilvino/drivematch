@@ -1,4 +1,4 @@
-﻿using DriveMatch.Application.Abstractions.Persistence;
+using DriveMatch.Application.Abstractions.Persistence;
 using DriveMatch.Application.Abstractions.Persistence.Models;
 using DriveMatch.Application.Features.LessonRequests;
 using DriveMatch.Application.Features.LessonRequests.Accept;
@@ -480,6 +480,26 @@ public class AcceptLessonRequestHandlerTests
             return Task.FromResult(HasConflict);
         }
 
+
+        public Task<IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem>> GetByStudentUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem> result =
+                Array.Empty<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem>();
+
+            return Task.FromResult(result);
+        }
+
+        public Task<IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem>> GetByInstructorUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyCollection<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem> result =
+                Array.Empty<DriveMatch.Application.Abstractions.Persistence.Models.LessonListItem>();
+
+            return Task.FromResult(result);
+        }
         public Task AddAsync(
             Lesson lesson,
             CancellationToken cancellationToken = default)

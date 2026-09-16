@@ -24,4 +24,12 @@ public interface ILessonRepository
         Guid instructorProfileId,
         DateOnly scheduledDate,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<LessonListItem>> GetByStudentUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<LessonListItem>> GetByInstructorUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default);
 }

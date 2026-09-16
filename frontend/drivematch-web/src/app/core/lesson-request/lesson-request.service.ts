@@ -99,6 +99,14 @@ export class LessonRequestService {
         );
     }
 
+    cancel(
+        lessonRequestId: string,
+    ): Observable<RejectLessonRequestResponse> {
+        return this.http.patch<RejectLessonRequestResponse>(
+            `${this.apiUrl}/${lessonRequestId}/request-cancel`,
+            {},
+        );
+    }
     reject(
         lessonRequestId: string,
     ): Observable<RejectLessonRequestResponse> {

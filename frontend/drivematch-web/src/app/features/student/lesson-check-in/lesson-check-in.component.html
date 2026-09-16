@@ -1,0 +1,116 @@
+<main class="check-in-page">
+    <header class="check-in-header">
+        <div class="check-in-header__content">
+            <button
+                type="button"
+                class="dm-button dm-button--ghost"
+                (click)="goToLessons()">
+                Voltar
+            </button>
+
+            <span class="page-eyebrow">
+                PRESENÇA
+            </span>
+
+            <h1>Check-in da aula</h1>
+
+            <p>
+                Confirme sua presença para iniciar a aula.
+            </p>
+        </div>
+    </header>
+
+    <section class="check-in-content">
+        <div class="dm-card check-in-card">
+            @if (state() === 'invalid') {
+                <div class="check-in-state">
+                    <div class="check-in-state__icon">
+                        !
+                    </div>
+
+                    <h2>QR Code inválido</h2>
+
+                    <p>
+                        {{ errorMessage() }}
+                    </p>
+
+                    <button
+                        type="button"
+                        class="dm-button dm-button--secondary"
+                        (click)="goToLessons()">
+                        Ir para minhas aulas
+                    </button>
+                </div>
+            }
+
+            @if (
+                state() === 'ready' ||
+                state() === 'processing'
+            ) {
+                <div class="check-in-state">
+                    <div class="check-in-state__icon check-in-state__icon--ready">
+                        ✓
+                    </div>
+
+                    <h2>Confirmar presença</h2>
+
+                    <p>
+                        O QR Code da sua aula foi identificado.
+                        Confirme sua presença para que a aula
+                        seja iniciada.
+                    </p>
+
+                    @if (errorMessage()) {
+                        <div
+                            class="check-in-error"
+                            role="alert">
+                            {{ errorMessage() }}
+                        </div>
+                    }
+
+                    <button
+                        type="button"
+                        class="dm-button dm-button--primary dm-button--full"
+                        [disabled]="state() === 'processing'"
+                        (click)="confirmCheckIn()">
+                        @if (state() === 'processing') {
+                            Confirmando...
+                        } @else {
+                            Confirmar presença
+                        }
+                    </button>
+
+                    <button
+                        type="button"
+                        class="dm-button dm-button--ghost dm-button--full"
+                        [disabled]="state() === 'processing'"
+                        (click)="goToLessons()">
+                        Agora não
+                    </button>
+                </div>
+            }
+
+            @if (state() === 'success') {
+                <div class="check-in-state">
+                    <div class="check-in-state__icon check-in-state__icon--success">
+                        ✓
+                    </div>
+
+                    <h2>Presença confirmada</h2>
+
+                    <p>
+                        Seu check-in foi realizado com sucesso.
+                        A aula está em andamento.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="dm-button dm-button--primary dm-button--full"
+                        (click)="goToLessons()">
+                        Ver minha aula
+                    </button>
+                </div>
+            }
+        </div>
+    </section>
+</main>

@@ -57,7 +57,7 @@ export class InstructorLessonRequestsComponent implements OnInit {
                     this.requests.set([]);
                     this.isLoading.set(false);
                     this.errorMessage.set(
-                        'Não foi possível carregar as solicitações recebidas.',
+                        'N├úo foi poss├¡vel carregar as solicita├º├Áes recebidas.',
                     );
                 },
             });
@@ -91,7 +91,7 @@ export class InstructorLessonRequestsComponent implements OnInit {
                     this.errorMessage.set(
                         this.getActionError(
                             error,
-                            'Não foi possível aceitar a solicitação.',
+                            'N├úo foi poss├¡vel aceitar a solicita├º├úo.',
                         ),
                     );
                 },
@@ -126,7 +126,7 @@ export class InstructorLessonRequestsComponent implements OnInit {
                     this.errorMessage.set(
                         this.getActionError(
                             error,
-                            'Não foi possível recusar a solicitação.',
+                            'N├úo foi poss├¡vel recusar a solicita├º├úo.',
                         ),
                     );
                 },
