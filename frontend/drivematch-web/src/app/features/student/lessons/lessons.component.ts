@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { DestructiveActionComponent } from '../../../shared/components/destructive-action/destructive-action.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -22,6 +23,7 @@ import {
     selector: 'app-student-lessons',
     standalone: true,
     imports: [
+        PageLayoutComponent,
         FormsModule,
         LessonCardComponent,
         DestructiveActionComponent,

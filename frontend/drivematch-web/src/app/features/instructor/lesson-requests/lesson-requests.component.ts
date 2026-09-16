@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -21,6 +22,7 @@ import {
     selector: 'app-instructor-lesson-requests',
     standalone: true,
     imports: [
+        PageLayoutComponent,
         CommonModule,
         LessonRequestCardComponent,
     ],

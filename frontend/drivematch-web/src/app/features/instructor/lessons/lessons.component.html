@@ -1,22 +1,9 @@
-<div class="lessons-page">
-    <header class="lessons-header">
-        <div class="lessons-header__content">
-            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
-                ← Voltar
-            </button>
+<app-page-layout
+    eyebrow="Agenda"
+    title="Minhas aulas"
+    description="Acompanhe as aulas confirmadas com seus alunos.">
 
-            <span class="page-eyebrow">Agenda</span>
-
-            <h1>Minhas aulas</h1>
-
-            <p>
-                Acompanhe as aulas confirmadas com seus alunos.
-            </p>
-        </div>
-    </header>
-
-    <main class="lessons-content">
-        @if (isLoading()) {
+@if (isLoading()) {
         <section class="lessons-state">
             <p>Carregando aulas...</p>
         </section>
@@ -153,5 +140,5 @@
             }
         </div>
         }
-    </main>
-</div>
+
+</app-page-layout>

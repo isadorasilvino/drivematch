@@ -1,6 +1,7 @@
 import { faUserXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DestructiveActionComponent } from '../../../shared/components/destructive-action/destructive-action.component';
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
     Component,
@@ -31,7 +32,12 @@ interface ActiveCheckIn {
 @Component({
     selector: 'app-instructor-lessons',
     standalone: true,
-    imports: [LessonCardComponent, DestructiveActionComponent, FontAwesomeModule],
+    imports: [
+        LessonCardComponent,
+        DestructiveActionComponent,
+        FontAwesomeModule,
+        PageLayoutComponent,
+    ],
     templateUrl: './lessons.component.html',
     styleUrl: './lessons.component.scss',
 })

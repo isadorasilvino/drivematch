@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -28,7 +29,8 @@ interface StateOption {
   selector: 'app-instructor-search',
   standalone: true,
   imports: [
-    CommonModule,
+    
+    PageLayoutComponent,CommonModule,
     FormsModule,
   ],
   templateUrl: './instructor-search.component.html',

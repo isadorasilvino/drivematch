@@ -1,17 +1,7 @@
-<div class="availability-page">
-    <header class="availability-header">
-        <div>
-            <span class="availability-header__eyebrow">
-                Agenda
-            </span>
-
-            <h1>Minha disponibilidade</h1>
-
-            <p>
-                Configure os dias e horários em que você está disponível para dar aulas.
-            </p>
-        </div>
-    </header>
+<app-page-layout
+    eyebrow="Agenda"
+    title="Minha disponibilidade"
+    description="Configure os dias e horários em que você está disponível para dar aulas.">
 
     @if (errorMessage) {
     <div class="feedback feedback--error">
@@ -194,4 +184,4 @@
         </div>
         }
     </section>
-</div>
+</app-page-layout>

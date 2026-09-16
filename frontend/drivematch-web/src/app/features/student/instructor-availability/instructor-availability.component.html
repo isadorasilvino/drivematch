@@ -1,25 +1,15 @@
-<div class="availability-page">
-    <header class="page-header">
-        <div class="page-header__content">
-            <button type="button" class="dm-button dm-button--ghost back-button" (click)="goBack()">
-                ← Voltar aos instrutores
-            </button>
+<app-page-layout
+    eyebrow="Agendar aula"
+    title="Escolha seu horário"
+    description="Consulte a agenda do instrutor e selecione o melhor horário para sua aula.">
 
-            <span class="page-eyebrow">
-                Agendar aula
-            </span>
-
-            <h1>Escolha seu horário</h1>
-
-            <p>
-                Consulte a agenda do instrutor e selecione o melhor
-                horário para sua aula.
-            </p>
-        </div>
-    </header>
-
-    <main class="availability-content">
-        <section class="dm-card date-card">
+<button
+    type="button"
+    class="dm-button dm-button--ghost back-button"
+    (click)="goBack()">
+    ← Voltar aos instrutores
+</button>
+<section class="dm-card date-card">
             <div class="date-card__heading">
                 <div>
                     <h2>Quando você quer fazer a aula?</h2>
@@ -200,5 +190,5 @@
             }
         </section>
         }
-    </main>
-</div>
+
+</app-page-layout>

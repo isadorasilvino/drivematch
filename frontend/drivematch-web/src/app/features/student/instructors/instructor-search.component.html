@@ -1,38 +1,10 @@
-<div class="search-page">
-  <header class="search-header">
-    <div class="search-header__content">
-      <button
-        type="button"
-        class="back-button"
-        (click)="goBack()">
-        ← Voltar
-      </button>
+<app-page-layout
+  eyebrow="Encontrar instrutores"
+  title="Encontre alguém compatível com você"
+  description="Ajuste os filtros e compare instrutores disponíveis na sua região.">
 
-      <div>
-        <span class="search-eyebrow">
-          Encontrar instrutores
-        </span>
+  <div class="search-content">
 
-        <h1>
-          Encontre alguém compatível com você
-        </h1>
-
-        <p>
-          Ajuste os filtros e compare instrutores disponíveis
-          na sua região.
-        </p>
-      </div>
-
-      <button
-        type="button"
-        class="dm-button"
-        (click)="editProfile()">
-        Editar perfil
-      </button>
-    </div>
-  </header>
-
-  <main class="search-content">
     <section class="filters-card">
       @if (isLoadingProfile()) {
         <div class="loading-state">
@@ -270,5 +242,7 @@
         </div>
       </section>
     }
-  </main>
-</div>
+  
+  </div>
+
+</app-page-layout>

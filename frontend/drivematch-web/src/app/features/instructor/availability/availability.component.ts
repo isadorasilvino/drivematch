@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -24,6 +25,7 @@ interface DayOption {
 @Component({
   selector: 'app-availability',
   imports: [
+    PageLayoutComponent,
     CommonModule,
     FormsModule,
   ],

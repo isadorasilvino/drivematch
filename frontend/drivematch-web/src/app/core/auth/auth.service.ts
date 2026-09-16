@@ -46,6 +46,9 @@ export class AuthService {
       );
   }
 
+  logout(): void {
+    this.authStorage.clearSession();
+  }
   register(request: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(
       `${API_BASE_URL}/api/users/`,

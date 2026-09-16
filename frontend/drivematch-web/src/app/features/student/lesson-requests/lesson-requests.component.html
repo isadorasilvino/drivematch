@@ -1,25 +1,9 @@
-<div class="requests-page">
-    <header class="requests-header">
-        <div class="requests-header__content">
-            <button
-                type="button"
-                class="dm-button dm-button--ghost"
-                (click)="goHome()">
-                ← Voltar
-            </button>
+<app-page-layout
+    eyebrow="Minhas aulas"
+    title="Minhas solicitações"
+    description="Acompanhe as solicitações enviadas aos seus instrutores.">
 
-            <span class="page-eyebrow">Minhas aulas</span>
-
-            <h1>Minhas solicitações</h1>
-
-            <p>
-                Acompanhe as solicitações enviadas aos seus instrutores.
-            </p>
-        </div>
-    </header>
-
-    <main class="requests-content">
-        @if (isLoading()) {
+@if (isLoading()) {
             <section class="requests-state">
                 <p>Carregando solicitações...</p>
             </section>
@@ -79,5 +63,5 @@
                 }
             </div>
         }
-    </main>
-</div>
+
+</app-page-layout>

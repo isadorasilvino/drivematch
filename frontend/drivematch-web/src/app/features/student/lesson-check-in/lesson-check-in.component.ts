@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
     Component,
@@ -25,6 +26,7 @@ type CheckInPageState =
 @Component({
     selector: 'app-lesson-check-in',
     standalone: true,
+    imports: [PageLayoutComponent],
     templateUrl: './lesson-check-in.component.html',
     styleUrl: './lesson-check-in.component.scss',
 })

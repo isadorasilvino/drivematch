@@ -5,8 +5,7 @@
 
 .lessons-header {
     padding: var(--dm-space-8) var(--dm-space-5) var(--dm-space-6);
-    background: var(--dm-surface);
-    border-bottom: 1px solid var(--dm-border);
+    background: var(--dm-background);
 }
 
 .lessons-header__content,
@@ -29,7 +28,6 @@
 
     .page-eyebrow {
         display: block;
-        margin-top: var(--dm-space-5);
         color: var(--dm-primary);
         font-size: 0.75rem;
         font-weight: 700;
@@ -69,7 +67,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--dm-space-3);
-    margin-top: var(--dm-space-5);
 }
 
 .check-in-panel,
@@ -110,7 +107,7 @@
 .check-in-recovery {
     border: 1px solid var(--dm-border);
     border-radius: var(--dm-radius-md);
-    background: var(--dm-surface);
+    background: var(--dm-background);
 }
 
 .check-in-recovery p,
@@ -138,7 +135,7 @@
     padding: var(--dm-space-4);
     border: 1px solid var(--dm-border);
     border-radius: var(--dm-radius-md);
-    background: var(--dm-surface);
+    background: var(--dm-background);
 
     img {
         display: block;

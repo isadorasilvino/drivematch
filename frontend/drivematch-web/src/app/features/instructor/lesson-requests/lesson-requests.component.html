@@ -1,23 +1,9 @@
-<div class="requests-page">
-    <header class="requests-header">
-        <div class="requests-header__content">
-            <button type="button" class="dm-button dm-button--ghost" (click)="goHome()">
-                ← Voltar
-            </button>
+<app-page-layout
+    eyebrow="Agenda"
+    title="Solicitações recebidas"
+    description="Analise os pedidos dos alunos e confirme os horários que você pode atender.">
 
-            <span class="page-eyebrow">Agenda</span>
-
-            <h1>Solicitações recebidas</h1>
-
-            <p>
-                Analise os pedidos dos alunos e confirme os horários
-                que você pode atender.
-            </p>
-        </div>
-    </header>
-
-    <main class="requests-content">
-        @if (errorMessage()) {
+@if (errorMessage()) {
         <div class="action-error" role="alert">
             {{ errorMessage() }}
         </div>
@@ -65,5 +51,5 @@
             }
         </div>
         }
-    </main>
-</div>
+
+</app-page-layout>

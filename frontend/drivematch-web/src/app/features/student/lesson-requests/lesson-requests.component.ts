@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { DestructiveActionComponent } from '../../../shared/components/destructive-action/destructive-action.component';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,6 +25,7 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
     selector: 'app-student-lesson-requests',
     standalone: true,
     imports: [
+        PageLayoutComponent,
         FontAwesomeModule,
         CommonModule,
         LessonRequestCardComponent,

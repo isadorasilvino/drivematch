@@ -1,3 +1,4 @@
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -25,6 +26,7 @@ import { LessonRequestService } from '../../../core/lesson-request/lesson-reques
     selector: 'app-instructor-availability',
     standalone: true,
     imports: [
+        PageLayoutComponent,
         CommonModule,
         FormsModule,
     ],

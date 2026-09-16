@@ -1,73 +1,45 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-student-home',
     standalone: true,
     template: `
         <main class="student-home">
-            <section class="dm-card student-home__content">
-                <span class="student-home__eyebrow">
-                    Área do aluno
-                </span>
+            <div class="student-home__container">
+                <header class="student-home__header">
+                    <span class="student-home__eyebrow">
+                        Área do aluno
+                    </span>
 
-                <h1>Pronto para praticar?</h1>
+                    <h1>Pronto para praticar?</h1>
 
-                <p>
-                    Encontre instrutores compatíveis com seu perfil
-                    e acompanhe suas solicitações de aula.
-                </p>
-
-                <div class="student-home__actions">
-                    <button
-                        type="button"
-                        class="dm-button dm-button--primary"
-                        (click)="findInstructors()">
-                        Encontrar instrutores
-                    </button>
-
-                    <button
-                        type="button"
-                        class="dm-button dm-button--secondary"
-                        (click)="viewRequests()">
-                        Minhas solicitações
-                    </button>
-
-                    <button
-                        type="button"
-                        class="dm-button dm-button--secondary"
-                        (click)="viewLessons()">
-                        Minhas aulas
-                    </button>
-
-                    <button
-                        type="button"
-                        class="dm-button dm-button--ghost"
-                        (click)="editProfile()">
-                        Editar perfil
-                    </button>
-                </div>
-            </section>
+                    <p>
+                        Acompanhe suas próximas aulas e encontre
+                        instrutores quando precisar.
+                    </p>
+                </header>
+            </div>
         </main>
     `,
     styles: `
         :host {
             display: block;
             min-height: 100dvh;
-        }
-
-        .student-home {
-            display: grid;
-            min-height: 100dvh;
-            place-items: center;
-            padding: var(--dm-space-5);
             background: var(--dm-background);
         }
 
-        .student-home__content {
+        .student-home {
+            padding: var(--dm-space-8) var(--dm-space-5);
+        }
+
+        .student-home__container {
             width: 100%;
+            max-width: var(--dm-content-max-width);
+            margin: 0 auto;
+        }
+
+        .student-home__header {
             max-width: 42rem;
-            padding: var(--dm-space-8);
         }
 
         .student-home__eyebrow {
@@ -79,9 +51,12 @@ import { Router } from '@angular/router';
         }
 
         h1 {
-            margin: var(--dm-space-3) 0 var(--dm-space-3);
+            margin:
+                var(--dm-space-3)
+                0
+                var(--dm-space-3);
             color: var(--dm-text);
-            font-size: clamp(2rem, 6vw, 3rem);
+            font-size: clamp(2rem, 5vw, 3rem);
             line-height: 1.05;
         }
 
@@ -91,30 +66,13 @@ import { Router } from '@angular/router';
             line-height: 1.6;
         }
 
-        .student-home__actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--dm-space-3);
-            margin-top: var(--dm-space-6);
+        @media (max-width: 40rem) {
+            .student-home {
+                padding:
+                    var(--dm-space-6)
+                    var(--dm-space-4);
+            }
         }
     `,
 })
-export class StudentHomeComponent {
-    private readonly router = inject(Router);
-
-    findInstructors(): void {
-        void this.router.navigate(['/student/instructors']);
-    }
-
-    viewRequests(): void {
-        void this.router.navigate(['/student/lesson-requests']);
-    }
-
-    viewLessons(): void {
-        void this.router.navigate(['/student/lessons']);
-    }
-
-    editProfile(): void {
-        void this.router.navigate(['/student/profile']);
-    }
-}
+export class StudentHomeComponent {}

@@ -1,27 +1,15 @@
-<main class="check-in-page">
-    <header class="check-in-header">
-        <div class="check-in-header__content">
-            <button
-                type="button"
-                class="dm-button dm-button--ghost"
-                (click)="goToLessons()">
-                Voltar
-            </button>
+<app-page-layout
+    eyebrow="Presença"
+    title="Check-in da aula"
+    description="Confirme sua presença para iniciar a aula.">
 
-            <span class="page-eyebrow">
-                PRESENÇA
-            </span>
-
-            <h1>Check-in da aula</h1>
-
-            <p>
-                Confirme sua presença para iniciar a aula.
-            </p>
-        </div>
-    </header>
-
-    <section class="check-in-content">
-        <div class="dm-card check-in-card">
+<button
+    type="button"
+    class="dm-button dm-button--ghost"
+    (click)="goToLessons()">
+    ← Voltar
+</button>
+<div class="dm-card check-in-card">
             @if (state() === 'invalid') {
                 <div class="check-in-state">
                     <div class="check-in-state__icon">
@@ -112,5 +100,5 @@
                 </div>
             }
         </div>
-    </section>
-</main>
+
+</app-page-layout>

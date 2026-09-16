@@ -1,41 +1,3 @@
-:host {
-  display: block;
-  min-height: 100dvh;
-}
-
-.search-page {
-  min-height: 100dvh;
-  background: var(--dm-color-background);
-}
-
-.search-header {
-  border-bottom: 1px solid var(--dm-color-border);
-  background: #fff;
-}
-
-.search-header__content {
-  display: grid;
-  max-width: 76rem;
-  margin: 0 auto;
-  gap: 1.5rem;
-  padding: 2rem 1rem;
-
-  h1 {
-    margin: 0.4rem 0 0.6rem;
-    color: var(--dm-color-text);
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-  }
-
-  p {
-    max-width: 42rem;
-    margin: 0;
-    color: var(--dm-color-secondary);
-    line-height: 1.6;
-  }
-}
-
 .search-eyebrow {
   color: var(--dm-color-primary);
   font-size: 0.78rem;
@@ -44,25 +6,10 @@
   text-transform: uppercase;
 }
 
-.back-button {
-  width: fit-content;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--dm-color-secondary);
-  font: inherit;
-  cursor: pointer;
-}
-
 .search-content {
   display: grid;
-  max-width: 76rem;
-  margin: 0 auto;
   gap: 2rem;
-  padding: 1.5rem 1rem 3rem;
-}
-
-.filters-card {
+}.filters-card {
   padding: 1.25rem;
   border: 1px solid var(--dm-color-border);
   border-radius: 1.25rem;
@@ -273,12 +220,6 @@
 }
 
 @media (min-width: 64rem) {
-  .search-header__content {
-    grid-template-columns: auto 1fr auto;
-    align-items: start;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
 
   .search-content {
     padding-top: 2rem;
