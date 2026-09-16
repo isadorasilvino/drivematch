@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using DriveMatch.Api.Endpoints;
 using DriveMatch.Application.DependencyInjection;
 using DriveMatch.Infrastructure.DependencyInjection;
@@ -93,3 +93,5 @@ app.MapReviewEndpoints();
 app.MapAuthEndpoints();
 
 app.Run();
+
+public partial class Program;
