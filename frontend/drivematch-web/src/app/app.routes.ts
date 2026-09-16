@@ -5,140 +5,131 @@ import { instructorProfileGuard } from './core/guards/instructor-profile.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { studentProfileGuard } from './core/guards/student-profile.guard';
 
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-
-import { AvailabilityComponent } from './features/instructor/availability/availability.component';
-import { InstructorHomeComponent } from './features/instructor/instructor-home.component';
-import {
-    InstructorLessonRequestsComponent,
-} from './features/instructor/lesson-requests/lesson-requests.component';
-import {
-    InstructorLessonsComponent,
-} from './features/instructor/lessons/lessons.component';
-import {
-    ProfileComponent as InstructorProfileComponent,
-} from './features/instructor/profile/profile.component';
-
-import {
-    InstructorAvailabilityComponent,
-} from './features/student/instructor-availability/instructor-availability.component';
-import {
-    InstructorSearchComponent,
-} from './features/student/instructors/instructor-search.component';
-import {
-    LessonCheckInComponent,
-} from './features/student/lesson-check-in/lesson-check-in.component';
-import {
-    StudentLessonRequestsComponent,
-} from './features/student/lesson-requests/lesson-requests.component';
-import {
-    StudentLessonsComponent,
-} from './features/student/lessons/lessons.component';
-import { ProfileComponent } from './features/student/profile/profile.component';
-import { StudentHomeComponent } from './features/student/student-home.component';
-
-import {
-    AuthenticatedLayoutComponent,
-} from './shared/layouts/authenticated-layout/authenticated-layout.component';
+import { AuthenticatedLayoutComponent } from './shared/layouts/authenticated-layout/authenticated-layout.component';
 
 export const routes: Routes = [
-    {
-        path: 'login',
-        component: LoginComponent,
-    },
-    {
-        path: 'register',
-        component: RegisterComponent,
-    },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+  },
 
-    {
-        path: 'student',
-        component: AuthenticatedLayoutComponent,
-        canActivate: [
-            authGuard,
-            roleGuard(['Student']),
-        ],
-        children: [
-            {
-                path: '',
-                component: StudentHomeComponent,
-                canActivate: [studentProfileGuard],
-            },
-            {
-                path: 'profile',
-                component: ProfileComponent,
-            },
-            {
-                path: 'instructors',
-                component: InstructorSearchComponent,
-                canActivate: [studentProfileGuard],
-            },
-            {
-                path: 'instructors/:instructorProfileId/availability',
-                component: InstructorAvailabilityComponent,
-                canActivate: [studentProfileGuard],
-            },
-            {
-                path: 'lesson-requests',
-                component: StudentLessonRequestsComponent,
-                canActivate: [studentProfileGuard],
-            },
-            {
-                path: 'lessons/check-in',
-                component: LessonCheckInComponent,
-                canActivate: [studentProfileGuard],
-            },
-            {
-                path: 'lessons',
-                component: StudentLessonsComponent,
-                canActivate: [studentProfileGuard],
-            },
-        ],
-    },
-
-    {
-        path: 'instructor',
-        component: AuthenticatedLayoutComponent,
-        canActivate: [
-            authGuard,
-            roleGuard(['Instructor']),
-        ],
-        children: [
-            {
-                path: '',
-                component: InstructorHomeComponent,
-                canActivate: [instructorProfileGuard],
-            },
-            {
-                path: 'profile',
-                component: InstructorProfileComponent,
-            },
-            {
-                path: 'availability',
-                component: AvailabilityComponent,
-                canActivate: [instructorProfileGuard],
-            },
-            {
-                path: 'lesson-requests',
-                component: InstructorLessonRequestsComponent,
-                canActivate: [instructorProfileGuard],
-            },
-            {
-                path: 'lessons',
-                component: InstructorLessonsComponent,
-                canActivate: [instructorProfileGuard],
-            },
-        ],
-    },
-
-    {
+  {
+    path: 'student',
+    component: AuthenticatedLayoutComponent,
+    canActivate: [authGuard, roleGuard(['Student'])],
+    children: [
+      {
         path: '',
-        redirectTo: 'login',
-        pathMatch: 'full',
-    },
-    {
-        path: '**',
-        redirectTo: 'login',
-    },
+        loadComponent: () =>
+          import('./features/student/student-home.component').then((m) => m.StudentHomeComponent),
+        canActivate: [studentProfileGuard],
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/student/profile/profile.component').then((m) => m.ProfileComponent),
+      },
+      {
+        path: 'instructors',
+        loadComponent: () =>
+          import('./features/student/instructors/instructor-search.component').then(
+            (m) => m.InstructorSearchComponent,
+          ),
+        canActivate: [studentProfileGuard],
+      },
+      {
+        path: 'instructors/:instructorProfileId/availability',
+        loadComponent: () =>
+          import('./features/student/instructor-availability/instructor-availability.component').then(
+            (m) => m.InstructorAvailabilityComponent,
+          ),
+        canActivate: [studentProfileGuard],
+      },
+      {
+        path: 'lesson-requests',
+        loadComponent: () =>
+          import('./features/student/lesson-requests/lesson-requests.component').then(
+            (m) => m.StudentLessonRequestsComponent,
+          ),
+        canActivate: [studentProfileGuard],
+      },
+      {
+        path: 'lessons/check-in',
+        loadComponent: () =>
+          import('./features/student/lesson-check-in/lesson-check-in.component').then(
+            (m) => m.LessonCheckInComponent,
+          ),
+        canActivate: [studentProfileGuard],
+      },
+      {
+        path: 'lessons',
+        loadComponent: () =>
+          import('./features/student/lessons/lessons.component').then(
+            (m) => m.StudentLessonsComponent,
+          ),
+        canActivate: [studentProfileGuard],
+      },
+    ],
+  },
+
+  {
+    path: 'instructor',
+    component: AuthenticatedLayoutComponent,
+    canActivate: [authGuard, roleGuard(['Instructor'])],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/instructor/instructor-home.component').then(
+            (m) => m.InstructorHomeComponent,
+          ),
+        canActivate: [instructorProfileGuard],
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/instructor/profile/profile.component').then((m) => m.ProfileComponent),
+      },
+      {
+        path: 'availability',
+        loadComponent: () =>
+          import('./features/instructor/availability/availability.component').then(
+            (m) => m.AvailabilityComponent,
+          ),
+        canActivate: [instructorProfileGuard],
+      },
+      {
+        path: 'lesson-requests',
+        loadComponent: () =>
+          import('./features/instructor/lesson-requests/lesson-requests.component').then(
+            (m) => m.InstructorLessonRequestsComponent,
+          ),
+        canActivate: [instructorProfileGuard],
+      },
+      {
+        path: 'lessons',
+        loadComponent: () =>
+          import('./features/instructor/lessons/lessons.component').then(
+            (m) => m.InstructorLessonsComponent,
+          ),
+        canActivate: [instructorProfileGuard],
+      },
+    ],
+  },
+
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+  },
 ];
