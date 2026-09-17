@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -13,6 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     CommonModule,
     FormsModule,
     RouterLink,
+    FontAwesomeModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -26,6 +29,10 @@ export class LoginComponent {
 
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly showPassword = signal(false);
+
+  readonly faEye = faEye;
+  readonly faEyeSlash = faEyeSlash;
 
   login(): void {
     this.errorMessage.set(null);
@@ -56,5 +63,9 @@ export class LoginComponent {
         this.errorMessage.set('E-mail ou senha inválidos.');
       },
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword.update((value) => !value);
   }
 }

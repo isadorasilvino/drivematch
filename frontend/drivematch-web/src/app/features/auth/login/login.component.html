@@ -49,8 +49,17 @@
                         Senha
                     </label>
 
-                    <input id="password" class="dm-input" type="password" name="password" [(ngModel)]="password"
-                        autocomplete="current-password" placeholder="Digite sua senha" required />
+                    <div class="password-input">
+                        <input id="password" class="dm-input" [type]="showPassword() ? 'text' : 'password'"
+                            name="password" [(ngModel)]="password" autocomplete="current-password"
+                            placeholder="Digite sua senha" required />
+
+                        <button class="password-toggle" type="button" (click)="togglePasswordVisibility()"
+                            [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+                            [attr.title]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+                            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                    </div>
                 </div>
 
                 @if (errorMessage()) {

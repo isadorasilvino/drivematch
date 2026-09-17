@@ -11,5 +11,6 @@
 @media (max-width: 40rem) {
     .authenticated-layout {
         min-height: calc(100dvh - 4rem);
+        padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
     }
 }

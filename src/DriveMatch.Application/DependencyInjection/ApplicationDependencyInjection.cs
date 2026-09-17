@@ -1,3 +1,4 @@
+using DriveMatch.Application.Features.Availabilities.GetNextAvailableDate;
 using DriveMatch.Application.Features.Instructors.CreateProfile;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
 using DriveMatch.Application.Features.Students.CreateProfile;
@@ -63,6 +64,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetStudentProfileHandler>();
         services.AddScoped<GetMyAvailabilitiesHandler>();
         services.AddScoped<GetAvailableSlotsHandler>();
+        services.AddScoped<GetNextAvailableDateHandler>();
         services.AddScoped<GetMineLessonRequestsHandler>();
         services.AddScoped<GetReceivedLessonRequestsHandler>();
         services.AddScoped<GetMineLessonsHandler>();

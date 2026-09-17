@@ -9,6 +9,10 @@ export interface AvailableSlot {
   endTime: string;
 }
 
+export interface NextAvailableDateResult {
+  date: string | null;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,6 +29,14 @@ export class InstructorAvailabilityService {
     return this.http.get<AvailableSlot[]>(
       `${API_BASE_URL}/api/instructors/${instructorProfileId}/available-slots`,
       { params },
+    );
+  }
+
+  getNextAvailableDate(
+    instructorProfileId: string,
+  ): Observable<NextAvailableDateResult> {
+    return this.http.get<NextAvailableDateResult>(
+      `${API_BASE_URL}/api/instructors/${instructorProfileId}/next-available-date`,
     );
   }
 }

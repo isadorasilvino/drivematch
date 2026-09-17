@@ -166,18 +166,57 @@ form {
 }
 
 .register-link {
-  margin: var(--dm-space-6) 0 0;
-  color: var(--dm-text-secondary);
-  text-align: center;
-  font-size: 0.875rem;
+    margin: var(--dm-space-6) 0 0;
+    color: var(--dm-text-secondary);
+    text-align: center;
+    font-size: 0.875rem;
 
-  a {
-    color: var(--dm-primary);
-    font-weight: 600;
-    text-decoration: none;
+    a {
+        color: var(--dm-primary);
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.password-input {
+    position: relative;
+
+    .dm-input {
+        padding-right: 3rem;
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+    color: var(--dm-text-secondary);
+
+    cursor: pointer;
 
     &:hover {
-      text-decoration: underline;
+        color: var(--dm-primary);
     }
-  }
+
+    &:focus-visible {
+        outline: 2px solid var(--dm-primary);
+        outline-offset: 2px;
+        border-radius: 0.375rem;
+    }
 }

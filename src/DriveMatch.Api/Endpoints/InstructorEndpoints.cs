@@ -1,10 +1,11 @@
-﻿using DriveMatch.Api.Extensions;
+using DriveMatch.Api.Extensions;
 using DriveMatch.Application.Features.Instructors.ChangeStatus;
 using DriveMatch.Application.Features.Instructors.CreateProfile;
 using DriveMatch.Application.Features.Instructors.GetProfile;
 using DriveMatch.Application.Features.Instructors.Search;
 using DriveMatch.Application.Features.Instructors.UpdateProfile;
 using DriveMatch.Application.Features.Availabilities.GetAvailableSlots;
+using DriveMatch.Application.Features.Availabilities.GetNextAvailableDate;
 using DriveMatch.Domain.Enums;
 using System.Security.Claims;
 using ChangeStatusInstructorNotFoundException =
@@ -65,6 +66,11 @@ public static class InstructorEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest);
 
+
+        group.MapGet("/{instructorProfileId:guid}/next-available-date", GetNextAvailableDateAsync)
+            .WithName("GetInstructorNextAvailableDate")
+            .Produces<GetNextAvailableDateResult>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status204NoContent);
         group.MapGet("/profile", GetProfileAsync)
             .WithName("GetInstructorProfile")
             .Produces<GetInstructorProfileResult>(StatusCodes.Status200OK)
@@ -217,6 +223,20 @@ public static class InstructorEndpoints
         return Results.Ok(result);
     }
 
+    private static async Task<IResult> GetNextAvailableDateAsync(
+        Guid instructorProfileId,
+        GetNextAvailableDateHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.HandleAsync(
+            new GetNextAvailableDateQuery(
+                instructorProfileId),
+            cancellationToken);
+
+        return result is null
+            ? Results.NoContent()
+            : Results.Ok(result);
+    }
     private static async Task<IResult> GetAvailableSlotsAsync(
         Guid instructorProfileId,
         DateOnly date,

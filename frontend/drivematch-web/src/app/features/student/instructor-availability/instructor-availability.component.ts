@@ -76,8 +76,47 @@ export class InstructorAvailabilityComponent implements OnInit {
             return;
         }
 
-        this.selectedDate = this.minimumDate;
-        this.loadSlots();
+        this.loadNextAvailableDate();
+    }
+
+    private loadNextAvailableDate(): void {
+        this.isLoading.set(true);
+        this.errorMessage.set(null);
+        this.slots.set([]);
+        this.hasSearched.set(false);
+
+        this.availabilityService
+            .getNextAvailableDate(this.instructorProfileId)
+            .subscribe({
+                next: (result) => {
+                    this.isLoading.set(false);
+
+                    if (!result.date) {
+                        this.selectedDate = this.minimumDate;
+                        this.hasSearched.set(true);
+                        return;
+                    }
+
+                    this.selectedDate = result.date;
+                    this.loadSlots();
+                },
+
+                error: (error: HttpErrorResponse) => {
+                    this.isLoading.set(false);
+                    this.selectedDate = this.minimumDate;
+
+                    if (error.status === 404) {
+                        this.errorMessage.set(
+                            'O perfil deste instrutor não foi encontrado.',
+                        );
+                        return;
+                    }
+
+                    this.errorMessage.set(
+                        'Não foi possível consultar a próxima disponibilidade. Tente novamente.',
+                    );
+                },
+            });
     }
 
     loadSlots(): void {

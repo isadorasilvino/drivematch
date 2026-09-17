@@ -66,7 +66,7 @@ export class AppNavbarComponent {
                     icon: faCalendarDays,
                 },
                 {
-                    label: 'Disponibilidade',
+                    label: 'Agenda',
                     route: '/instructor/availability',
                     icon: faClock,
                 },

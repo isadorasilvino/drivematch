@@ -1,12 +1,7 @@
 <main class="register-page">
     <section class="register-hero">
         <div class="register-hero__content">
-            <img
-                class="brand-mark"
-                src="/brand/drivematch-symbol-dark.png"
-                alt=""
-                aria-hidden="true"
-            />
+            <img class="brand-mark" src="/brand/drivematch-symbol-dark.png" alt="" aria-hidden="true" />
 
             <p class="register-hero__eyebrow">
                 DriveMatch
@@ -26,12 +21,7 @@
         <div class="register-card dm-card">
             <header class="register-header">
                 <div class="mobile-brand">
-                    <img
-                        class="brand-mark"
-                        src="/brand/drivematch-symbol-light.png"
-                        alt=""
-                        aria-hidden="true"
-                    />
+                    <img class="brand-mark" src="/brand/drivematch-symbol-light.png" alt="" aria-hidden="true" />
 
                     <strong>DriveMatch</strong>
                 </div>
@@ -44,12 +34,8 @@
             </header>
 
             <div class="role-selector">
-                <button
-                    type="button"
-                    class="role-card"
-                    [class.role-card--selected]="selectedRole() === 'Student'"
-                    (click)="selectRole('Student')"
-                >
+                <button type="button" class="role-card" [class.role-card--selected]="selectedRole() === 'Student'"
+                    (click)="selectRole('Student')">
                     <span class="role-card__title">
                         Sou aluno
                     </span>
@@ -59,12 +45,8 @@
                     </span>
                 </button>
 
-                <button
-                    type="button"
-                    class="role-card"
-                    [class.role-card--selected]="selectedRole() === 'Instructor'"
-                    (click)="selectRole('Instructor')"
-                >
+                <button type="button" class="role-card" [class.role-card--selected]="selectedRole() === 'Instructor'"
+                    (click)="selectRole('Instructor')">
                     <span class="role-card__title">
                         Sou instrutor
                     </span>
@@ -77,99 +59,67 @@
 
             <form (ngSubmit)="register()">
                 <div class="dm-field">
-                    <label
-                        class="dm-label"
-                        for="name"
-                    >
+                    <label class="dm-label" for="name">
                         Nome
                     </label>
 
-                    <input
-                        id="name"
-                        class="dm-input"
-                        type="text"
-                        name="name"
-                        [(ngModel)]="name"
-                        autocomplete="name"
-                        placeholder="Seu nome"
-                        required
-                    />
+                    <input id="name" class="dm-input" type="text" name="name" [(ngModel)]="name" autocomplete="name"
+                        placeholder="Seu nome" required />
                 </div>
 
                 <div class="dm-field">
-                    <label
-                        class="dm-label"
-                        for="email"
-                    >
+                    <label class="dm-label" for="email">
                         E-mail
                     </label>
 
-                    <input
-                        id="email"
-                        class="dm-input"
-                        type="email"
-                        name="email"
-                        [(ngModel)]="email"
-                        autocomplete="email"
-                        placeholder="seu@email.com"
-                        required
-                    />
+                    <input id="email" class="dm-input" type="email" name="email" [(ngModel)]="email"
+                        autocomplete="email" placeholder="seu@email.com" required />
                 </div>
 
                 <div class="dm-field">
-                    <label
-                        class="dm-label"
-                        for="password"
-                    >
+                    <label class="dm-label" for="password">
                         Senha
                     </label>
 
-                    <input
-                        id="password"
-                        class="dm-input"
-                        type="password"
-                        name="password"
-                        [(ngModel)]="password"
-                        autocomplete="new-password"
-                        placeholder="Crie uma senha"
-                        required
-                    />
+                    <div class="password-input">
+                        <input id="password" class="dm-input" [type]="showPassword() ? 'text' : 'password'"
+                            name="password" [(ngModel)]="password" autocomplete="new-password"
+                            placeholder="Crie uma senha" required />
+
+                        <button class="password-toggle" type="button" (click)="togglePasswordVisibility()"
+                            [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+                            [attr.title]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+                            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="dm-field">
-                    <label
-                        class="dm-label"
-                        for="confirmPassword"
-                    >
+                    <label class="dm-label" for="confirmPassword">
                         Confirmar senha
                     </label>
 
-                    <input
-                        id="confirmPassword"
-                        class="dm-input"
-                        type="password"
-                        name="confirmPassword"
-                        [(ngModel)]="confirmPassword"
-                        autocomplete="new-password"
-                        placeholder="Digite a senha novamente"
-                        required
-                    />
+                    <div class="password-input">
+                        <input id="confirmPassword" class="dm-input"
+                            [type]="showConfirmPassword() ? 'text' : 'password'" name="confirmPassword"
+                            [(ngModel)]="confirmPassword" autocomplete="new-password"
+                            placeholder="Digite a senha novamente" required />
+
+                        <button class="password-toggle" type="button" (click)="toggleConfirmPasswordVisibility()"
+                            [attr.aria-label]="showConfirmPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+                            [attr.title]="showConfirmPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+                            <fa-icon [icon]="showConfirmPassword() ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                    </div>
                 </div>
 
                 @if (errorMessage()) {
-                    <div
-                        class="register-error"
-                        role="alert"
-                    >
-                        {{ errorMessage() }}
-                    </div>
+                <div class="register-error" role="alert">
+                    {{ errorMessage() }}
+                </div>
                 }
 
-                <button
-                    class="dm-button dm-button--primary dm-button--full"
-                    type="submit"
-                    [disabled]="isLoading()"
-                >
+                <button class="dm-button dm-button--primary dm-button--full" type="submit" [disabled]="isLoading()">
                     {{ isLoading() ? 'Criando conta...' : 'Criar conta' }}
                 </button>
             </form>

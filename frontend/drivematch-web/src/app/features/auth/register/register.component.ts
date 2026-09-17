@@ -4,6 +4,8 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import {
   AuthService,
@@ -17,6 +19,7 @@ import {
     CommonModule,
     FormsModule,
     RouterLink,
+    FontAwesomeModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -33,6 +36,19 @@ export class RegisterComponent {
   readonly selectedRole = signal<UserRole | null>(null);
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly showPassword = signal(false);
+  readonly showConfirmPassword = signal(false);
+
+  readonly faEye = faEye;
+  readonly faEyeSlash = faEyeSlash;
+
+  togglePasswordVisibility(): void {
+    this.showPassword.update((value) => !value);
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword.update((value) => !value);
+  }
 
   selectRole(role: UserRole): void {
     this.selectedRole.set(role);
