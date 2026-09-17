@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
+import { API_BASE_URL } from '../services/api.config';
+
 export type LessonStatus =
     | 'Scheduled'
     | 'CheckIn'
@@ -54,7 +56,7 @@ export interface LessonActionResult {
 })
 export class LessonService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = 'http://localhost:8080/api/lessons';
+    private readonly apiUrl = `${API_BASE_URL}/api/lessons`;
 
     getStudentLessons(): Observable<LessonListItem[]> {
         return this.http

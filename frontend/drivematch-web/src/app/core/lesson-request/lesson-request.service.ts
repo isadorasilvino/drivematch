@@ -2,6 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { API_BASE_URL } from '../services/api.config';
+
 export type LessonRequestStatus =
     | 'Pending'
     | 'Accepted'
@@ -67,7 +69,7 @@ export interface RejectLessonRequestResponse {
 })
 export class LessonRequestService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = 'http://localhost:8080/api/lessons';
+    private readonly apiUrl = `${API_BASE_URL}/api/lessons`;
 
     create(
         request: CreateLessonRequestRequest,
