@@ -73,7 +73,8 @@ var app = builder.Build();
 
 app.UseCors("Frontend");
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() ||
+    app.Environment.IsStaging())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
