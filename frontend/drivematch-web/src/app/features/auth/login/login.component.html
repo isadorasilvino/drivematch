@@ -40,8 +40,14 @@
                         E-mail
                     </label>
 
-                    <input id="email" class="dm-input" type="email" name="email" [(ngModel)]="email"
-                        autocomplete="email" placeholder="seu@email.com" required />
+                    <input #emailInput id="email" class="dm-input" type="email" name="email" [(ngModel)]="email"
+                        autocomplete="email" placeholder="seu@email.com" [readonly]="hasRememberedEmail()" required />
+
+                    @if (hasRememberedEmail()) {
+                    <button class="change-account" type="button" (click)="useAnotherAccount()">
+                        Entrar com outra conta
+                    </button>
+                    }
                 </div>
 
                 <div class="dm-field">
