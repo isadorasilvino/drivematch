@@ -3,4 +3,32 @@
 @use './styles/forms';
 @use './styles/buttons';
 @use './styles/cards';
-@use 'styles/selection-cards';
+@use './styles/selection-cards';
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+  min-height: 100dvh;
+}
+
+/*
+ * Evita o zoom automático de navegadores mobile ao focar
+ * campos de formulário com fonte menor que 16px.
+ */
+@media (max-width: 47.999rem) {
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+}
