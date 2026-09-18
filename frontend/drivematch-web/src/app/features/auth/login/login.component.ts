@@ -48,6 +48,18 @@ export class LoginComponent implements AfterViewInit {
   readonly faEyeSlash = faEyeSlash;
 
   constructor() {
+    const session = this.authStorage.getSession();
+
+    if (session) {
+      void this.router.navigate([
+        session.role === 'Student'
+          ? '/student'
+          : '/instructor',
+      ]);
+
+      return;
+    }
+
     const lastEmail = this.authStorage.getLastEmail();
 
     if (lastEmail) {
@@ -89,8 +101,10 @@ export class LoginComponent implements AfterViewInit {
 
         void this.router.navigate(['/instructor']);
       },
+
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
+        this.password = '';
 
         if (error.status === 401) {
           this.errorMessage.set('E-mail ou senha inválidos.');
@@ -111,8 +125,10 @@ export class LoginComponent implements AfterViewInit {
 
   useAnotherAccount(): void {
     this.authStorage.clearLastEmail();
+
     this.email = '';
     this.password = '';
+
     this.errorMessage.set(null);
     this.hasRememberedEmail.set(false);
 
