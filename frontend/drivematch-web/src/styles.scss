@@ -21,10 +21,6 @@ app-root {
   min-height: 100dvh;
 }
 
-/*
- * Evita o zoom automático de navegadores mobile ao focar
- * campos de formulário com fonte menor que 16px.
- */
 @media (max-width: 47.999rem) {
   input,
   select,

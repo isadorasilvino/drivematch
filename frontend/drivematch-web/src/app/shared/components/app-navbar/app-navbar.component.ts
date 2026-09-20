@@ -41,13 +41,13 @@ export class AppNavbarComponent {
 
     protected readonly faRightFromBracket = faRightFromBracket;
 
-    protected readonly session = this.authStorage.getSession();
+    protected readonly session = this.authStorage.session;
 
     protected readonly navigationItems: NavigationItem[] =
         this.buildNavigation();
 
     private buildNavigation(): NavigationItem[] {
-        if (this.session?.role === 'Instructor') {
+        if (this.session()?.role === 'Instructor') {
             return [
                 {
                     label: 'Início',

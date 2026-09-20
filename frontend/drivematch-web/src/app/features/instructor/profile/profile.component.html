@@ -1,11 +1,15 @@
 <main class="profile-page">
     <aside class="profile-hero">
         <div class="profile-hero__content">
-            <img src="/brand/drivematch-symbol-dark.png" alt="" class="brand-mark" />
+            <img src="/brand/drivematch-symbol-dark.png" alt="" class="brand-mark">
 
-            <span class="brand-name">DriveMatch</span>
+            <span class="brand-name">
+                DriveMatch
+            </span>
 
-            <h1>Transforme experiência em confiança.</h1>
+            <h1>
+                Transforme experiência em confiança.
+            </h1>
 
             <p>
                 Apresente seu trabalho, configure suas preferências e conecte-se
@@ -17,15 +21,20 @@
     <section class="profile-content">
         <div class="profile-card">
             <div class="mobile-brand">
-                <img src="/brand/drivematch-symbol-light.png" alt="" class="brand-mark" />
+                <img src="/brand/drivematch-symbol-light.png" alt="" class="brand-mark">
 
-                <span>DriveMatch</span>
+                <span>
+                    DriveMatch
+                </span>
             </div>
 
             @if (isLoading()) {
             <div class="loading-state">
                 <span class="loading-spinner"></span>
-                <p>Carregando seu perfil...</p>
+
+                <p>
+                    Carregando seu perfil...
+                </p>
             </div>
             } @else {
             <header class="profile-header">
@@ -51,10 +60,18 @@
                 </p>
             </header>
 
+            @if (successMessage()) {
+            <div #successMessageElement class="profile-success" role="status" aria-live="polite">
+                {{ successMessage() }}
+            </div>
+            }
+
             <section class="profile-status-card">
                 <div class="profile-status-card__header">
                     <div>
-                        <span class="profile-status-card__label">Status do perfil</span>
+                        <span class="profile-status-card__label">
+                            Status do perfil
+                        </span>
 
                         <span class="profile-status-badge"
                             [class.profile-status-badge--active]="profileStatus() === 'Active'"
@@ -64,9 +81,11 @@
                             @case ('Active') {
                             Ativo
                             }
+
                             @case ('Inactive') {
                             Inativo
                             }
+
                             @default {
                             Rascunho
                             }
@@ -100,22 +119,23 @@
                 @switch (profileStatus()) {
                 @case ('Active') {
                 <p>
-                    Seu perfil está visível para alunos que procuram instrutores na sua
-                    região.
+                    Seu perfil está visível para alunos que procuram
+                    instrutores na sua região.
                 </p>
                 }
 
                 @case ('Inactive') {
                 <p>
-                    Seu perfil está temporariamente oculto das buscas. Você pode reativá-lo
-                    quando quiser.
+                    Seu perfil está temporariamente oculto das buscas.
+                    Você pode reativá-lo quando quiser.
                 </p>
                 }
 
                 @default {
                 <p>
-                    Finalize seu perfil, configure pelo menos uma disponibilidade ativa e
-                    depois publique seu perfil para aparecer nas buscas.
+                    Finalize seu perfil, configure pelo menos uma
+                    disponibilidade ativa e depois publique seu perfil
+                    para aparecer nas buscas.
                 </p>
                 }
                 }
@@ -133,137 +153,188 @@
                 }
             </section>
 
-            <form (ngSubmit)="save()" class="profile-form">
-                <div class="dm-field">
-                    <label for="description" class="dm-label">
-                        Sobre você
-                    </label>
-
-                    <textarea id="description" name="description" class="dm-textarea" [(ngModel)]="description" rows="4"
-                        maxlength="500"
-                        placeholder="Conte um pouco sobre sua experiência e sua forma de ensinar."></textarea>
-                </div>
-
-                <div class="location-grid">
+            <form class="profile-form" (ngSubmit)="save()">
+                <app-section title="Dados da conta"
+                    description="Essas informações são usadas para identificar sua conta no DriveMatch.">
                     <div class="dm-field">
-                        <label for="experienceYears" class="dm-label">
-                            Anos de experiência
+                        <label for="name" class="dm-label">
+                            Nome
                         </label>
 
-                        <input id="experienceYears" name="experienceYears" type="number" min="0" step="1"
-                            class="dm-input" [(ngModel)]="experienceYears" placeholder="Ex.: 5" />
+                        <input id="name" name="name" type="text" class="dm-input" autocomplete="name"
+                            [(ngModel)]="name">
                     </div>
 
                     <div class="dm-field">
-                        <label for="pricePerLesson" class="dm-label">
-                            Valor por aula
+                        <label for="email" class="dm-label">
+                            E-mail
                         </label>
 
-                        <input id="pricePerLesson" name="pricePerLesson" type="number" min="0.01" step="0.01"
-                            class="dm-input" [(ngModel)]="pricePerLesson" placeholder="Ex.: 80" />
+                        <input id="email" name="email" type="email" class="dm-input" autocomplete="email"
+                            [(ngModel)]="email">
                     </div>
-                </div>
+                </app-section>
 
-                <div class="location-grid">
+                <app-section title="Perfil profissional"
+                    description="Apresente sua experiência, região de atendimento e preferências para as aulas."
+                    [divided]="true">
                     <div class="dm-field">
-                        <label for="city" class="dm-label">
-                            Cidade
+                        <label for="description" class="dm-label">
+                            Sobre você
                         </label>
 
-                        <input id="city" name="city" type="text" class="dm-input" [(ngModel)]="city"
-                            placeholder="Ex.: Belo Horizonte" />
+                        <textarea id="description" name="description" class="dm-textarea" [(ngModel)]="description"
+                            rows="4" maxlength="500"
+                            placeholder="Conte um pouco sobre sua experiência e sua forma de ensinar."></textarea>
                     </div>
 
-                    <div class="dm-field">
-                        <label for="state" class="dm-label">
-                            Estado
-                        </label>
+                    <div class="location-grid">
+                        <div class="dm-field">
+                            <label for="experienceYears" class="dm-label">
+                                Anos de experiência
+                            </label>
 
-                        <select id="state" name="state" class="dm-select" [(ngModel)]="state">
-                            <option value="" disabled>
-                                Selecione
-                            </option>
+                            <input id="experienceYears" name="experienceYears" type="number" min="0" step="1"
+                                class="dm-input" [(ngModel)]="experienceYears" placeholder="Ex.: 5">
+                        </div>
 
-                            @for (stateOption of states; track stateOption.value) {
-                            <option [value]="stateOption.value">
-                                {{ stateOption.label }}
-                            </option>
-                            }
-                        </select>
+                        <div class="dm-field">
+                            <label for="pricePerLesson" class="dm-label">
+                                Valor por aula
+                            </label>
+
+                            <input id="pricePerLesson" name="pricePerLesson" type="number" min="0.01" step="0.01"
+                                class="dm-input" [(ngModel)]="pricePerLesson" placeholder="Ex.: 80">
+                        </div>
                     </div>
-                </div>
 
-                <fieldset class="question-group">
-                    <legend>Você atende alunos iniciantes?</legend>
+                    <div class="location-grid">
+                        <div class="dm-field">
+                            <label for="city" class="dm-label">
+                                Cidade
+                            </label>
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card" [class.role-card--selected]="acceptsBeginners === true"
-                            (click)="selectAcceptsBeginners(true)">
-                            <span class="role-card__title">Sim</span>
-                            <span class="role-card__description">
-                                Atendo alunos com pouca ou nenhuma experiência.
-                            </span>
-                        </button>
+                            <input id="city" name="city" type="text" class="dm-input" autocomplete="address-level2"
+                                [(ngModel)]="city" placeholder="Ex.: Belo Horizonte">
+                        </div>
 
-                        <button type="button" class="role-card" [class.role-card--selected]="acceptsBeginners === false"
-                            (click)="selectAcceptsBeginners(false)">
-                            <span class="role-card__title">Não</span>
-                            <span class="role-card__description">
-                                Prefiro atender alunos que já possuem experiência.
-                            </span>
-                        </button>
+                        <div class="dm-field">
+                            <label for="state" class="dm-label">
+                                Estado
+                            </label>
+
+                            <select id="state" name="state" class="dm-select" [(ngModel)]="state">
+                                <option value="" disabled>
+                                    Selecione
+                                </option>
+
+                                @for (stateOption of states; track stateOption.value) {
+                                <option [value]="stateOption.value">
+                                    {{ stateOption.label }}
+                                </option>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </fieldset>
 
-                <fieldset class="question-group">
-                    <legend>Você atende alunos que já dirigem?</legend>
+                    <fieldset class="question-group">
+                        <legend>
+                            Você atende alunos iniciantes?
+                        </legend>
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="acceptsExperiencedStudents === true"
-                            (click)="selectAcceptsExperiencedStudents(true)">
-                            <span class="role-card__title">Sim</span>
-                            <span class="role-card__description">
-                                Atendo alunos que querem praticar ou ganhar confiança.
-                            </span>
-                        </button>
+                        <div class="role-selector">
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsBeginners === true"
+                                (click)="selectAcceptsBeginners(true)">
+                                <span class="role-card__title">
+                                    Sim
+                                </span>
 
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="acceptsExperiencedStudents === false"
-                            (click)="selectAcceptsExperiencedStudents(false)">
-                            <span class="role-card__title">Não</span>
-                            <span class="role-card__description">
-                                Meu atendimento é voltado para alunos iniciantes.
-                            </span>
-                        </button>
-                    </div>
-                </fieldset>
+                                <span class="role-card__description">
+                                    Atendo alunos com pouca ou nenhuma experiência.
+                                </span>
+                            </button>
 
-                <fieldset class="question-group">
-                    <legend>
-                        Você aceita que o aluno utilize o próprio veículo?
-                    </legend>
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsBeginners === false"
+                                (click)="selectAcceptsBeginners(false)">
+                                <span class="role-card__title">
+                                    Não
+                                </span>
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="acceptsStudentVehicle === true"
-                            (click)="selectAcceptsStudentVehicle(true)">
-                            <span class="role-card__title">Sim</span>
-                            <span class="role-card__description">
-                                O aluno pode realizar a aula com o próprio veículo.
-                            </span>
-                        </button>
+                                <span class="role-card__description">
+                                    Prefiro atender alunos que já possuem experiência.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
 
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="acceptsStudentVehicle === false"
-                            (click)="selectAcceptsStudentVehicle(false)">
-                            <span class="role-card__title">Não</span>
-                            <span class="role-card__description">
-                                As aulas são realizadas com o veículo do instrutor.
-                            </span>
-                        </button>
-                    </div>
-                </fieldset>
+                    <fieldset class="question-group">
+                        <legend>
+                            Você atende alunos que já dirigem?
+                        </legend>
+
+                        <div class="role-selector">
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsExperiencedStudents === true"
+                                (click)="selectAcceptsExperiencedStudents(true)">
+                                <span class="role-card__title">
+                                    Sim
+                                </span>
+
+                                <span class="role-card__description">
+                                    Atendo alunos que querem praticar ou ganhar confiança.
+                                </span>
+                            </button>
+
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsExperiencedStudents === false"
+                                (click)="selectAcceptsExperiencedStudents(false)">
+                                <span class="role-card__title">
+                                    Não
+                                </span>
+
+                                <span class="role-card__description">
+                                    Meu atendimento é voltado para alunos iniciantes.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="question-group">
+                        <legend>
+                            Você aceita que o aluno utilize o próprio veículo?
+                        </legend>
+
+                        <div class="role-selector">
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsStudentVehicle === true"
+                                (click)="selectAcceptsStudentVehicle(true)">
+                                <span class="role-card__title">
+                                    Sim
+                                </span>
+
+                                <span class="role-card__description">
+                                    O aluno pode realizar a aula com o próprio veículo.
+                                </span>
+                            </button>
+
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="acceptsStudentVehicle === false"
+                                (click)="selectAcceptsStudentVehicle(false)">
+                                <span class="role-card__title">
+                                    Não
+                                </span>
+
+                                <span class="role-card__description">
+                                    As aulas são realizadas com o veículo do instrutor.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+                </app-section>
+
+                <app-change-password></app-change-password>
 
                 @if (errorMessage()) {
                 <div class="form-error" role="alert">

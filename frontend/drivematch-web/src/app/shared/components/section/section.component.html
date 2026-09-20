@@ -1,0 +1,20 @@
+<section
+  class="section"
+  [class.section--divided]="divided()"
+>
+  <header class="section__header">
+    <h2 class="section__title">
+      {{ title() }}
+    </h2>
+
+    @if (description()) {
+      <p class="section__description">
+        {{ description() }}
+      </p>
+    }
+  </header>
+
+  <div class="section__content">
+    <ng-content></ng-content>
+  </div>
+</section>

@@ -18,9 +18,7 @@
   align-items: center;
   justify-content: center;
   padding:
-    max(1.5rem, env(safe-area-inset-top))
-    1rem
-    max(1.5rem, env(safe-area-inset-bottom));
+    max(1.5rem, env(safe-area-inset-top)) 1rem max(1.5rem, env(safe-area-inset-bottom));
 }
 
 .profile-card {
@@ -73,6 +71,17 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.profile-success {
+  margin-bottom: 1.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(22 163 74 / 10%);
+  color: #166534;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  scroll-margin-top: 6rem;
 }
 
 .profile-form {
@@ -197,17 +206,13 @@
     align-items: center;
     padding: 4rem;
     background:
-      radial-gradient(
-        circle at 20% 20%,
+      radial-gradient(circle at 20% 20%,
         rgb(37 99 235 / 45%),
-        transparent 34%
-      ),
-      linear-gradient(
-        145deg,
+        transparent 34%),
+      linear-gradient(145deg,
         #172554 0%,
         #1e3a8a 55%,
-        #2563eb 140%
-      );
+        #2563eb 140%);
     color: #fff;
   }
 
@@ -262,9 +267,7 @@
     min-height: 100dvh;
     align-items: flex-start;
     padding:
-      max(1.25rem, env(safe-area-inset-top))
-      1rem
-      max(1.25rem, env(safe-area-inset-bottom));
+      max(1.25rem, env(safe-area-inset-top)) 1rem max(1.25rem, env(safe-area-inset-bottom));
   }
 
   .profile-card {

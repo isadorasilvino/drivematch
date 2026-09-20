@@ -240,6 +240,7 @@
   }
 }
 
+.profile-success,
 .profile-status-success {
   padding: 0.8rem 1rem;
   border-radius: 0.75rem;
@@ -247,6 +248,11 @@
   color: #166534;
   font-size: 0.9rem;
   line-height: 1.45;
+}
+
+.profile-success {
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 6rem;
 }
 
 @media (max-width: 36rem) {

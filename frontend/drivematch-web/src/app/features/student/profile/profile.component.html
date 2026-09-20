@@ -54,131 +54,179 @@
                 </p>
             </header>
 
+            @if (successMessage()) {
+            <div #successMessageElement class="profile-success" role="status" aria-live="polite">
+                {{ successMessage() }}
+            </div>
+            }
+
             <form class="profile-form" (ngSubmit)="save()">
-                <div class="location-grid">
-                    <div class="dm-field">
-                        <label class="dm-label" for="city">
-                            Cidade
-                        </label>
 
-                        <input id="city" name="city" class="dm-input" type="text" autocomplete="address-level2"
-                            placeholder="Ex.: Belo Horizonte" [(ngModel)]="city">
-                    </div>
+                <app-section title="Dados da conta"
+                    description="Essas informações são usadas para identificar sua conta no DriveMatch.">
 
                     <div class="dm-field">
-                        <label class="dm-label" for="state">
-                            Estado
+                        <label class="dm-label" for="name">
+                            Nome
                         </label>
 
-                        <select id="state" name="state" class="dm-select" [(ngModel)]="state">
-                            <option value="">
-                                Selecione
-                            </option>
-
-                            @for (stateOption of states; track stateOption.code) {
-                            <option [value]="stateOption.code">
-                                {{ stateOption.code }} — {{ stateOption.name }}
-                            </option>
-                            }
-                        </select>
+                        <input id="name" name="name" class="dm-input" type="text" autocomplete="name"
+                            [(ngModel)]="name">
                     </div>
-                </div>
 
-                <fieldset class="question-group">
-                    <legend>
-                        Qual é sua experiência dirigindo?
-                    </legend>
+                    <div class="dm-field">
+                        <label class="dm-label" for="email">
+                            E-mail
+                        </label>
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="experienceLevel === 'Beginner'"
-                            (click)="selectExperienceLevel('Beginner')">
-                            <span class="role-card__title">
-                                Estou começando
-                            </span>
-
-                            <span class="role-card__description">
-                                Tenho pouca ou nenhuma experiência dirigindo.
-                            </span>
-                        </button>
-
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="experienceLevel === 'Experienced'"
-                            (click)="selectExperienceLevel('Experienced')">
-                            <span class="role-card__title">
-                                Já tenho experiência
-                            </span>
-
-                            <span class="role-card__description">
-                                Já dirijo e quero praticar ou ganhar confiança.
-                            </span>
-                        </button>
+                        <input id="email" name="email" class="dm-input" type="email" autocomplete="email"
+                            [(ngModel)]="email">
                     </div>
-                </fieldset>
+                </app-section>
 
-                <fieldset class="question-group">
-                    <legend>
-                        Você possui veículo?
-                    </legend>
+                <app-section title="Perfil de aluno"
+                    description="Conte um pouco sobre sua experiência e como pretende realizar suas aulas."
+                    [divided]="true">
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card" [class.role-card--selected]="ownsVehicle === true"
-                            (click)="selectOwnsVehicle(true)">
-                            <span class="role-card__title">
-                                Sim
-                            </span>
+                    <div class="location-grid">
+                        <div class="dm-field">
+                            <label class="dm-label" for="city">
+                                Cidade
+                            </label>
 
-                            <span class="role-card__description">
-                                Possuo um veículo.
-                            </span>
-                        </button>
+                            <input id="city" name="city" class="dm-input" type="text" autocomplete="address-level2"
+                                placeholder="Ex.: Belo Horizonte" [(ngModel)]="city">
+                        </div>
 
-                        <button type="button" class="role-card" [class.role-card--selected]="ownsVehicle === false"
-                            (click)="selectOwnsVehicle(false)">
-                            <span class="role-card__title">
-                                Não
-                            </span>
+                        <div class="dm-field">
+                            <label class="dm-label" for="state">
+                                Estado
+                            </label>
 
-                            <span class="role-card__description">
-                                Não possuo veículo.
-                            </span>
-                        </button>
+                            <select id="state" name="state" class="dm-select" [(ngModel)]="state">
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                @for (
+                                stateOption of states;
+                                track stateOption.code
+                                ) {
+                                <option [value]="stateOption.code">
+                                    {{ stateOption.code }} —
+                                    {{ stateOption.name }}
+                                </option>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </fieldset>
 
-                @if (ownsVehicle === true) {
-                <fieldset class="question-group">
-                    <legend>
-                        Pretende usar seu veículo nas aulas?
-                    </legend>
+                    <fieldset class="question-group">
+                        <legend>
+                            Qual é sua experiência dirigindo?
+                        </legend>
 
-                    <div class="role-selector">
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="hasOwnVehicleForLessons === true"
-                            (click)="selectVehicleForLessons(true)">
-                            <span class="role-card__title">
-                                Sim
-                            </span>
+                        <div class="role-selector">
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="experienceLevel === 'Beginner'"
+                                (click)="selectExperienceLevel('Beginner')">
 
-                            <span class="role-card__description">
-                                Quero utilizar meu próprio veículo.
-                            </span>
-                        </button>
+                                <span class="role-card__title">
+                                    Estou começando
+                                </span>
 
-                        <button type="button" class="role-card"
-                            [class.role-card--selected]="hasOwnVehicleForLessons === false"
-                            (click)="selectVehicleForLessons(false)">
-                            <span class="role-card__title">
-                                Não
-                            </span>
+                                <span class="role-card__description">
+                                    Tenho pouca ou nenhuma experiência dirigindo.
+                                </span>
+                            </button>
 
-                            <span class="role-card__description">
-                                Prefiro utilizar o veículo do instrutor.
-                            </span>
-                        </button>
-                    </div>
-                </fieldset>
-                }
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="experienceLevel === 'Experienced'"
+                                (click)="selectExperienceLevel('Experienced')">
+
+                                <span class="role-card__title">
+                                    Já tenho experiência
+                                </span>
+
+                                <span class="role-card__description">
+                                    Já dirijo e quero praticar ou ganhar confiança.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="question-group">
+                        <legend>
+                            Você possui veículo?
+                        </legend>
+
+                        <div class="role-selector">
+                            <button type="button" class="role-card" [class.role-card--selected]="ownsVehicle === true"
+                                (click)="selectOwnsVehicle(true)">
+
+                                <span class="role-card__title">
+                                    Sim
+                                </span>
+
+                                <span class="role-card__description">
+                                    Possuo um veículo.
+                                </span>
+                            </button>
+
+                            <button type="button" class="role-card" [class.role-card--selected]="ownsVehicle === false"
+                                (click)="selectOwnsVehicle(false)">
+
+                                <span class="role-card__title">
+                                    Não
+                                </span>
+
+                                <span class="role-card__description">
+                                    Não possuo veículo.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    @if (ownsVehicle === true) {
+                    <fieldset class="question-group">
+                        <legend>
+                            Pretende usar seu veículo nas aulas?
+                        </legend>
+
+                        <div class="role-selector">
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="hasOwnVehicleForLessons === true"
+                                (click)="selectVehicleForLessons(true)">
+
+                                <span class="role-card__title">
+                                    Sim
+                                </span>
+
+                                <span class="role-card__description">
+                                    Quero utilizar meu próprio veículo.
+                                </span>
+                            </button>
+
+                            <button type="button" class="role-card"
+                                [class.role-card--selected]="hasOwnVehicleForLessons === false"
+                                (click)="selectVehicleForLessons(false)">
+
+                                <span class="role-card__title">
+                                    Não
+                                </span>
+
+                                <span class="role-card__description">
+                                    Prefiro utilizar o veículo do instrutor.
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+                    }
+                </app-section>
+
+                <app-change-password>
+                </app-change-password>
 
                 @if (errorMessage()) {
                 <p class="dm-field-error" role="alert">
@@ -187,6 +235,7 @@
                 }
 
                 <button class="dm-button dm-button--primary save-button" type="submit" [disabled]="isSaving()">
+
                     {{
                     isSaving()
                     ? 'Salvando...'

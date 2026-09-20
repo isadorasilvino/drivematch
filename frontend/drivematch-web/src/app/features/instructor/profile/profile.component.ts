@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, signal, viewChild, } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ChangePasswordComponent } from '../../../shared/components/change-password/change-password.component';
+import { forkJoin } from 'rxjs';
+
+import {
+  AccountService,
+  MyAccountResponse,
+} from '../../../core/account/account.service';
 
 import {
   InstructorProfileRequest,
@@ -10,19 +17,44 @@ import {
   InstructorProfileStatus,
 } from '../../../core/instructor/instructor-profile.service';
 
+import {
+  SectionComponent,
+} from '../../../shared/components/section/section.component';
+
+import {
+  AuthStorageService,
+} from '../../../core/auth/auth-storage.service';
+
 @Component({
   selector: 'app-instructor-profile',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    SectionComponent,
+    ChangePasswordComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
-  private readonly instructorProfileService = inject(InstructorProfileService);
-  private readonly router = inject(Router);
+  private readonly instructorProfileService =
+    inject(InstructorProfileService);
+
+  private readonly accountService =
+    inject(AccountService);
+
+  private readonly authStorage =
+    inject(AuthStorageService);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly successMessageElement =
+    viewChild<ElementRef<HTMLElement>>('successMessageElement');
+
+  name = '';
+  email = '';
 
   description = '';
   experienceYears: number | null = null;
@@ -38,7 +70,11 @@ export class ProfileComponent implements OnInit {
   readonly isSaving = signal(false);
   readonly isEditing = signal(false);
   readonly errorMessage = signal('');
-  readonly profileStatus = signal<InstructorProfileStatus>('Draft');
+  readonly successMessage = signal('');
+
+  readonly profileStatus =
+    signal<InstructorProfileStatus>('Draft');
+
   readonly isChangingStatus = signal(false);
   readonly statusMessage = signal('');
 
@@ -73,6 +109,7 @@ export class ProfileComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadAccount();
     this.loadProfile();
   }
 
@@ -90,6 +127,17 @@ export class ProfileComponent implements OnInit {
 
   save(): void {
     this.errorMessage.set('');
+    this.successMessage.set('');
+
+    const normalizedName = this.name.trim();
+    const normalizedEmail = this.email.trim();
+
+    if (!normalizedName || !normalizedEmail) {
+      this.errorMessage.set(
+        'Informe seu nome e e-mail para continuar.',
+      );
+      return;
+    }
 
     if (
       !this.description.trim() ||
@@ -121,34 +169,80 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const request: InstructorProfileRequest = {
+    const accountRequest = {
+      name: normalizedName,
+      email: normalizedEmail,
+    };
+
+    const profileRequest: InstructorProfileRequest = {
       description: this.description.trim(),
       experienceYears: this.experienceYears,
       city: this.city.trim(),
       state: this.state,
       pricePerLesson: this.pricePerLesson,
       acceptsBeginners: this.acceptsBeginners,
-      acceptsExperiencedStudents: this.acceptsExperiencedStudents,
-      acceptsStudentVehicle: this.acceptsStudentVehicle,
+      acceptsExperiencedStudents:
+        this.acceptsExperiencedStudents,
+      acceptsStudentVehicle:
+        this.acceptsStudentVehicle,
     };
 
     this.isSaving.set(true);
 
-    const operation = this.isEditing()
-      ? this.instructorProfileService.updateProfile(request)
-      : this.instructorProfileService.createProfile(request);
+    const profileOperation = this.isEditing()
+      ? this.instructorProfileService.updateProfile(
+        profileRequest,
+      )
+      : this.instructorProfileService.createProfile(
+        profileRequest,
+      );
 
-    operation.subscribe({
-      next: () => {
+    forkJoin({
+      account: this.accountService.updateMyAccount(
+        accountRequest,
+      ),
+      profile: profileOperation,
+    }).subscribe({
+      next: ({ account }) => {
+        this.name = account.name;
+        this.email = account.email;
+
+        this.authStorage.updateSessionAccount({
+          name: account.name,
+          email: account.email,
+        });
+
+        this.isEditing.set(true);
         this.isSaving.set(false);
-        void this.router.navigate(['/instructor']);
+
+        this.successMessage.set(
+          'Alterações salvas com sucesso.',
+        );
+
+        setTimeout(() => {
+          this.successMessageElement()
+            ?.nativeElement
+            .scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+        });
       },
+
       error: (error: HttpErrorResponse) => {
         this.isSaving.set(false);
 
+        if (error.status === 409) {
+          this.errorMessage.set(
+            error.error?.error ??
+            'Este e-mail já está sendo utilizado.',
+          );
+          return;
+        }
+
         this.errorMessage.set(
           error.error?.error ??
-          'Não foi possível salvar seu perfil. Tente novamente.',
+          'Não foi possível salvar suas alterações. Tente novamente.',
         );
       },
     });
@@ -159,62 +253,89 @@ export class ProfileComponent implements OnInit {
     this.statusMessage.set('');
     this.isChangingStatus.set(true);
 
-    this.instructorProfileService.changeStatus(isActive).subscribe({
-      next: (result) => {
-        this.profileStatus.set(result.status);
-        this.isChangingStatus.set(false);
+    this.instructorProfileService
+      .changeStatus(isActive)
+      .subscribe({
+        next: (result) => {
+          this.profileStatus.set(result.status);
+          this.isChangingStatus.set(false);
 
-        this.statusMessage.set(
-          isActive
-            ? 'Seu perfil está ativo e pode ser encontrado pelos alunos.'
-            : 'Seu perfil foi desativado e não aparecerá para novos alunos.',
-        );
-      },
+          this.statusMessage.set(
+            isActive
+              ? 'Seu perfil está ativo e pode ser encontrado pelos alunos.'
+              : 'Seu perfil foi desativado e não aparecerá para novos alunos.',
+          );
+        },
 
-      error: (error: HttpErrorResponse) => {
-        this.isChangingStatus.set(false);
+        error: (error: HttpErrorResponse) => {
+          this.isChangingStatus.set(false);
 
-        this.errorMessage.set(
-          error.error?.error ??
-          'Não foi possível alterar o status do seu perfil. Tente novamente.',
-        );
-      },
-    });
+          this.errorMessage.set(
+            error.error?.error ??
+            'Não foi possível alterar o status do seu perfil. Tente novamente.',
+          );
+        },
+      });
   }
 
   goToAvailability(): void {
-    void this.router.navigate(['/instructor/availability']);
+    void this.router.navigate([
+      '/instructor/availability',
+    ]);
   }
 
   private loadProfile(): void {
-    this.instructorProfileService.getProfile().subscribe({
-      next: (profile) => {
-        this.description = profile.description;
-        this.experienceYears = profile.experienceYears;
-        this.city = profile.city;
-        this.state = profile.state;
-        this.pricePerLesson = profile.pricePerLesson;
-        this.acceptsBeginners = profile.acceptsBeginners;
-        this.acceptsExperiencedStudents =
-          profile.acceptsExperiencedStudents;
-        this.acceptsStudentVehicle = profile.acceptsStudentVehicle;
-        this.profileStatus.set(profile.status);
+    this.instructorProfileService
+      .getProfile()
+      .subscribe({
+        next: (profile) => {
+          this.description = profile.description;
+          this.experienceYears =
+            profile.experienceYears;
+          this.city = profile.city;
+          this.state = profile.state;
+          this.pricePerLesson =
+            profile.pricePerLesson;
+          this.acceptsBeginners =
+            profile.acceptsBeginners;
+          this.acceptsExperiencedStudents =
+            profile.acceptsExperiencedStudents;
+          this.acceptsStudentVehicle =
+            profile.acceptsStudentVehicle;
 
-        this.isEditing.set(true);
-        this.isLoading.set(false);
+          this.profileStatus.set(profile.status);
+
+          this.isEditing.set(true);
+          this.isLoading.set(false);
+        },
+
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 404) {
+            this.isEditing.set(false);
+            this.isLoading.set(false);
+            return;
+          }
+
+          this.errorMessage.set(
+            'Não foi possível carregar seu perfil. Tente novamente.',
+          );
+
+          this.isLoading.set(false);
+        },
+      });
+  }
+
+  private loadAccount(): void {
+    this.accountService.getMyAccount().subscribe({
+      next: (account: MyAccountResponse) => {
+        this.name = account.name;
+        this.email = account.email;
       },
 
-      error: (error: HttpErrorResponse) => {
-        if (error.status === 404) {
-          this.isEditing.set(false);
-          this.isLoading.set(false);
-          return;
-        }
-
+      error: () => {
         this.errorMessage.set(
-          'Não foi possível carregar seu perfil. Tente novamente.',
+          'Não foi possível carregar os dados da sua conta.',
         );
-        this.isLoading.set(false);
       },
     });
   }

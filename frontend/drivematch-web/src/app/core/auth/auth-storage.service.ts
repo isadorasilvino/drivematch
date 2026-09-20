@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 import type { LoginResponse } from './auth.service';
 
@@ -9,31 +9,61 @@ const LAST_EMAIL_STORAGE_KEY = 'drivematch.lastEmail';
   providedIn: 'root',
 })
 export class AuthStorageService {
+  private readonly sessionState =
+    signal<LoginResponse | null>(this.readStoredSession());
+
+  readonly session = this.sessionState.asReadonly();
+
   saveSession(session: LoginResponse): void {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+    localStorage.setItem(
+      AUTH_STORAGE_KEY,
+      JSON.stringify(session),
+    );
+
+    this.sessionState.set(session);
     this.saveLastEmail(session.email);
   }
 
-  getSession(): LoginResponse | null {
-    const storedSession = localStorage.getItem(AUTH_STORAGE_KEY);
+  updateSessionAccount(
+    account: {
+      name: string;
+      email: string;
+    },
+  ): void {
+    const currentSession = this.sessionState();
 
-    if (!storedSession) {
+    if (!currentSession) {
+      return;
+    }
+
+    const updatedSession: LoginResponse = {
+      ...currentSession,
+      name: account.name,
+      email: account.email,
+    };
+
+    localStorage.setItem(
+      AUTH_STORAGE_KEY,
+      JSON.stringify(updatedSession),
+    );
+
+    this.sessionState.set(updatedSession);
+    this.saveLastEmail(updatedSession.email);
+  }
+
+  getSession(): LoginResponse | null {
+    const session = this.sessionState();
+
+    if (!session) {
       return null;
     }
 
-    try {
-      const session = JSON.parse(storedSession) as LoginResponse;
-
-      if (!session?.token || this.isTokenExpired(session.token)) {
-        this.clearSession();
-        return null;
-      }
-
-      return session;
-    } catch {
+    if (this.isTokenExpired(session.token)) {
       this.clearSession();
       return null;
     }
+
+    return session;
   }
 
   getToken(): string | null {
@@ -42,6 +72,7 @@ export class AuthStorageService {
 
   clearSession(): void {
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    this.sessionState.set(null);
   }
 
   saveLastEmail(email: string): void {
@@ -51,7 +82,10 @@ export class AuthStorageService {
       return;
     }
 
-    localStorage.setItem(LAST_EMAIL_STORAGE_KEY, normalizedEmail);
+    localStorage.setItem(
+      LAST_EMAIL_STORAGE_KEY,
+      normalizedEmail,
+    );
   }
 
   getLastEmail(): string | null {
@@ -60,6 +94,33 @@ export class AuthStorageService {
 
   clearLastEmail(): void {
     localStorage.removeItem(LAST_EMAIL_STORAGE_KEY);
+  }
+
+  private readStoredSession(): LoginResponse | null {
+    const storedSession =
+      localStorage.getItem(AUTH_STORAGE_KEY);
+
+    if (!storedSession) {
+      return null;
+    }
+
+    try {
+      const session =
+        JSON.parse(storedSession) as LoginResponse;
+
+      if (
+        !session?.token ||
+        this.isTokenExpired(session.token)
+      ) {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        return null;
+      }
+
+      return session;
+    } catch {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    }
   }
 
   private isTokenExpired(token: string): boolean {
@@ -75,9 +136,12 @@ export class AuthStorageService {
         .replace(/_/g, '/');
 
       const paddedPayload =
-        payload + '='.repeat((4 - (payload.length % 4)) % 4);
+        payload +
+        '='.repeat((4 - (payload.length % 4)) % 4);
 
-      const decodedPayload = JSON.parse(atob(paddedPayload)) as {
+      const decodedPayload = JSON.parse(
+        atob(paddedPayload),
+      ) as {
         exp?: number;
       };
 

@@ -1,53 +1,37 @@
 <header class="app-navbar">
     <div class="app-navbar__content">
-        <a
-            class="app-navbar__brand"
-            [routerLink]="session?.role === 'Instructor'
-                ? '/instructor'
-                : '/student'">
+        <a class="app-navbar__brand" [routerLink]="session()?.role === 'Instructor'
+            ? '/instructor'
+            : '/student'">
             DriveMatch
         </a>
 
-        <nav
-            class="app-navbar__navigation"
-            aria-label="Navegação principal">
+        <nav class="app-navbar__navigation" aria-label="Navegação principal">
 
             @for (item of navigationItems; track item.route) {
-                <a
-                    class="app-navbar__link"
-                    [routerLink]="item.route"
-                    routerLinkActive="app-navbar__link--active"
-                    [routerLinkActiveOptions]="{
+            <a class="app-navbar__link" [routerLink]="item.route" routerLinkActive="app-navbar__link--active"
+                [routerLinkActiveOptions]="{
                         exact: item.exact ?? false
                     }">
 
-                    <fa-icon
-                        class="app-navbar__icon"
-                        [icon]="item.icon"
-                        aria-hidden="true">
-                    </fa-icon>
+                <fa-icon class="app-navbar__icon" [icon]="item.icon" aria-hidden="true">
+                </fa-icon>
 
-                    <span>{{ item.label }}</span>
-                </a>
+                <span>{{ item.label }}</span>
+            </a>
             }
         </nav>
 
         <div class="app-navbar__account">
-            @if (session?.name) {
-                <span class="app-navbar__user">
-                    {{ session?.name }}
-                </span>
+            @if (session()?.name) {
+            <span class="app-navbar__user">
+                {{ session()?.name }}
+            </span>
             }
 
-            <button
-                type="button"
-                class="app-navbar__logout"
-                (click)="logout()"
-                aria-label="Sair">
+            <button type="button" class="app-navbar__logout" (click)="logout()" aria-label="Sair">
 
-                <fa-icon
-                    [icon]="faRightFromBracket"
-                    aria-hidden="true">
+                <fa-icon [icon]="faRightFromBracket" aria-hidden="true">
                 </fa-icon>
 
                 <span>Sair</span>

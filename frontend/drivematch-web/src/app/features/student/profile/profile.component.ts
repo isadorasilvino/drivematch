@@ -1,14 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ChangePasswordComponent } from '../../../shared/components/change-password/change-password.component';
+import { AuthStorageService } from '../../../core/auth/auth-storage.service';
+import { forkJoin } from 'rxjs';
+
+import {
+  AccountService,
+  MyAccountResponse,
+} from '../../../core/account/account.service';
 
 import {
   ExperienceLevel,
   StudentProfileRequest,
   StudentProfileService,
 } from '../../../core/student/student-profile.service';
+
+import {
+  SectionComponent,
+} from '../../../shared/components/section/section.component';
 
 interface StateOption {
   code: string;
@@ -21,6 +39,8 @@ interface StateOption {
   imports: [
     CommonModule,
     FormsModule,
+    SectionComponent,
+    ChangePasswordComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -29,8 +49,17 @@ export class ProfileComponent implements OnInit {
   private readonly studentProfileService =
     inject(StudentProfileService);
 
-  private readonly router = inject(Router);
+  private readonly accountService =
+    inject(AccountService);
 
+  private readonly authStorage =
+    inject(AuthStorageService);
+
+  private readonly successMessageElement =
+    viewChild<ElementRef<HTMLElement>>('successMessageElement');
+
+  name = '';
+  email = '';
   city = '';
   state = '';
   experienceLevel: ExperienceLevel | '' = '';
@@ -41,6 +70,7 @@ export class ProfileComponent implements OnInit {
   readonly isSaving = signal(false);
   readonly isEditing = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly successMessage = signal('');
 
   readonly states: StateOption[] = [
     { code: 'AC', name: 'Acre' },
@@ -73,6 +103,7 @@ export class ProfileComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadAccount();
     this.loadProfile();
   }
 
@@ -104,6 +135,17 @@ export class ProfileComponent implements OnInit {
 
   save(): void {
     this.errorMessage.set(null);
+    this.successMessage.set('');
+
+    const normalizedName = this.name.trim();
+    const normalizedEmail = this.email.trim();
+
+    if (!normalizedName || !normalizedEmail) {
+      this.errorMessage.set(
+        'Preencha seu nome e e-mail para continuar.',
+      );
+      return;
+    }
 
     if (
       !this.city.trim() ||
@@ -118,7 +160,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const request: StudentProfileRequest = {
+    const profileRequest: StudentProfileRequest = {
       city: this.city.trim(),
       state: this.state,
       experienceLevel: this.experienceLevel,
@@ -127,16 +169,51 @@ export class ProfileComponent implements OnInit {
         this.hasOwnVehicleForLessons,
     };
 
+    const accountRequest = {
+      name: normalizedName,
+      email: normalizedEmail,
+    };
+
+    const profileOperation = this.isEditing()
+      ? this.studentProfileService.updateProfile(
+        profileRequest,
+      )
+      : this.studentProfileService.createProfile(
+        profileRequest,
+      );
+
     this.isSaving.set(true);
 
-    const operation = this.isEditing()
-      ? this.studentProfileService.updateProfile(request)
-      : this.studentProfileService.createProfile(request);
+    forkJoin({
+      account: this.accountService.updateMyAccount(
+        accountRequest,
+      ),
+      profile: profileOperation,
+    }).subscribe({
+      next: ({ account }) => {
+        this.name = account.name;
+        this.email = account.email;
 
-    operation.subscribe({
-      next: () => {
+        this.authStorage.updateSessionAccount({
+          name: account.name,
+          email: account.email,
+        });
+
+        this.isEditing.set(true);
         this.isSaving.set(false);
-        void this.router.navigate(['/student']);
+
+        this.successMessage.set(
+          'Alterações salvas com sucesso.',
+        );
+
+        setTimeout(() => {
+          this.successMessageElement()
+            ?.nativeElement
+            .scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+        });
       },
 
       error: (error: HttpErrorResponse) => {
@@ -144,13 +221,22 @@ export class ProfileComponent implements OnInit {
 
         if (error.status === 409) {
           this.errorMessage.set(
-            'Seu perfil já existe. Atualize a página e tente novamente.',
+            error.error?.error ??
+            'Este e-mail já está sendo utilizado por outra conta.',
+          );
+          return;
+        }
+
+        if (error.status === 401) {
+          this.errorMessage.set(
+            'Sua sessão expirou. Entre novamente para continuar.',
           );
           return;
         }
 
         this.errorMessage.set(
-          'Não foi possível salvar seu perfil. Tente novamente.',
+          error.error?.error ??
+          'Não foi possível salvar suas alterações. Tente novamente.',
         );
       },
     });
@@ -161,7 +247,8 @@ export class ProfileComponent implements OnInit {
       next: (profile) => {
         this.city = profile.city;
         this.state = profile.state;
-        this.experienceLevel = profile.experienceLevel;
+        this.experienceLevel =
+          profile.experienceLevel;
         this.ownsVehicle = profile.ownsVehicle;
         this.hasOwnVehicleForLessons =
           profile.hasOwnVehicleForLessons;
@@ -182,6 +269,21 @@ export class ProfileComponent implements OnInit {
         );
 
         this.isLoading.set(false);
+      },
+    });
+  }
+
+  private loadAccount(): void {
+    this.accountService.getMyAccount().subscribe({
+      next: (account: MyAccountResponse) => {
+        this.name = account.name;
+        this.email = account.email;
+      },
+
+      error: () => {
+        this.errorMessage.set(
+          'Não foi possível carregar os dados da sua conta.',
+        );
       },
     });
   }
