@@ -1,0 +1,23 @@
+<a class="dashboard-action" [routerLink]="route">
+
+    <div class="dashboard-action__icon">
+        <fa-icon [icon]="icon" aria-hidden="true">
+        </fa-icon>
+    </div>
+
+    <div class="dashboard-action__content">
+        <strong class="dashboard-action__title">
+            {{ title }}
+        </strong>
+
+        @if (description) {
+        <span class="dashboard-action__description">
+            {{ description }}
+        </span>
+        }
+    </div>
+
+    <span class="dashboard-action__arrow" aria-hidden="true">
+        →
+    </span>
+</a>

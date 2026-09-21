@@ -1,0 +1,157 @@
+<main class="instructor-dashboard">
+    <div class="instructor-dashboard__container">
+
+        <header class="instructor-dashboard__header">
+            <span class="instructor-dashboard__eyebrow">
+                Área do instrutor
+            </span>
+
+            <h1>
+                Olá, {{ instructorName() }}!
+            </h1>
+
+            <p>
+                Acompanhe suas aulas, solicitações e sua agenda.
+            </p>
+        </header>
+
+        @if (isLoading()) {
+        <div class="dashboard-state">
+            Carregando sua visão geral...
+        </div>
+        } @else if (hasError()) {
+        <div class="dashboard-state dashboard-state--error">
+            Não foi possível carregar todas as informações
+            da sua área.
+        </div>
+        } @else {
+
+        @if (isProfileActive) {
+        <div class="profile-status profile-status--active">
+            <span class="profile-status__indicator"></span>
+
+            <span>
+                Seu perfil está ativo e visível para os alunos.
+            </span>
+        </div>
+        } @else {
+        <section class="profile-alert">
+            <div>
+                <span class="profile-alert__eyebrow">
+                    Visibilidade do perfil
+                </span>
+
+                <h2>{{ profileStatusLabel }}</h2>
+
+                <p>
+                    Seu perfil não está aparecendo para alunos
+                    que procuram instrutores. Acesse seu perfil
+                    para revisar as informações e ativá-lo.
+                </p>
+            </div>
+
+            <a class="profile-alert__action" routerLink="/instructor/profile">
+                Ir para meu perfil
+            </a>
+        </section>
+        }
+
+        <section class="dashboard-stats" aria-label="Resumo das atividades">
+
+            <app-dashboard-stat label="Próximas aulas" [value]="upcomingLessonsCount" [icon]="faCalendarDays">
+            </app-dashboard-stat>
+
+            <app-dashboard-stat label="Solicitações pendentes" [value]="pendingRequestsCount" [icon]="faClock">
+            </app-dashboard-stat>
+
+            <app-dashboard-stat label="Aulas concluídas" [value]="completedLessonsCount" [icon]="faListCheck">
+            </app-dashboard-stat>
+
+        </section>
+
+        <section class="dashboard-section">
+            <div class="dashboard-section__heading">
+                <div>
+                    <span class="dashboard-section__eyebrow">
+                        Agenda
+                    </span>
+
+                    <h2>Próxima aula</h2>
+                </div>
+
+                <a routerLink="/instructor/lessons">
+                    Ver minhas aulas →
+                </a>
+            </div>
+
+            @if (nextLesson; as lesson) {
+            <article class="next-lesson">
+                <div class="next-lesson__icon">
+                    <fa-icon [icon]="faCalendarDays" aria-hidden="true">
+                    </fa-icon>
+                </div>
+
+                <div class="next-lesson__content">
+                    <strong>
+                        Aula com {{ lesson.studentName }}
+                    </strong>
+
+                    <span>
+                        {{ formatLessonDate(lesson) }}
+                        ·
+                        {{ formatLessonTime(lesson) }}
+                    </span>
+                </div>
+
+                <a class="next-lesson__action" routerLink="/instructor/lessons">
+                    Ver aula
+                </a>
+            </article>
+            } @else {
+            <article class="next-lesson">
+                <div class="next-lesson__icon">
+                    <fa-icon [icon]="faCalendarDays" aria-hidden="true">
+                    </fa-icon>
+                </div>
+
+                <div class="next-lesson__content">
+                    <strong>
+                        Nenhuma aula agendada
+                    </strong>
+
+                    <span>
+                        Suas próximas aulas aparecerão aqui.
+                    </span>
+                </div>
+            </article>
+            }
+        </section>
+
+        <section class="dashboard-section">
+            <div class="dashboard-section__heading">
+                <div>
+                    <span class="dashboard-section__eyebrow">
+                        Navegação
+                    </span>
+
+                    <h2>Acesso rápido</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-actions">
+                <app-dashboard-action title="Solicitações" description="Veja e responda às solicitações recebidas."
+                    route="/instructor/lesson-requests" [icon]="faUsers">
+                </app-dashboard-action>
+
+                <app-dashboard-action title="Minha agenda" description="Gerencie seus horários disponíveis."
+                    route="/instructor/availability" [icon]="faCalendarPlus">
+                </app-dashboard-action>
+
+                <app-dashboard-action title="Meu perfil" description="Atualize seus dados e preferências."
+                    route="/instructor/profile" [icon]="faUser">
+                </app-dashboard-action>
+            </div>
+        </section>
+        }
+    </div>
+</main>

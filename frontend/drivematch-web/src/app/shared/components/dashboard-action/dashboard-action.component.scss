@@ -1,0 +1,107 @@
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.dashboard-action {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    height: 100%;
+    min-height: 6rem;
+
+    padding: 1rem 1.125rem;
+
+    color: inherit;
+    text-decoration: none;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.dashboard-action:hover {
+    border-color: #bfdbfe;
+
+    box-shadow:
+        0 4px 12px rgba(15, 23, 42, 0.06);
+
+    transform: translateY(-1px);
+}
+
+.dashboard-action:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.2);
+    outline-offset: 2px;
+}
+
+.dashboard-action__icon {
+    display: grid;
+    place-items: center;
+
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 2.75rem;
+
+    border-radius: 0.75rem;
+
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.dashboard-action__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    min-width: 0;
+}
+
+.dashboard-action__title {
+    color: #172554;
+
+    font-size: 0.95rem;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+.dashboard-action__description {
+    color: #64748b;
+
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.dashboard-action__arrow {
+    flex: 0 0 auto;
+
+    color: #94a3b8;
+
+    font-size: 1.15rem;
+
+    transition:
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.dashboard-action:hover .dashboard-action__arrow {
+    color: #2563eb;
+    transform: translateX(2px);
+}
+
+@media (max-width: 640px) {
+    .dashboard-action {
+        min-height: 5.5rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .dashboard-action__description {
+        font-size: 0.78rem;
+    }
+}

@@ -1,0 +1,527 @@
+<div class="home">
+    <header class="home-header">
+        <div class="home-header__content">
+            <a class="home-brand" routerLink="/" aria-label="DriveMatch - página inicial">
+
+                <img class="home-brand__logo" src="/brand/drivematch-logo-light.png" alt="DriveMatch">
+            </a>
+
+            <nav class="home-navigation" aria-label="Navegação principal">
+
+                <a href="#how-it-works">
+                    Como funciona
+                </a>
+
+                <a href="#features">
+                    Recursos
+                </a>
+
+                <a href="#about">
+                    Sobre o projeto
+                </a>
+            </nav>
+
+            <div class="home-header__actions">
+                <a class="home-button home-button--ghost" routerLink="/login">
+                    Entrar
+                </a>
+
+                <a class="home-button home-button--light" routerLink="/register">
+                    Criar conta
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero__content">
+                <div class="hero__text">
+                    <span class="hero__eyebrow">
+                        Aulas de direção do seu jeito
+                    </span>
+
+                    <h1>
+                        O encontro entre
+                        <span>alunos e instrutores.</span>
+                    </h1>
+
+                    <p class="hero__description">
+                        O DriveMatch conecta alunos a instrutores
+                        autônomos, facilitando a busca, o agendamento
+                        e o acompanhamento das aulas em um só lugar.
+                    </p>
+
+                    <div class="hero__actions">
+                        <a class="home-button home-button--primary" routerLink="/register">
+
+                            Começar agora
+
+                            <fa-icon [icon]="faArrowRight" aria-hidden="true">
+                            </fa-icon>
+                        </a>
+
+                        <a class="home-button home-button--outline" href="#how-it-works">
+                            Conhecer o DriveMatch
+                        </a>
+                    </div>
+
+                    <div class="hero__highlights">
+                        <span>
+                            <fa-icon [icon]="faCheck" aria-hidden="true">
+                            </fa-icon>
+
+                            Busca por região
+                        </span>
+
+                        <span>
+                            <fa-icon [icon]="faCheck" aria-hidden="true">
+                            </fa-icon>
+
+                            Agenda integrada
+                        </span>
+
+                        <span>
+                            <fa-icon [icon]="faCheck" aria-hidden="true">
+                            </fa-icon>
+
+                            Check-in por QR Code
+                        </span>
+                    </div>
+                </div>
+
+                <div class="hero__visual" aria-hidden="true">
+
+                    <div class="hero-card hero-card--main">
+                        <div class="hero-card__header">
+                            <div class="hero-card__avatar">
+                                <fa-icon [icon]="faUserCheck"></fa-icon>
+                            </div>
+
+                            <div>
+                                <strong>Instrutor encontrado</strong>
+                                <span>Compatível com sua busca</span>
+                            </div>
+                        </div>
+
+                        <div class="hero-card__rating">
+                            <fa-icon [icon]="faStar"></fa-icon>
+                            <span>Perfil e avaliações</span>
+                        </div>
+
+                        <div class="hero-card__details">
+                            <span>
+                                <fa-icon [icon]="faLocationDot"></fa-icon>
+                                Sua região
+                            </span>
+
+                            <span>
+                                <fa-icon [icon]="faCalendarDays"></fa-icon>
+                                Horários disponíveis
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="hero-card hero-card--floating hero-card--lesson">
+                        <fa-icon [icon]="faCircleCheck"></fa-icon>
+
+                        <div>
+                            <strong>Aula confirmada</strong>
+                            <span>Agendamento realizado</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-card hero-card--floating hero-card--qr">
+                        <fa-icon [icon]="faQrcode"></fa-icon>
+
+                        <div>
+                            <strong>Check-in</strong>
+                            <span>Presença confirmada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="home-section">
+
+            <div class="section-heading">
+                <span class="section-heading__eyebrow">
+                    Simples do início ao fim
+                </span>
+
+                <h2>
+                    Como funciona
+                </h2>
+
+                <p>
+                    Do primeiro contato à conclusão da aula,
+                    o DriveMatch organiza a jornada em poucos passos.
+                </p>
+            </div>
+
+            <div class="steps-grid">
+                <article class="step-card">
+                    <span class="step-card__number">
+                        01
+                    </span>
+
+                    <div class="step-card__icon">
+                        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                    </div>
+
+                    <h3>Encontre</h3>
+
+                    <p>
+                        Busque instrutores disponíveis na sua região
+                        e encontre perfis compatíveis com suas necessidades.
+                    </p>
+                </article>
+
+                <article class="step-card">
+                    <span class="step-card__number">
+                        02
+                    </span>
+
+                    <div class="step-card__icon">
+                        <fa-icon [icon]="faCalendarDays"></fa-icon>
+                    </div>
+
+                    <h3>Solicite</h3>
+
+                    <p>
+                        Escolha um horário disponível e envie
+                        uma solicitação de aula ao instrutor.
+                    </p>
+                </article>
+
+                <article class="step-card">
+                    <span class="step-card__number">
+                        03
+                    </span>
+
+                    <div class="step-card__icon">
+                        <fa-icon [icon]="faQrcode"></fa-icon>
+                    </div>
+
+                    <h3>Faça o check-in</h3>
+
+                    <p>
+                        No momento da aula, aluno e instrutor
+                        confirmam a presença utilizando QR Code.
+                    </p>
+                </article>
+
+                <article class="step-card">
+                    <span class="step-card__number">
+                        04
+                    </span>
+
+                    <div class="step-card__icon">
+                        <fa-icon [icon]="faStar"></fa-icon>
+                    </div>
+
+                    <h3>Avalie</h3>
+
+                    <p>
+                        Após a conclusão, a experiência pode ser
+                        registrada por meio da avaliação da aula.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section id="features" class="home-section home-section--soft">
+
+            <div class="section-heading">
+                <span class="section-heading__eyebrow">
+                    Uma experiência para os dois lados
+                </span>
+
+                <h2>
+                    Tudo organizado em um só lugar
+                </h2>
+
+                <p>
+                    Recursos pensados para simplificar a rotina
+                    de quem quer aprender e de quem ensina.
+                </p>
+            </div>
+
+            <div class="audience-grid">
+                <article class="audience-card">
+                    <div class="audience-card__heading">
+                        <div class="audience-card__icon">
+                            <fa-icon [icon]="faGraduationCap"></fa-icon>
+                        </div>
+
+                        <div>
+                            <span>Para alunos</span>
+                            <h3>Encontre a aula certa para você</h3>
+                        </div>
+                    </div>
+
+                    <ul>
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Busca de instrutores por região
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Consulta de disponibilidade
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Solicitação e acompanhamento de aulas
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Check-in 
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="audience-card">
+                    <div class="audience-card__heading">
+                        <div class="audience-card__icon">
+                            <fa-icon [icon]="faUsers"></fa-icon>
+                        </div>
+
+                        <div>
+                            <span>Para instrutores</span>
+                            <h3>Organize sua rotina de aulas</h3>
+                        </div>
+                    </div>
+
+                    <ul>
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Perfil profissional
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Gestão da disponibilidade
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Controle de solicitações
+                        </li>
+
+                        <li>
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            Gestão e acompanhamento das aulas
+                        </li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <fa-icon [icon]="faCalendarDays"></fa-icon>
+
+                    <h3>Agenda</h3>
+
+                    <p>
+                        Disponibilidades e aulas organizadas
+                        para facilitar o planejamento.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <fa-icon [icon]="faClock"></fa-icon>
+
+                    <h3>Solicitações</h3>
+
+                    <p>
+                        Alunos solicitam horários e instrutores
+                        gerenciam os pedidos recebidos.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <fa-icon [icon]="faQrcode"></fa-icon>
+
+                    <h3>Check-in</h3>
+
+                    <p>
+                        Confirmação de presença por QR Code
+                        antes do início da aula.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <fa-icon [icon]="faStar"></fa-icon>
+
+                    <h3>Avaliações</h3>
+
+                    <p>
+                        Registro da experiência após
+                        a conclusão das aulas.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section id="about" class="portfolio-section">
+
+            <div class="portfolio-section__content">
+                <div class="portfolio-section__text">
+                    <span class="section-heading__eyebrow">
+                        Projeto de portfólio
+                    </span>
+
+                    <h2>
+                        Produto, engenharia e desenvolvimento
+                        de ponta a ponta.
+                    </h2>
+
+                    <p>
+                        O DriveMatch é um projeto de portfólio
+                        desenvolvido por Isadora Silvino para demonstrar
+                        a construção de uma aplicação web completa,
+                        desde a modelagem do domínio e das regras
+                        de negócio até API, persistência, testes
+                        automatizados e interface.
+                    </p>
+
+                    <p>
+                        O projeto utiliza .NET e C# no backend,
+                        Angular no frontend e PostgreSQL para
+                        persistência dos dados.
+                    </p>
+
+                    <div class="portfolio-links">
+                        <a href="https://github.com/isadorasilvino/drivematch" target="_blank"
+                            rel="noopener noreferrer">
+
+                            Ver projeto no GitHub
+                        </a>
+
+                        <a href="https://www.linkedin.com/in/isadorasilvino" target="_blank" rel="noopener noreferrer">
+
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+                <div class="portfolio-tech">
+                    <div class="portfolio-tech__icon">
+                        <fa-icon [icon]="faCodeBranch"></fa-icon>
+                    </div>
+
+                    <span>DriveMatch</span>
+
+                    <strong>
+                        Projeto demonstrativo
+                    </strong>
+
+                    <p>
+                        Desenvolvido com foco em arquitetura,
+                        regras de negócio, qualidade de código
+                        e experiência do usuário.
+                    </p>
+
+                    <div class="portfolio-tech__stack">
+                        <span>.NET</span>
+                        <span>C#</span>
+                        <span>Angular</span>
+                        <span>PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="privacy" class="privacy-section">
+
+            <div class="privacy-section__icon">
+                <fa-icon [icon]="faShieldHalved"></fa-icon>
+            </div>
+
+            <div class="privacy-section__content">
+                <span class="section-heading__eyebrow">
+                    Privacidade e LGPD
+                </span>
+
+                <h2>
+                    Privacidade considerada desde o projeto.
+                </h2>
+
+                <p>
+                    O DriveMatch foi desenvolvido considerando
+                    princípios de privacidade e minimização de dados.
+                    A aplicação utiliza informações necessárias para
+                    identificação da conta e funcionamento dos
+                    recursos disponíveis na plataforma.
+                </p>
+
+                <div class="privacy-section__note">
+                    <fa-icon [icon]="faLock" aria-hidden="true">
+                    </fa-icon>
+
+                    <p>
+                        O DriveMatch é um projeto demonstrativo de
+                        portfólio e não possui finalidade comercial
+                        neste momento.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-cta">
+            <div class="final-cta__content">
+                <span>DriveMatch</span>
+
+                <h2>
+                    Pronto para conhecer a plataforma?
+                </h2>
+
+                <p>
+                    Crie uma conta como aluno ou instrutor
+                    e explore os fluxos do projeto.
+                </p>
+
+                <div class="final-cta__actions">
+                    <a class="home-button home-button--light" routerLink="/register">
+                        Criar conta
+                    </a>
+
+                    <a class="home-button home-button--dark-outline" routerLink="/login">
+                        Já tenho uma conta
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="home-footer">
+        <div class="home-footer__content">
+            <div class="home-footer__brand">
+                <strong>DriveMatch</strong>
+
+                <span>
+                    Projeto de portfólio desenvolvido por
+                    Isadora Silvino.
+                </span>
+            </div>
+
+            <div class="home-footer__links">
+                <a href="#privacy">
+                    Privacidade e LGPD
+                </a>
+
+                <a href="https://github.com/isadorasilvino/drivematch" target="_blank" rel="noopener noreferrer">
+                    GitHub
+                </a>
+
+                <a href="https://www.linkedin.com/in/isadorasilvino" target="_blank" rel="noopener noreferrer">
+                    LinkedIn
+                </a>
+            </div>
+        </div>
+    </footer>
+</div>

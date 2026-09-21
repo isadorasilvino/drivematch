@@ -1,0 +1,184 @@
+<main class="student-dashboard">
+    <div class="student-dashboard__container">
+
+        <header class="student-dashboard__header">
+            <div>
+                <span class="student-dashboard__eyebrow">
+                    Área do aluno
+                </span>
+
+                <h1>
+                    @if (name()) {
+                    Olá, {{ name() }}!
+                    } @else {
+                    Olá!
+                    }
+                </h1>
+
+                <p>
+                    Acompanhe suas aulas e continue evoluindo
+                    na direção.
+                </p>
+            </div>
+        </header>
+
+        @if (isLoading()) {
+        <div class="student-dashboard__state" aria-live="polite">
+
+            <span class="student-dashboard__loader"></span>
+
+            <p>Carregando seu resumo...</p>
+        </div>
+        } @else if (errorMessage()) {
+        <div class="student-dashboard__error" role="alert">
+
+            {{ errorMessage() }}
+        </div>
+        } @else {
+
+        <section class="student-dashboard__stats" aria-label="Resumo">
+
+            <app-dashboard-stat label="Próximas aulas" [value]="upcomingLessonsCount()" [icon]="faCalendarDays">
+            </app-dashboard-stat>
+
+            <app-dashboard-stat label="Solicitações pendentes" [value]="pendingRequestsCount()" [icon]="faClock">
+            </app-dashboard-stat>
+
+            <app-dashboard-stat label="Aulas concluídas" [value]="completedLessonsCount()" [icon]="faCalendarCheck">
+            </app-dashboard-stat>
+
+        </section>
+
+        <section class="student-dashboard__section">
+
+            <div class="student-dashboard__section-header">
+                <div>
+                    <span class="student-dashboard__section-eyebrow">
+                        Agenda
+                    </span>
+
+                    <h2>Próxima aula</h2>
+                </div>
+
+                <a class="student-dashboard__section-link" routerLink="/student/lessons">
+
+                    Ver minhas aulas
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+
+            @if (nextLesson(); as lesson) {
+
+            <article class="next-lesson">
+
+                <div class="next-lesson__date">
+                    <div class="next-lesson__date-icon">
+                        <fa-icon [icon]="faCalendarDays" aria-hidden="true">
+                        </fa-icon>
+                    </div>
+
+                    <div>
+                        <span class="next-lesson__label">
+                            Data
+                        </span>
+
+                        <strong>
+                            {{ formatDate(lesson.scheduledDate) }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="next-lesson__detail">
+                    <span class="next-lesson__label">
+                        Horário
+                    </span>
+
+                    <strong>
+                        {{ formatTime(lesson.startTime) }}
+                        –
+                        {{ formatTime(lesson.endTime) }}
+                    </strong>
+                </div>
+
+                <div class="next-lesson__detail">
+                    <span class="next-lesson__label">
+                        Instrutor
+                    </span>
+
+                    <strong>
+                        {{ lesson.instructorName }}
+                    </strong>
+                </div>
+
+                <a class="next-lesson__action" routerLink="/student/lessons">
+
+                    Ver detalhes
+                    <span aria-hidden="true">→</span>
+                </a>
+
+            </article>
+
+            } @else {
+
+            <div class="next-lesson-empty">
+                <div class="next-lesson-empty__icon">
+                    <fa-icon [icon]="faCarSide" aria-hidden="true">
+                    </fa-icon>
+                </div>
+
+                <div class="next-lesson-empty__content">
+                    <strong>
+                        Nenhuma aula agendada
+                    </strong>
+
+                    <p>
+                        Encontre um instrutor e solicite sua
+                        próxima aula.
+                    </p>
+                </div>
+
+                <a class="next-lesson-empty__action" routerLink="/student/instructors">
+
+                    Encontrar instrutor
+                </a>
+            </div>
+
+            }
+
+        </section>
+
+        <section class="student-dashboard__section">
+
+            <div class="student-dashboard__section-header">
+                <div>
+                    <span class="student-dashboard__section-eyebrow">
+                        Navegação
+                    </span>
+
+                    <h2>Acesso rápido</h2>
+                </div>
+            </div>
+
+            <div class="student-dashboard__actions">
+
+                <app-dashboard-action title="Encontrar instrutor"
+                    description="Busque instrutores disponíveis na sua região." route="/student/instructors"
+                    [icon]="faMagnifyingGlass">
+                </app-dashboard-action>
+
+                <app-dashboard-action title="Minhas aulas" description="Acompanhe suas aulas agendadas e concluídas."
+                    route="/student/lessons" [icon]="faCalendarDays">
+                </app-dashboard-action>
+
+                <app-dashboard-action title="Meu perfil" description="Atualize seus dados e preferências."
+                    route="/student/profile" [icon]="faUser">
+                </app-dashboard-action>
+
+            </div>
+
+        </section>
+
+        }
+
+    </div>
+</main>
