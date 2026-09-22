@@ -65,7 +65,8 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:4200",
-                "https://drivematch-hml.pages.dev")
+                "https://drivematch-hml.pages.dev",
+                "https://drivematch-web.pages.dev")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
