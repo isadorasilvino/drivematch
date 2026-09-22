@@ -59,6 +59,28 @@
                 }
               ]
             },
+            "hml": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "12kB",
+                  "maximumError": "16kB"
+                }
+              ],
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hml.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -72,6 +94,9 @@
           "configurations": {
             "production": {
               "buildTarget": "drivematch-web:build:production"
+            },
+            "hml": {
+              "buildTarget": "drivematch-web:build:hml"
             },
             "development": {
               "buildTarget": "drivematch-web:build:development"
