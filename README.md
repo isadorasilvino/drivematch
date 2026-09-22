@@ -2,7 +2,17 @@
 
 O DriveMatch é uma plataforma web que conecta alunos a instrutores autônomos de direção.
 
-O projeto foi desenvolvido como um MVP completo e também como projeto de portfólio, com foco em demonstrar decisões reais de engenharia de software: modelagem de domínio, arquitetura em camadas, APIs REST, autenticação, regras de negócio, testes automatizados, frontend responsivo e documentação técnica.
+O projeto foi desenvolvido como um produto completo de portfólio, passando pelo planejamento, modelagem e implementação do MVP até sua publicação em produção.
+
+O foco foi aplicar decisões reais de engenharia de software: modelagem de domínio, arquitetura em camadas, APIs REST, autenticação e autorização, testes automatizados, frontend responsivo, documentação técnica e separação de ambientes.
+
+## Aplicação publicada
+
+A V1 do DriveMatch está disponível em:
+
+**https://drivematch-web.pages.dev**
+
+> O projeto é uma aplicação de portfólio. Para demonstrações, utilize apenas dados fictícios.
 
 ## Sobre o projeto
 
@@ -172,12 +182,43 @@ Entre as decisões adotadas estão:
 ### Testes e infraestrutura
 
 - xUnit
+- Testcontainers
 - testes unitários
 - testes de integração
 - Docker
 - Docker Compose
 - Git
 - GitHub
+- Cloudflare Pages
+- Render
+- Neon PostgreSQL
+
+## Ambientes e deploy
+
+O DriveMatch possui ambientes separados para desenvolvimento, homologação e produção.
+
+```text
+Desenvolvimento local
+        │
+        ▼
+Homologação
+branch: hml
+├── Frontend — Cloudflare Pages
+├── API — Render
+└── PostgreSQL — Neon
+        │
+        │ validação
+        ▼
+Pull Request
+hml → main
+        │
+        ▼
+Produção
+branch: main
+├── Frontend — Cloudflare Pages
+├── API — Render
+└── PostgreSQL — Neon
+```
 
 ## Estrutura do repositório
 
@@ -330,11 +371,17 @@ Outras possibilidades de evolução, como mecanismos avançados de recomendaçã
 
 ## Status
 
-**MVP funcionalmente concluído.**
+**V1 publicada. 🚀**
 
-Os principais fluxos da plataforma estão implementados e foram validados por testes automatizados e testes manuais.
+O MVP do DriveMatch está funcionalmente concluído e disponível em ambiente de produção.
 
-O projeto encontra-se em etapa de fechamento técnico, documentação e publicação da versão de portfólio.
+A versão atual contempla o fluxo principal da plataforma, desde o cadastro e configuração dos perfis até solicitação, agendamento, check-in e conclusão de aulas.
+
+A aplicação possui ambientes independentes de desenvolvimento, homologação e produção, com processo de promoção para produção por Pull Request.
+
+A suíte do backend conta atualmente com **281 testes automatizados**, além das validações manuais dos principais fluxos no frontend.
+
+**Aplicação:** https://drivematch-web.pages.dev
 
 ## Objetivo profissional
 
