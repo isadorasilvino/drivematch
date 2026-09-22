@@ -1,1299 +1,719 @@
-\# DriveMatch — Requirements Specification
+# DriveMatch — Requisitos do MVP
 
+## 1. Objetivo
 
+Este documento descreve os requisitos funcionais e não funcionais do MVP do DriveMatch.
 
-\## 1. Objetivo
+Os requisitos apresentados correspondem ao comportamento consolidado da aplicação após sua implementação.
 
+Funcionalidades consideradas durante a concepção, mas que não fazem parte do MVP entregue, são registradas separadamente como fora do escopo ou possíveis evoluções.
 
+---
 
-Este documento define os requisitos funcionais, requisitos não funcionais e regras de negócio do DriveMatch.
+# 2. Requisitos funcionais
 
+## 2.1 Conta e autenticação
 
+### RF-01 — Cadastro de usuário
 
-Os requisitos descritos neste documento representam o escopo funcional planejado para o MVP e servirão como referência para arquitetura, implementação, testes e evolução do sistema.
+O sistema deve permitir o cadastro de um usuário como:
 
+- aluno;
+- instrutor.
 
+O cadastro deve solicitar os dados necessários para criação da conta, incluindo nome, e-mail e senha.
 
-\---
+---
 
+### RF-02 — Autenticação
 
+O sistema deve permitir que um usuário cadastrado realize login utilizando suas credenciais.
 
-\## 2. Priorização
+Após uma autenticação válida, o sistema deve identificar:
 
+- o usuário;
+- seu papel;
+- sua sessão autenticada.
 
+---
 
-Os requisitos são classificados de acordo com a seguinte prioridade:
+### RF-03 — Autorização por papel
 
+O sistema deve diferenciar as permissões de alunos e instrutores.
 
+Um aluno não deve acessar funcionalidades exclusivas de instrutores.
 
-| Prioridade | Descrição |
+Um instrutor não deve acessar funcionalidades exclusivas de alunos.
 
-|---|---|
+---
 
-| Must | Necessário para o MVP |
+### RF-04 — Sessão do usuário
 
-| Should | Importante, mas pode ser postergado |
+O frontend deve manter as informações necessárias para preservar a sessão autenticada durante a utilização da aplicação.
 
-| Could | Desejável para versões futuras |
+Sessões inválidas ou expiradas não devem permitir acesso às áreas protegidas.
 
+---
 
+### RF-05 — Consulta da própria conta
 
-\---
+O usuário autenticado deve conseguir consultar os dados de sua própria conta.
 
+Entre os dados disponibilizados estão:
 
+- nome;
+- e-mail;
+- papel do usuário.
 
-\## 3. Requisitos Funcionais
+---
 
+### RF-06 — Atualização da própria conta
 
+O usuário autenticado deve conseguir atualizar:
 
-\### 3.1 Autenticação e Usuários
+- nome;
+- e-mail.
 
+A alteração deve ser refletida nas áreas da interface que apresentam os dados da conta.
 
+---
 
-\#### RF-001 — Cadastro de usuário
+### RF-07 — Alteração de senha
 
+O usuário autenticado deve conseguir alterar sua senha.
 
+A operação deve exigir as informações necessárias para validar a alteração antes da definição da nova senha.
 
-\*\*Prioridade:\*\* Must
+---
 
+## 2.2 Perfil do aluno
 
+### RF-08 — Criação do perfil do aluno
 
-O sistema deve permitir que uma pessoa crie uma conta informando os dados necessários para autenticação.
+Um usuário com papel de aluno deve conseguir criar seu perfil.
 
+O perfil deve permitir o registro das informações utilizadas nos fluxos do MVP.
 
+---
 
-\---
+### RF-09 — Informações do perfil do aluno
 
+O perfil do aluno deve armazenar:
 
+- cidade;
+- estado;
+- nível de experiência;
+- informação sobre posse de veículo;
+- informação sobre disponibilidade de veículo próprio para aulas.
 
-\#### RF-002 — Autenticação
+---
 
+### RF-10 — Atualização do perfil do aluno
 
+O aluno deve conseguir atualizar as informações de seu perfil.
 
-\*\*Prioridade:\*\* Must
+---
 
+### RF-11 — Dependência de perfil
 
+Funcionalidades do aluno que dependem de suas informações de perfil devem exigir a existência de um perfil válido.
 
-O sistema deve permitir que usuários cadastrados realizem autenticação utilizando suas credenciais.
+Quando necessário, o usuário deve ser direcionado para concluir seu perfil antes de continuar.
 
+---
 
+## 2.3 Perfil do instrutor
 
-\---
+### RF-12 — Criação do perfil do instrutor
 
+Um usuário com papel de instrutor deve conseguir criar seu perfil profissional.
 
+---
 
-\#### RF-003 — Encerramento de sessão
+### RF-13 — Informações do perfil do instrutor
 
+O perfil do instrutor deve permitir o registro de:
 
+- descrição;
+- anos de experiência;
+- cidade;
+- estado;
+- preço da aula;
+- aceitação de alunos iniciantes;
+- aceitação de alunos com experiência;
+- aceitação do veículo do aluno.
 
-\*\*Prioridade:\*\* Must
+---
 
+### RF-14 — Atualização do perfil do instrutor
 
+O instrutor deve conseguir atualizar as informações de seu perfil profissional.
 
-O sistema deve permitir que o usuário encerre sua sessão.
+---
 
+### RF-15 — Dependência de perfil do instrutor
 
+Funcionalidades que dependem do perfil profissional devem exigir a existência de um perfil válido.
 
-\---
+---
 
+### RF-16 — Controle de visibilidade do perfil
 
+O instrutor deve conseguir controlar o estado de seu perfil.
 
-\#### RF-004 — Recuperação de acesso
+O perfil pode ser ativado ou desativado de acordo com as regras do sistema.
 
+---
 
+### RF-17 — Perfil desativado
 
-\*\*Prioridade:\*\* Should
+Quando o perfil estiver desativado, o instrutor não deve permanecer disponível para descoberta por novos alunos.
 
+O próprio instrutor deve continuar podendo acessar sua conta e gerenciar seu perfil.
 
+---
 
-O sistema deve permitir que usuários recuperem o acesso à conta em caso de esquecimento das credenciais.
+## 2.4 Busca de instrutores
 
+### RF-18 — Pesquisa de instrutores
 
+O aluno deve conseguir pesquisar instrutores disponíveis na plataforma.
 
-\---
+A busca deve considerar apenas instrutores que possam participar do fluxo de descoberta de acordo com as regras do sistema.
 
+---
 
+### RF-19 — Informações do instrutor
 
-\#### RF-005 — Perfil do usuário
+O aluno deve conseguir visualizar informações necessárias para avaliar um instrutor antes de solicitar uma aula.
 
+Essas informações devem ser derivadas do perfil profissional do instrutor.
 
+---
 
-\*\*Prioridade:\*\* Must
+### RF-20 — Consulta da disponibilidade
 
+O aluno deve conseguir consultar os horários disponibilizados pelo instrutor.
 
+---
 
-O sistema deve permitir que usuários visualizem e atualizem seus dados de perfil.
+## 2.5 Disponibilidade do instrutor
 
+### RF-21 — Cadastro de disponibilidade
 
+O instrutor deve conseguir cadastrar períodos em que está disponível para receber solicitações de aula.
 
-\---
+---
 
+### RF-22 — Consulta da própria disponibilidade
 
+O instrutor deve conseguir visualizar sua disponibilidade cadastrada.
 
-\### 3.2 Perfil do Aluno
+---
 
+### RF-23 — Gerenciamento da disponibilidade
 
+O instrutor deve conseguir gerenciar os períodos disponibilizados conforme as operações permitidas pela aplicação.
 
-\#### RF-006 — Cadastro de perfil do aluno
+---
 
+### RF-24 — Proteção contra conflitos
 
+O sistema deve impedir operações de disponibilidade incompatíveis com horários já comprometidos ou com as regras de agendamento.
 
-\*\*Prioridade:\*\* Must
+---
 
+## 2.6 Solicitações de aula
 
+### RF-25 — Criação de solicitação
 
-O aluno deve poder informar dados necessários para utilização da plataforma.
+O aluno deve conseguir solicitar uma aula a partir de uma disponibilidade válida de um instrutor.
 
+---
 
+### RF-26 — Informações da solicitação
 
-\---
+A solicitação deve identificar as informações necessárias para relacionar:
 
+- aluno;
+- instrutor;
+- horário solicitado;
+- estado da solicitação.
 
+---
 
-\#### RF-007 — Preferências de aprendizagem
+### RF-27 — Consulta das solicitações pelo aluno
 
+O aluno deve conseguir acompanhar as solicitações realizadas por ele.
 
+---
 
-\*\*Prioridade:\*\* Must
+### RF-28 — Consulta das solicitações pelo instrutor
 
+O instrutor deve conseguir acompanhar as solicitações recebidas.
 
+---
 
-O aluno deve poder informar características relacionadas às suas necessidades de aprendizagem.
+### RF-29 — Aceite da solicitação
 
+O instrutor deve conseguir aceitar uma solicitação válida.
 
+O aceite deve produzir os efeitos necessários para transformar aquele compromisso em uma aula dentro do fluxo do sistema.
 
-Exemplos:
+---
 
+### RF-30 — Recusa da solicitação
 
+O instrutor deve conseguir recusar uma solicitação válida.
 
-\* Nível de experiência.
+---
 
-\* Se já possui experiência dirigindo.
+### RF-31 — Consistência do horário
 
-\* Necessidade de aulas para iniciantes.
+O sistema deve impedir que o mesmo horário seja comprometido de forma incompatível por múltiplas solicitações ou aulas.
 
-\* Utilização de veículo próprio.
+---
 
-\* Preferências de disponibilidade.
+## 2.7 Aulas
 
+### RF-32 — Criação da aula
 
+Uma solicitação aceita deve resultar na aula correspondente conforme as regras de negócio.
 
-\---
+---
 
+### RF-33 — Consulta das aulas pelo aluno
 
+O aluno deve conseguir visualizar suas aulas.
 
-\#### RF-008 — Histórico de aulas do aluno
+---
 
+### RF-34 — Consulta das aulas pelo instrutor
 
+O instrutor deve conseguir visualizar suas aulas.
 
-\*\*Prioridade:\*\* Must
+---
 
+### RF-35 — Estado da aula
 
+A aula deve possuir um estado que represente sua posição dentro do fluxo.
 
-O aluno deve poder visualizar seu histórico de aulas realizadas e agendadas.
+As transições devem obedecer às regras de negócio e às ações permitidas para cada participante.
 
+---
 
+### RF-36 — Proteção das operações da aula
 
-\---
+Ações relacionadas a uma aula devem validar:
 
+- identidade do usuário autenticado;
+- participação do usuário naquela aula;
+- papel necessário para a operação;
+- estado atual da aula.
 
+---
 
-\### 3.3 Perfil do Instrutor
+## 2.8 Check-in
 
+### RF-37 — Início do check-in
 
+O instrutor responsável pela aula deve conseguir iniciar o processo de check-in quando as condições da aula permitirem.
 
-\#### RF-009 — Cadastro de perfil profissional
+---
 
+### RF-38 — Geração do token
 
+O início do check-in deve gerar um token temporário associado à aula.
 
-\*\*Prioridade:\*\* Must
+---
 
+### RF-39 — Representação por QR Code
 
+O token de check-in deve poder ser apresentado ao aluno por meio de um QR Code.
 
-O instrutor deve poder criar e manter um perfil profissional.
+---
 
+### RF-40 — Realização do check-in
 
+O aluno participante da aula deve conseguir utilizar o token correspondente para realizar o check-in.
 
-\---
+---
 
+### RF-41 — Validação do token
 
+O sistema deve validar o token antes de confirmar o check-in.
 
-\#### RF-010 — Informações profissionais
+A validação deve impedir o uso de tokens inválidos, incompatíveis com a aula ou fora das condições permitidas.
 
+---
 
+### RF-42 — Continuidade da aula
 
-\*\*Prioridade:\*\* Must
+Após o check-in válido, a aula deve poder avançar para os próximos estados previstos pelo fluxo.
 
+---
 
+### RF-43 — Conclusão da aula
 
-O instrutor deve poder informar características de seus serviços.
+O instrutor deve conseguir concluir uma aula quando as condições necessárias forem atendidas.
 
+---
 
+## 2.9 Dashboard do aluno
 
-Entre elas:
+### RF-44 — Resumo do aluno
 
+A página inicial autenticada do aluno deve apresentar um resumo das informações relevantes para seu uso da plataforma.
 
+---
 
-\* Regiões atendidas.
+### RF-45 — Informações de aulas do aluno
 
-\* Preço das aulas.
+O dashboard deve apresentar informações resumidas relacionadas às aulas do aluno, incluindo sua próxima aula quando aplicável.
 
-\* Descrição profissional.
+Quando não houver aula correspondente, a interface deve apresentar um estado vazio adequado.
 
-\* Experiência.
+---
 
-\* Tipos de alunos atendidos.
+### RF-46 — Informações de solicitações do aluno
 
-\* Condições para utilização de veículo próprio.
+O dashboard deve apresentar informações resumidas relacionadas às solicitações do aluno quando aplicável.
 
+---
 
+### RF-47 — Acessos rápidos do aluno
 
-\---
+O dashboard deve oferecer acesso aos principais fluxos disponíveis ao aluno.
 
+---
 
+## 2.10 Dashboard do instrutor
 
-\#### RF-011 — Configuração de público atendido
+### RF-48 — Resumo do instrutor
 
+A página inicial autenticada do instrutor deve apresentar um resumo das informações relevantes para sua utilização da plataforma.
 
+---
 
-\*\*Prioridade:\*\* Must
+### RF-49 — Informações de aulas do instrutor
 
+O dashboard deve apresentar informações resumidas relacionadas às aulas do instrutor, incluindo sua próxima aula quando aplicável.
 
+Quando não houver aula correspondente, a interface deve apresentar um estado vazio adequado.
 
-O instrutor deve poder informar se aceita:
+---
 
+### RF-50 — Informações de solicitações do instrutor
 
+O dashboard deve apresentar informações resumidas relacionadas às solicitações recebidas pelo instrutor quando aplicável.
 
-\* Alunos iniciantes.
+---
 
-\* Alunos que já sabem dirigir.
+### RF-51 — Estado do perfil no dashboard
 
-\* Alunos utilizando veículo próprio.
+O dashboard deve informar se o perfil do instrutor está ativo ou desativado.
 
+Quando ativo, a informação pode ser apresentada de forma discreta.
 
+Quando desativado, a interface deve destacar que o perfil precisa ser ativado para voltar a ficar disponível para novos alunos.
 
-\---
+A alteração do estado deve continuar sendo realizada na área de perfil.
 
+---
 
+### RF-52 — Acessos rápidos do instrutor
 
-\#### RF-012 — Configuração de disponibilidade
+O dashboard deve oferecer acesso aos principais fluxos disponíveis ao instrutor.
 
+---
 
+## 2.11 Página pública
 
-\*\*Prioridade:\*\* Must
+### RF-53 — Página inicial pública
 
+O sistema deve possuir uma página pública acessível sem autenticação.
 
+---
 
-O instrutor deve poder configurar os períodos em que possui disponibilidade para aulas.
+### RF-54 — Apresentação do produto
 
+A página pública deve apresentar informações que permitam compreender:
 
+- o que é o DriveMatch;
+- para que serve;
+- seus principais recursos;
+- o fluxo geral da plataforma.
 
-\---
+---
 
+### RF-55 — Identificação como projeto de portfólio
 
+A apresentação pública deve deixar claro que o DriveMatch é um projeto desenvolvido para fins de portfólio e demonstração técnica.
 
-\#### RF-013 — Histórico de aulas do instrutor
+---
 
+### RF-56 — Autoria
 
+A página pública pode apresentar informações profissionais relacionadas à autoria do projeto e meios públicos de acesso aos respectivos perfis profissionais.
 
-\*\*Prioridade:\*\* Must
+---
 
+### RF-57 — Informações de privacidade
 
+A página pública deve apresentar informações compatíveis com o contexto de privacidade e tratamento de dados adotado pelo projeto.
 
-O instrutor deve poder visualizar o histórico de aulas realizadas e agendadas.
+---
 
+# 3. Requisitos não funcionais
 
+## RNF-01 — Segurança das senhas
 
-\---
+Senhas não devem ser armazenadas em texto puro.
 
+---
 
+## RNF-02 — Autenticação da API
 
-\### 3.4 Busca de Instrutores
+Endpoints protegidos devem exigir autenticação válida.
 
+---
 
+## RNF-03 — Autorização
 
-\#### RF-014 — Pesquisa de instrutores
+A aplicação deve validar as permissões necessárias para operações protegidas.
 
+A existência de uma sessão autenticada não deve, isoladamente, permitir acesso a operações pertencentes a outro papel ou usuário.
 
+---
 
-\*\*Prioridade:\*\* Must
+## RNF-04 — Validação de entrada
 
+Dados recebidos pela aplicação devem ser validados antes da execução de operações que dependam deles.
 
+---
 
-O aluno deve poder pesquisar instrutores disponíveis na plataforma.
+## RNF-05 — Persistência
 
+Os dados persistentes do MVP devem ser armazenados em PostgreSQL por meio da camada de infraestrutura da aplicação.
 
+---
 
-\---
+## RNF-06 — Separação de responsabilidades
 
+O backend deve manter separação entre:
 
+- domínio;
+- aplicação;
+- infraestrutura;
+- exposição da API.
 
-\#### RF-015 — Filtro por localização
+---
 
+## RNF-07 — API REST
 
+A comunicação entre frontend e backend deve ocorrer por meio de endpoints HTTP da API.
 
-\*\*Prioridade:\*\* Must
+---
 
+## RNF-08 — Responsividade
 
+As principais interfaces devem ser utilizáveis em desktop e dispositivos móveis.
 
-O aluno deve poder filtrar instrutores de acordo com regiões atendidas.
+---
 
+## RNF-09 — Componentização
 
+Elementos de interface reutilizáveis devem ser componentizados quando essa reutilização fizer sentido para a aplicação.
 
-\---
+---
 
+## RNF-10 — Carregamento do frontend
 
+O frontend deve utilizar estratégias de organização e carregamento compatíveis com a estrutura Angular adotada no projeto, incluindo carregamento sob demanda das áreas apropriadas.
 
-\#### RF-016 — Filtro por disponibilidade
+---
 
+## RNF-11 — Testabilidade
 
+As regras e casos de uso relevantes devem possuir estrutura que permita testes automatizados.
 
-\*\*Prioridade:\*\* Must
+---
 
+## RNF-12 — Testes unitários
 
+O projeto deve possuir testes unitários para comportamentos e regras relevantes do domínio e da aplicação.
 
-O aluno deve poder filtrar instrutores de acordo com sua disponibilidade.
+---
 
+## RNF-13 — Testes de integração
 
+O projeto deve possuir testes de integração para validar os principais fluxos envolvendo API e persistência.
 
-\---
+Os testes de integração devem utilizar infraestrutura isolada apropriada para evitar dependência de um banco compartilhado entre execuções.
 
+---
 
+## RNF-14 — Build
 
-\#### RF-017 — Filtro por características
+Backend e frontend devem poder ser compilados sem erros antes da publicação de uma versão.
 
+---
 
+## RNF-15 — Containerização da infraestrutura
 
-\*\*Prioridade:\*\* Should
+O projeto deve fornecer uma forma reproduzível de inicializar os serviços de infraestrutura necessários ao desenvolvimento local utilizando containers.
 
+---
 
+## RNF-16 — Documentação
 
-O aluno deve poder filtrar instrutores de acordo com características específicas das aulas.
+O repositório deve possuir documentação suficiente para apresentar:
 
+- produto;
+- requisitos;
+- arquitetura;
+- regras de negócio;
+- modelo de domínio;
+- principais fluxos;
+- execução do projeto.
 
+---
 
-\---
+## RNF-17 — Minimização de dados
 
+O MVP deve evitar solicitar ou armazenar dados pessoais que não sejam necessários aos fluxos implementados.
 
+---
 
-\#### RF-018 — Visualização de perfil do instrutor
+## RNF-18 — Dados de demonstração
 
+Ambientes públicos utilizados para demonstração e portfólio não devem ser tratados como ambientes apropriados para armazenamento de dados pessoais reais ou sensíveis.
 
+---
 
-\*\*Prioridade:\*\* Must
+# 4. Regras gerais de acesso
 
+## 4.1 Usuário não autenticado
 
+Um usuário não autenticado pode acessar as áreas públicas da aplicação, incluindo:
 
-O aluno deve poder visualizar as informações públicas do perfil de um instrutor.
+- apresentação do projeto;
+- login;
+- cadastro.
 
+Áreas autenticadas devem exigir sessão válida.
 
+---
 
-\---
+## 4.2 Aluno autenticado
 
+Um aluno autenticado pode acessar os fluxos destinados ao papel de aluno.
 
+Funcionalidades que dependam da existência do perfil podem exigir que ele conclua seu perfil antes de continuar.
 
-\#### RF-019 — Visualização de avaliações
+---
 
+## 4.3 Instrutor autenticado
 
+Um instrutor autenticado pode acessar os fluxos destinados ao papel de instrutor.
 
-\*\*Prioridade:\*\* Must
+Funcionalidades que dependam da existência do perfil profissional podem exigir que ele conclua seu perfil antes de continuar.
 
+---
 
+# 5. Fora do escopo do MVP
 
-O aluno deve poder visualizar avaliações realizadas por outros alunos.
+Os seguintes recursos não constituem requisitos do MVP entregue:
 
+- processamento de pagamentos;
+- carteira digital;
+- repasse financeiro;
+- regras financeiras de no-show;
+- chat em tempo real;
+- chamadas de áudio;
+- videochamadas;
+- aplicativo mobile nativo;
+- integração com órgãos de trânsito;
+- algoritmo avançado de matching;
+- índice ou pontuação automática de compatibilidade;
+- funcionalidades baseadas em inteligência artificial.
 
+A ausência desses recursos é deliberada e não caracteriza requisito incompleto do MVP.
 
-\---
+---
 
+# 6. Possíveis evoluções
 
+Funcionalidades futuras podem ser avaliadas de acordo com a evolução do produto.
 
-\### 3.5 Compatibilidade entre aluno e instrutor
+Entre as possibilidades estão:
 
+- recomendações de instrutores;
+- mecanismos de compatibilidade;
+- notificações mais avançadas;
+- melhorias nos filtros e mecanismos de busca;
+- novas métricas nos dashboards;
+- recursos adicionais para gestão do instrutor;
+- integrações externas pertinentes ao domínio;
+- mecanismos adicionais de comunicação.
 
+Esses itens não constituem requisitos da versão atual.
 
-\#### RF-020 — Cálculo de compatibilidade
+---
 
+# 7. Critérios funcionais de conclusão
 
-
-\*\*Prioridade:\*\* Must
-
-
-
-O sistema deve calcular um índice de compatibilidade entre aluno e instrutor com base nas características e preferências informadas por ambos.
-
-
-
-\---
-
-
-
-\#### RF-021 — Exibição do índice de compatibilidade
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O sistema deve apresentar o índice de compatibilidade ao aluno durante a busca ou visualização dos instrutores.
-
-
-
-\---
-
-
-
-\#### RF-022 — Priorização por compatibilidade
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O sistema poderá priorizar instrutores com maior compatibilidade nos resultados de pesquisa.
-
-
-
-\---
-
-
-
-\### 3.6 Solicitação de aulas
-
-
-
-\#### RF-023 — Solicitação de aula
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O aluno deve poder solicitar uma aula com um instrutor.
-
-
-
-\---
-
-
-
-\#### RF-024 — Informações da solicitação
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-A solicitação deve conter as informações necessárias para que o instrutor possa avaliar o pedido.
-
-
-
-Entre elas:
-
-
-
-\* Data.
-
-\* Horário.
-
-\* Duração.
-
-\* Local.
-
-\* Utilização de veículo próprio.
-
-\* Observações adicionais.
-
-
-
-\---
-
-
-
-\#### RF-025 — Recebimento de solicitações
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder visualizar solicitações de aulas recebidas.
-
-
-
-\---
-
-
-
-\#### RF-026 — Aceite de solicitação
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder aceitar uma solicitação de aula.
-
-
-
-\---
-
-
-
-\#### RF-027 — Recusa de solicitação
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder recusar uma solicitação de aula.
-
-
-
-\---
-
-
-
-\#### RF-028 — Cancelamento de solicitação
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O aluno deve poder cancelar uma solicitação de aula enquanto ela estiver em estado compatível com cancelamento.
-
-
-
-\---
-
-
-
-\### 3.7 Agenda
-
-
-
-\#### RF-029 — Visualização da agenda
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder visualizar suas aulas agendadas.
-
-
-
-\---
-
-
-
-\#### RF-030 — Visualização de agenda do instrutor
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O aluno deve poder consultar a disponibilidade do instrutor antes de realizar uma solicitação.
-
-
-
-\---
-
-
-
-\#### RF-031 — Bloqueio de horários
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O instrutor deve poder bloquear períodos de sua agenda em que não estará disponível.
-
-
-
-\---
-
-
-
-\#### RF-032 — Prevenção de conflito de horários
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O sistema deve impedir que duas aulas sejam confirmadas para o mesmo instrutor no mesmo período.
-
-
-
-\---
-
-
-
-\### 3.8 Gerenciamento de aulas
-
-
-
-\#### RF-033 — Início da aula
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder iniciar uma aula agendada através da plataforma.
-
-
-
-\---
-
-
-
-\#### RF-034 — Geração de token de check-in
-
-**Prioridade:** Must
-
-Ao iniciar o processo de check-in de uma aula, o backend deve gerar um token temporário e único associado à aula.
-
-O token deve possuir validade de 15 minutos.
-
-O frontend poderá representar esse token através de um QR Code apresentado pelo instrutor.
-
-Caso o token expire antes da confirmação, o instrutor deve poder iniciar novamente o processo de check-in, gerando um novo token e invalidando o anterior.
-
-\---
-
-\#### RF-035 — Check-in do aluno
-
-**Prioridade:** Must
-
-O aluno deve poder realizar o check-in através da leitura do QR Code apresentado pelo instrutor.
-
-A confirmação do check-in deve utilizar o token temporário associado à aula.
-
-O backend deve validar:
-
-* o aluno autenticado;
-* a associação do aluno à aula;
-* o estado atual da aula;
-* a correspondência do token informado;
-* a validade temporal do token.
-
-\---
-
-\#### RF-036 — Validação da presença
-
-**Prioridade:** Must
-
-Após a validação bem-sucedida do check-in, o sistema deve:
-
-* registrar a data e hora do check-in;
-* registrar o início da aula;
-* invalidar o token utilizado;
-* alterar o estado da aula para `IN_PROGRESS`.
-
-\---
-
-
-
-\#### RF-037 — Encerramento da aula
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O instrutor deve poder encerrar uma aula em andamento.
-
-
-
-\---
-
-
-
-\#### RF-038 — Registro da aula
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O sistema deve armazenar o registro da aula realizada.
-
-
-
-\---
-
-
-
-\#### RF-039 — Aula não realizada
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O instrutor deve poder registrar que uma aula agendada não foi realizada, informando o motivo quando necessário.
-
-
-
-\---
-
-
-
-\### 3.9 Avaliações
-
-
-
-\#### RF-040 — Avaliação do instrutor
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O aluno deve poder avaliar um instrutor após uma aula concluída.
-
-
-
-\---
-
-
-
-\#### RF-041 — Nota da avaliação
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-A avaliação deve permitir que o aluno atribua uma nota ao instrutor.
-
-
-
-\---
-
-
-
-\#### RF-042 — Comentário da avaliação
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O aluno poderá adicionar um comentário à avaliação.
-
-
-
-\---
-
-
-
-\#### RF-043 — Média de avaliações
-
-
-
-\*\*Prioridade:\*\* Must
-
-
-
-O sistema deve calcular a média das avaliações recebidas pelo instrutor.
-
-
-
-\---
-
-
-
-\### 3.10 Notificações
-
-
-
-\#### RF-044 — Notificação de nova solicitação
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O instrutor deve ser notificado quando receber uma nova solicitação de aula.
-
-
-
-\---
-
-
-
-\#### RF-045 — Notificação de decisão
-
-
-
-\*\*Prioridade:\*\* Should
-
-
-
-O aluno deve ser notificado quando uma solicitação for aceita ou recusada.
-
-
-
-\---
-
-
-
-\#### RF-046 — Notificação de alteração de aula
-
-
-
-\*\*Prioridade:\*\* Could
-
-
-
-O sistema poderá notificar usuários sobre alterações relevantes em seus agendamentos.
-
-
-
-\---
-
-
-
-\## 4. Requisitos Não Funcionais
-
-
-
-\### RNF-001 — Segurança
-
-
-
-A aplicação deve implementar mecanismos adequados de autenticação, autorização e proteção de dados.
-
-
-
-\---
-
-
-
-\### RNF-002 — API REST
-
-
-
-O backend deve disponibilizar uma API seguindo princípios REST.
-
-
-
-\---
-
-
-
-\### RNF-003 — Documentação da API
-
-
-
-A API deve possuir documentação utilizando OpenAPI/Swagger.
-
-
-
-\---
-
-
-
-\### RNF-004 — Arquitetura
-
-
-
-A aplicação deve utilizar uma arquitetura organizada em camadas, mantendo separação entre domínio, aplicação, infraestrutura e apresentação.
-
-
-
-\---
-
-
-
-\### RNF-005 — Testabilidade
-
-
-
-As regras de negócio devem ser implementadas de forma que possam ser testadas automaticamente.
-
-
-
-\---
-
-
-
-\### RNF-006 — Testes automatizados
-
-
-
-O projeto deve possuir testes unitários e testes de integração para os principais fluxos.
-
-
-
-\---
-
-
-
-\### RNF-007 — Qualidade de código
-
-
-
-O código deve seguir princípios de Clean Code e boas práticas de desenvolvimento.
-
-
-
-\---
-
-
-
-\### RNF-008 — Controle de versão
-
-
-
-O código-fonte deve ser versionado utilizando Git.
-
-
-
-\---
-
-
-
-\### RNF-009 — Integração contínua
-
-
-
-O projeto deve possuir pipeline de CI para validação automática do código.
-
-
-
-\---
-
-
-
-\### RNF-010 — Containerização
-
-
-
-A aplicação deve possuir suporte à execução através de containers.
-
-
-
-\---
-
-
-
-\### RNF-011 — Banco de dados
-
-
-
-A aplicação deve utilizar PostgreSQL como banco de dados principal.
-
-
-
-\---
-
-
-
-\### RNF-012 — Observabilidade
-
-
-
-A aplicação deve possuir mecanismos básicos de logging e monitoramento de erros.
-
-
-
-\---
-
-
-
-\### RNF-013 — Responsividade
-
-
-
-A interface web deve ser responsiva e utilizável em dispositivos desktop e mobile.
-
-
-
-\---
-
-
-
-\### RNF-014 — Manutenibilidade
-
-
-
-A arquitetura deve permitir evolução das funcionalidades sem acoplamento excessivo entre componentes.
-
-
-
-\---
-
-
-
-\### RNF-015 — Configuração por ambiente
-
-
-
-Informações específicas de ambiente devem ser configuráveis sem alteração do código-fonte.
-
-
-
-\---
-
-
-
-\## 5. Regras de Negócio
-
-
-
-\### RN-001 — Tipos de usuário
-
-
-
-O sistema deverá diferenciar usuários do tipo:
-
-
-
-\* Aluno.
-
-\* Instrutor.
-
-
-
-\---
-
-
-
-\### RN-002 — Perfil profissional
-
-
-
-Somente usuários com perfil de instrutor poderão disponibilizar serviços de aulas.
-
-
-
-\---
-
-
-
-\### RN-003 — Disponibilidade
-
-
-
-Um instrutor somente poderá receber solicitações em horários configurados como disponíveis.
-
-
-
-\---
-
-
-
-\### RN-004 — Conflito de agenda
-
-
-
-Um instrutor não poderá possuir duas aulas confirmadas que ocupem o mesmo intervalo de tempo.
-
-
-
-\---
-
-
-
-\### RN-005 — Solicitação pendente
-
-
-
-Uma solicitação de aula deverá permanecer pendente até que o instrutor aceite ou recuse o pedido.
-
-
-
-\---
-
-
-
-\### RN-006 — Aula confirmada
-
-
-
-Uma aula somente poderá ser iniciada caso esteja previamente confirmada.
-
-
-
-\---
-
-
-
-\### RN-007 — Check-in
-
-
-
-O check-in somente poderá ser realizado para uma aula válida e dentro do período permitido para início da aula.
-
-
-
-\---
-
-
-
-\### RN-008 — QR Code temporário
-
-
-
-O QR Code utilizado para check-in deverá possuir validade limitada e não poderá ser reutilizado indefinidamente.
-
-
-
-\---
-
-
-
-\### RN-009 — Presença
-
-
-
-O registro de presença deverá ocorrer somente após a validação do token de check-in enviado pelo aluno autenticado.
-
-
-
-\---
-
-
-
-\### RN-010 — Encerramento
-
-
-
-Uma aula somente poderá ser encerrada após ter sido iniciada.
-
-
-
-\---
-
-
-
-\### RN-011 — Avaliação
-
-
-
-Um aluno somente poderá avaliar um instrutor após uma aula concluída entre ambos.
-
-
-
-\---
-
-
-
-\### RN-012 — Avaliação única
-
-
-
-Um aluno não poderá registrar múltiplas avaliações para a mesma aula.
-
-
-
-\---
-
-
-
-\### RN-013 — Perfil público
-
-
-
-Somente informações definidas como públicas pelo sistema deverão ser exibidas no perfil público do instrutor.
-
-
-
-\---
-
-
-
-\### RN-014 — Compatibilidade
-
-
-
-O índice de compatibilidade deverá ser calculated utilizando critérios definidos pelo sistema e deverá possuir comportamento determinístico para os mesmos dados de entrada.
-
-
-
-\---
-
-
-
-\## 6. Critérios Gerais de Aceitação
-
-
-
-Uma funcionalidade será considerada concluída quando:
-
-
-
-1\. Sua regra de negócio estiver implementada.
-
-2\. Seus principais cenários estiverem cobertos por testes automatizados.
-
-3\. O comportamento esperado estiver documentado quando necessário.
-
-4\. O código estiver integrado à arquitetura existente.
-
-5\. A implementação passar pelo pipeline de CI.
-
-6\. Não existirem erros críticos conhecidos relacionados à funcionalidade.
-
-
-
-\---
-
-
-
-\## 7. Rastreabilidade
-
-
-
-Os requisitos deverão posteriormente ser relacionados aos seguintes artefatos:
-
-
+O MVP atende ao fluxo principal quando é possível executar de ponta a ponta:
 
 ```text
+Cadastro
+   ↓
+Autenticação
+   ↓
+Criação do perfil
+   ↓
+Disponibilização de horário pelo instrutor
+   ↓
+Busca do instrutor pelo aluno
+   ↓
+Consulta da disponibilidade
+   ↓
+Solicitação de aula
+   ↓
+Aceite pelo instrutor
+   ↓
+Agendamento da aula
+   ↓
+Geração do check-in
+   ↓
+Leitura/validação do QR Code
+   ↓
+Realização da aula
+   ↓
+Conclusão
+```
 
-Requirement
+Também devem estar disponíveis os fluxos complementares necessários ao MVP:
 
-&#x20;   ↓
+- gerenciamento da própria conta;
+- alteração de senha;
+- gerenciamento dos perfis;
+- ativação/desativação do perfil do instrutor;
+- acompanhamento de solicitações;
+- acompanhamento de aulas;
+- dashboards de aluno e instrutor;
+- apresentação pública do projeto.
 
-Business Rule
+---
 
-&#x20;   ↓
+# 8. Estado dos requisitos
 
-Use Case
+Os requisitos descritos neste documento representam o **MVP funcionalmente concluído do DriveMatch**.
 
-&#x20;   ↓
+Os fluxos principais foram implementados e validados por testes automatizados e testes manuais de ponta a ponta.
 
-API Endpoint / UI Flow
+Requisitos e ideias existentes em versões anteriores da documentação que não estejam presentes neste documento não devem ser interpretados automaticamente como pendências do MVP.
 
-&#x20;   ↓
+---
 
-Automated Tests
-
+[Voltar para o índice da documentação](README.md)

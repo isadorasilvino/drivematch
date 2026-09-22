@@ -1,410 +1,471 @@
-\# DriveMatch — Product Definition
+# DriveMatch — Visão do Produto
 
+## 1. Visão geral
 
+O DriveMatch é uma plataforma web que conecta alunos a instrutores autônomos de direção.
 
-\## 1. Visão do Produto
+A proposta é centralizar em um único ambiente digital etapas que normalmente dependem de contatos informais e ferramentas separadas: descoberta de instrutores, consulta de disponibilidade, solicitação de aulas, gerenciamento da agenda e acompanhamento da realização das aulas.
 
+O DriveMatch foi desenvolvido como um MVP funcional e como projeto de portfólio, com foco tanto na experiência dos usuários quanto na demonstração de práticas de engenharia de software aplicadas a um produto completo.
 
+---
 
-O DriveMatch é uma plataforma que conecta alunos a instrutores autônomos de direção, permitindo que alunos encontrem profissionais, comparem perfis, solicitem aulas e acompanhem seus agendamentos, enquanto instrutores podem divulgar seus serviços e gerenciar alunos, agenda e aulas em um único lugar.
+## 2. Problema
 
+Alunos que procuram aulas de direção com instrutores autônomos podem encontrar dificuldades para:
 
+- localizar profissionais disponíveis;
+- entender quais instrutores atendem às suas necessidades;
+- consultar horários disponíveis;
+- solicitar uma aula de maneira organizada;
+- acompanhar o estado de uma solicitação;
+- confirmar e acompanhar as aulas agendadas.
 
-A plataforma foi concebida para atender ao crescimento do trabalho autônomo de instrutores de direção e oferecer uma experiência centralizada tanto para profissionais quanto para alunos.
+Para o instrutor autônomo, também existe a necessidade de organizar:
 
+- sua apresentação profissional;
+- sua disponibilidade;
+- as solicitações recebidas;
+- as aulas agendadas;
+- a confirmação de presença;
+- o acompanhamento do fluxo das aulas.
 
+O DriveMatch busca reunir esses processos em uma experiência única.
 
-\---
+---
 
+## 3. Usuários
 
+O sistema possui dois tipos principais de usuário.
 
-\## 2. Público-alvo
+### 3.1 Aluno
 
+Pessoa interessada em encontrar um instrutor autônomo e realizar aulas de direção.
 
+No DriveMatch, o aluno pode:
 
-O DriveMatch possui dois públicos principais:
+- criar sua conta;
+- criar e editar seu perfil;
+- informar características relevantes para as aulas;
+- pesquisar instrutores;
+- consultar informações dos instrutores;
+- visualizar horários disponíveis;
+- solicitar uma aula;
+- acompanhar suas solicitações;
+- visualizar suas aulas;
+- realizar o check-in;
+- acompanhar informações principais por meio do dashboard;
+- gerenciar seus dados de conta e senha.
 
+### 3.2 Instrutor
 
+Profissional autônomo que disponibiliza horários para realização de aulas.
 
-\### 2.1 Alunos
+No DriveMatch, o instrutor pode:
 
+- criar sua conta;
+- criar e editar seu perfil profissional;
+- informar experiência, localização, preço e características do atendimento;
+- configurar sua disponibilidade;
+- receber solicitações de alunos;
+- aceitar ou recusar solicitações;
+- acompanhar suas aulas;
+- iniciar o processo de check-in;
+- concluir aulas;
+- controlar a visibilidade do seu perfil;
+- acompanhar informações principais por meio do dashboard;
+- gerenciar seus dados de conta e senha.
 
+---
 
-Pessoas que procuram instrutores autônomos para aulas de direção.
+## 4. Proposta de valor
 
+O DriveMatch organiza o relacionamento entre aluno e instrutor desde a descoberta do profissional até a realização da aula.
 
+Para o aluno, a plataforma oferece uma maneira estruturada de encontrar instrutores e solicitar aulas a partir de horários efetivamente disponibilizados.
 
-\### 2.2 Instrutores
+Para o instrutor, oferece uma forma centralizada de apresentar seu serviço, organizar disponibilidade, responder solicitações e acompanhar aulas.
 
+Um dos principais elementos do produto é o fluxo de confirmação de presença por QR Code, utilizado antes do início da aula.
 
+---
 
-Profissionais autônomos que oferecem aulas particulares de direção.
+## 5. Fluxo principal do produto
 
+O fluxo central do MVP é:
 
+```text
+Instrutor configura seu perfil
+        ↓
+Instrutor ativa a visibilidade do perfil
+        ↓
+Instrutor disponibiliza horários
+        ↓
+Aluno pesquisa instrutores
+        ↓
+Aluno consulta o instrutor e sua disponibilidade
+        ↓
+Aluno solicita uma aula
+        ↓
+Instrutor recebe a solicitação
+        ↓
+Instrutor aceita ou recusa
+        ↓
+Se aceita, a aula é agendada
+        ↓
+Instrutor inicia o check-in
+        ↓
+Sistema gera um QR Code temporário
+        ↓
+Aluno realiza o check-in
+        ↓
+Aula é iniciada
+        ↓
+Instrutor conclui a aula
+```
 
-\---
+Esse fluxo representa o núcleo funcional do DriveMatch.
 
+---
 
+## 6. Escopo do MVP entregue
 
-\## 3. Proposta de Valor
+O MVP foi definido para validar o fluxo principal entre aluno e instrutor sem introduzir funcionalidades que não fossem necessárias para essa experiência.
 
+### 6.1 Conta e autenticação
 
+O MVP inclui:
 
-\### Para alunos
+- cadastro de usuários;
+- autenticação;
+- diferenciação entre aluno e instrutor;
+- autorização de acordo com o papel do usuário;
+- persistência da sessão;
+- consulta dos dados da própria conta;
+- alteração de nome e e-mail;
+- alteração de senha.
 
+---
 
+### 6.2 Perfil do aluno
 
-\* Encontrar instrutores por região.
+O aluno possui um perfil com informações utilizadas durante sua experiência na plataforma.
 
-\* Comparar perfis e avaliações.
+O perfil permite registrar e atualizar informações como:
 
-\* Consultar preços.
+- cidade;
+- estado;
+- nível de experiência;
+- posse de veículo;
+- disponibilidade de veículo próprio para as aulas.
 
-\* Consultar disponibilidade.
+A existência do perfil é utilizada para controlar o acesso aos fluxos que dependem dessas informações.
 
-\* Encontrar instrutores compatíveis com suas necessidades.
+---
 
-\* Solicitar aulas diretamente pela plataforma.
+### 6.3 Perfil do instrutor
 
-\* Acompanhar seus agendamentos e histórico de aulas.
+O instrutor possui um perfil profissional contendo informações relevantes para sua apresentação e para o atendimento dos alunos.
 
+Entre elas:
 
+- descrição;
+- anos de experiência;
+- cidade;
+- estado;
+- preço da aula;
+- atendimento a alunos iniciantes;
+- atendimento a alunos com experiência;
+- aceitação do veículo do aluno.
 
-\### Para instrutores
+O instrutor também pode controlar o estado do seu perfil.
 
+Quando o perfil está ativo, pode participar dos fluxos de descoberta disponíveis aos alunos.
 
+Quando está desativado, sua visibilidade para novos alunos é interrompida até que seja novamente ativado.
 
-\* Divulgar seus serviços.
+---
 
-\* Gerenciar disponibilidade.
+### 6.4 Busca de instrutores
 
-\* Gerenciar agenda.
+O aluno pode pesquisar instrutores disponíveis na plataforma.
 
-\* Receber solicitações de aulas.
+A busca permite acessar informações relevantes do profissional antes da solicitação de uma aula.
 
-\* Gerenciar alunos.
+O MVP não implementa um algoritmo avançado de matching ou um índice calculado de compatibilidade entre aluno e instrutor.
 
-\* Registrar aulas realizadas.
+A decisão do aluno é baseada nas informações disponibilizadas pelo instrutor e nos recursos de busca implementados.
 
-\* Receber avaliações.
+---
 
+### 6.5 Disponibilidade
 
+O instrutor pode cadastrar e gerenciar períodos de disponibilidade.
 
-\---
+Esses horários representam os momentos em que está disponível para receber solicitações de aula.
 
+O aluno pode consultar a disponibilidade antes de realizar uma solicitação.
 
+As regras do domínio evitam situações incompatíveis com o fluxo de agendamento, como o uso indevido de horários já comprometidos.
 
-\## 4. Diferencial
+---
 
+### 6.6 Solicitação de aula
 
+A solicitação de aula conecta o interesse do aluno à disponibilidade do instrutor.
 
-O principal diferencial do DriveMatch será um mecanismo de compatibilidade entre alunos e instrutores.
+O fluxo permite que:
 
+1. o aluno selecione um horário disponível;
+2. uma solicitação seja criada;
+3. o instrutor visualize a solicitação;
+4. o instrutor aceite ou recuse;
+5. uma solicitação aceita resulte no agendamento da aula.
 
+Aluno e instrutor podem acompanhar as informações correspondentes às suas solicitações.
 
-Em vez de considerar somente localização, a plataforma poderá utilizar características informadas pelo aluno e pelo instrutor para identificar profissionais mais adequados às necessidades de cada aluno.
+---
 
+### 6.7 Aulas
 
+Após o aceite de uma solicitação, a aula passa a fazer parte do fluxo de acompanhamento dos usuários.
 
-Entre os critérios considerados poderão estar:
+Aluno e instrutor possuem visualizações específicas de suas aulas.
 
+O estado da aula evolui de acordo com as ações permitidas pelo domínio.
 
+---
 
-\* Região de atendimento.
+### 6.8 Check-in por QR Code
 
-\* Disponibilidade.
+O DriveMatch utiliza um processo de check-in para confirmar a presença antes do início da aula.
 
-\* Nível de experiência do aluno.
+O fluxo funciona da seguinte maneira:
 
-\* Necessidade de aulas para iniciantes.
+1. o instrutor inicia o processo de check-in;
+2. o sistema gera um token temporário associado à aula;
+3. o token é representado por um QR Code;
+4. o aluno utiliza o QR Code para realizar o check-in;
+5. o sistema valida o token e a aula correspondente;
+6. após a confirmação, o fluxo da aula pode continuar.
 
-\* Aceitação de alunos que já sabem dirigir.
+O token possui validade limitada e não é reutilizável fora das condições permitidas pelo fluxo.
 
-\* Utilização de carro próprio.
+Esse mecanismo adiciona uma etapa explícita de confirmação entre os dois participantes.
 
-\* Características específicas das aulas.
+---
 
+### 6.9 Dashboard do aluno
 
+A área inicial do aluno apresenta um resumo das informações mais importantes para seu uso cotidiano da plataforma.
 
-O mecanismo poderá apresentar um índice de compatibilidade entre aluno e instrutor.
+O dashboard oferece acesso rápido aos principais fluxos e informações relacionadas às aulas e solicitações do aluno.
 
+O objetivo não é substituir as telas especializadas, mas fornecer uma visão resumida do estado atual da conta.
 
+---
 
-\---
+### 6.10 Dashboard do instrutor
 
+A área inicial do instrutor apresenta um resumo das informações relevantes para a gestão de sua atividade na plataforma.
 
+O dashboard reúne informações relacionadas a aulas, solicitações e acesso rápido aos principais fluxos.
 
-\## 5. Principais Fluxos
+Também apresenta o estado de visibilidade do perfil.
 
+Quando o perfil está ativo, essa informação é apresentada de maneira discreta.
 
+Quando está desativado, o dashboard destaca que é necessário ativá-lo para que o instrutor volte a ficar disponível para novos alunos.
 
-\### 5.1 Fluxo do aluno
+A alteração do estado continua sendo realizada na tela de perfil.
 
+---
 
+### 6.11 Página pública
 
-1\. Criar conta.
+O DriveMatch possui uma página pública de apresentação.
 
-2\. Criar perfil.
+Ela explica:
 
-3\. Informar necessidades e preferências.
+- o que é o projeto;
+- para que serve;
+- como funciona o fluxo principal;
+- os principais recursos;
+- o caráter de projeto de portfólio;
+- informações sobre sua autoria.
 
-4\. Pesquisar instrutores.
+A página também apresenta informações relacionadas à privacidade e ao tratamento limitado de dados dentro do contexto do projeto.
 
-5\. Filtrar resultados.
+---
 
-6\. Visualizar perfil do instrutor.
+### 6.12 Experiência responsiva
 
-7\. Solicitar uma aula.
+As principais telas do MVP foram desenvolvidas para funcionar tanto em desktop quanto em dispositivos móveis.
 
-8\. Aguardar confirmação.
+A responsividade faz parte da experiência entregue pelo produto e foi validada durante os testes manuais.
 
-9\. Acompanhar o agendamento.
+---
 
-10\. Realizar check-in.
+## 7. Privacidade e dados
 
-11\. Realizar a aula.
+O MVP procura limitar os dados armazenados às informações necessárias para os fluxos implementados.
 
-12\. Avaliar o instrutor.
+Entre os dados associados à conta e aos perfis estão informações como:
 
+- nome;
+- e-mail;
+- dados de perfil necessários ao uso da plataforma;
+- informações relacionadas a solicitações e aulas.
 
+Senhas não são armazenadas em texto puro.
 
-\### 5.2 Fluxo do instrutor
+O acesso aos fluxos protegidos depende de autenticação e das permissões correspondentes ao papel do usuário.
 
+O projeto considera princípios de minimização e uso responsável de dados pessoais.
 
+Por ser uma aplicação de portfólio e demonstração técnica, ambientes públicos de demonstração não devem ser utilizados para inserir dados pessoais reais ou sensíveis.
 
-1\. Criar conta.
+Essas decisões representam medidas adotadas no projeto e não constituem, isoladamente, uma declaração de conformidade jurídica integral com a LGPD.
 
-2\. Criar perfil profissional.
+---
 
-3\. Configurar características das aulas.
+## 8. Decisões de escopo
 
-4\. Definir regiões atendidas.
+Durante a concepção e o desenvolvimento, diferentes funcionalidades foram consideradas.
 
-5\. Definir preços.
+O MVP final priorizou o fluxo necessário para conectar aluno e instrutor e permitir o gerenciamento completo de uma aula.
 
-6\. Configurar disponibilidade.
+Algumas ideias inicialmente avaliadas foram retiradas do escopo ou reservadas para possíveis evoluções.
 
-7\. Receber solicitações.
+### 8.1 Pagamentos
 
-8\. Aceitar ou recusar solicitações.
+O DriveMatch não processa pagamentos no MVP.
 
-9\. Gerenciar agenda.
+Não existem:
 
-10\. Iniciar aula.
+- carteira digital;
+- repasse de valores;
+- retenção de pagamento;
+- divisão financeira por ausência;
+- integração com gateways de pagamento.
 
-11\. Validar presença do aluno.
+Questões financeiras relacionadas à contratação do serviço permanecem fora do fluxo implementado.
 
-12\. Encerrar aula.
+---
 
-13\. Consultar histórico.
+### 8.2 Matching e compatibilidade
 
+Durante a concepção do produto foi considerada a criação de um mecanismo de compatibilidade entre aluno e instrutor.
 
+Esse mecanismo não faz parte do MVP entregue.
 
-\---
+O sistema permite que o aluno encontre instrutores e consulte suas características, mas não atribui um índice ou pontuação automática de compatibilidade.
 
+Um mecanismo de recomendação pode ser avaliado futuramente caso existam dados e necessidades suficientes para justificar sua implementação.
 
+---
 
-\## 6. Aula Validada
+### 8.3 Comunicação em tempo real
 
+Chat, chamadas de voz e videochamadas não fazem parte do MVP.
 
+A proposta desta versão é validar o fluxo de descoberta, solicitação, agendamento e realização das aulas.
 
-O DriveMatch possuirá um mecanismo de validação de presença utilizando QR Code temporário.
+---
 
+### 8.4 Aplicativo nativo
 
+O MVP é uma aplicação web responsiva.
 
-Antes do início da aula, o instrutor deverá iniciar o processo de check-in através da plataforma.
+Não existe aplicativo mobile nativo específico para Android ou iOS.
 
+---
 
+### 8.5 Integrações externas
 
-O backend gerará um token temporário, único para a aula e com validade de 15 minutos.
+O MVP não possui integração com órgãos de trânsito ou sistemas governamentais.
 
+O DriveMatch também não se apresenta como substituto de sistemas oficiais relacionados à habilitação ou regulamentação de trânsito.
 
+---
 
-O frontend será responsável por representar esse token através de um QR Code apresentado pelo instrutor.
+## 9. Fora do escopo atual
 
+Não fazem parte do MVP:
 
+- pagamentos dentro da plataforma;
+- carteira digital;
+- chat em tempo real;
+- chamadas de áudio ou vídeo;
+- aplicativo mobile nativo;
+- integração com órgãos de trânsito;
+- matching avançado;
+- pontuação automática de compatibilidade;
+- funcionalidades baseadas em inteligência artificial.
 
-O aluno deverá realizar a leitura do QR Code através da aplicação para confirmar sua presença.
+A ausência desses recursos é uma decisão de escopo e não impede a validação do fluxo principal do produto.
 
+---
 
+## 10. Possíveis evoluções
 
-Durante a confirmação, o backend deverá validar:
+O DriveMatch pode evoluir futuramente conforme novas necessidades sejam identificadas.
 
+Possibilidades incluem:
 
+- mecanismos de recomendação;
+- compatibilidade baseada em preferências;
+- notificações mais avançadas;
+- melhorias na experiência de busca;
+- recursos adicionais de gestão para instrutores;
+- métricas e informações adicionais nos dashboards;
+- expansão dos mecanismos de comunicação;
+- integrações externas pertinentes ao domínio.
 
-\* a identidade do aluno autenticado;
+Esses itens representam possibilidades e não compromissos de implementação.
 
-\* a associação do aluno à aula;
+---
 
-\* o estado atual da aula;
+## 11. Critérios de conclusão do MVP
 
-\* a correspondência do token;
+O MVP é considerado funcionalmente concluído quando o fluxo principal pode ser executado de ponta a ponta:
 
-\* a validade temporal do token.
+- usuário consegue criar uma conta e autenticar-se;
+- aluno e instrutor conseguem configurar seus perfis;
+- instrutor consegue disponibilizar horários;
+- aluno consegue encontrar um instrutor;
+- aluno consegue consultar sua disponibilidade;
+- aluno consegue solicitar uma aula;
+- instrutor consegue aceitar ou recusar a solicitação;
+- uma solicitação aceita gera o fluxo de aula correspondente;
+- aluno e instrutor conseguem acompanhar suas aulas;
+- check-in pode ser realizado por meio do fluxo de QR Code;
+- a aula pode seguir até sua conclusão;
+- os dados da conta podem ser gerenciados;
+- os principais estados podem ser acompanhados pelos dashboards.
 
+Esses fluxos foram implementados e validados no MVP.
 
+---
 
-Após a validação:
+## 12. Estado atual
 
+O **MVP do DriveMatch está funcionalmente concluído**.
 
+Os principais fluxos foram implementados e validados por meio de testes automatizados e testes manuais de ponta a ponta.
 
-\* a presença do aluno será registrada;
+A etapa atual do projeto é de fechamento da documentação e preparação da versão final de portfólio.
 
-\* a data e hora do check-in serão registradas;
+---
 
-\* o início da aula será registrado;
+## 13. Objetivo do projeto
 
-\* o token utilizado será invalidado;
+Além de validar a proposta funcional do DriveMatch, o projeto foi desenvolvido como uma demonstração prática de engenharia de software.
 
-\* a aula passará para o estado `IN\_PROGRESS`.
+O objetivo é apresentar a construção de um produto desde a definição do problema e das regras de negócio até sua implementação, testes, documentação e disponibilização como projeto de portfólio.
 
+As decisões técnicas da solução são detalhadas separadamente na documentação de arquitetura.
 
+---
 
-Caso o token expire antes da confirmação, o instrutor poderá iniciar novamente o processo de check-in, gerando um novo token e invalidando o anterior.
-
-
-
-\---
-
-
-
-\## 7. Monetização
-
-
-
-A plataforma será inicialmente disponibilizada gratuitamente.
-
-
-
-A estratégia de monetização planejada consiste na utilização de anúncios discretos e não intrusivos.
-
-
-
-A monetização não faz parte do núcleo funcional do MVP e não deverá introduzir complexidade desnecessária na arquitetura inicial.
-
-
-
-\---
-
-
-
-\## 8. Escopo do MVP
-
-
-
-O MVP deverá contemplar:
-
-
-
-\* Autenticação.
-
-\* Cadastro de alunos.
-
-\* Cadastro de instrutores.
-
-\* Perfil profissional.
-
-\* Configuração de disponibilidade.
-
-\* Busca de instrutores.
-
-\* Filtros.
-
-\* Visualização de perfil.
-
-\* Solicitação de aulas.
-
-\* Aceite e recusa de solicitações.
-
-\* Gerenciamento de agenda.
-
-\* Registro de aulas.
-
-\* Validação de presença através de QR Code.
-
-\* Histórico de aulas.
-
-\* Avaliações.
-
-\* Mecanismo inicial de compatibilidade entre aluno e instrutor.
-
-
-
-\---
-
-
-
-\## 9. Fora do Escopo do MVP
-
-
-
-As seguintes funcionalidades não fazem parte da primeira versão:
-
-
-
-\* Processamento de pagamentos.
-
-\* Carteira digital.
-
-\* Reembolsos.
-
-\* Split de pagamentos.
-
-\* Chat em tempo real.
-
-\* Videochamadas.
-
-\* Assinaturas.
-
-\* Aplicativo mobile nativo.
-
-\* Integrações com órgãos de trânsito.
-
-\* Emissão de documentos oficiais.
-
-\* Funcionalidades baseadas em IA generativa.
-
-
-
-Essas funcionalidades poderão ser avaliadas futuramente conforme a evolução do produto.
-
-
-
-\---
-
-
-
-\## 10. Objetivo do Projeto
-
-
-
-Além de solucionar o problema proposto, o DriveMatch será utilizado como projeto de portfólio para demonstrar competências de engenharia de software, incluindo:
-
-
-
-\* Arquitetura de software.
-
-\* Desenvolvimento de APIs REST.
-
-\* Desenvolvimento frontend.
-
-\* Modelagem de dados.
-
-\* Regras de negócio.
-
-\* Testes automatizados.
-
-\* Qualidade de código.
-
-\* Documentação técnica.
-
-\* Controle de versão.
-
-\* CI/CD.
-
-\* Containerização.
-
-\* Observabilidade.
-
-\* Segurança.
-
+[Voltar para o índice da documentação](README.md)

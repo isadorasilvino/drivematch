@@ -1,94 +1,93 @@
 # DriveMatch
 
-> Plataforma que conecta alunos a instrutores autônomos de direção.
+O DriveMatch é uma plataforma web que conecta alunos a instrutores autônomos de direção.
 
-O **DriveMatch** é uma aplicação full stack desenvolvida para centralizar a busca, contratação e gestão de aulas entre alunos e instrutores autônomos de direção.
+O projeto foi desenvolvido como um MVP completo e também como projeto de portfólio, com foco em demonstrar decisões reais de engenharia de software: modelagem de domínio, arquitetura em camadas, APIs REST, autenticação, regras de negócio, testes automatizados, frontend responsivo e documentação técnica.
 
-O projeto também funciona como um projeto público de portfólio, demonstrando decisões de arquitetura, modelagem de domínio, desenvolvimento de APIs REST, frontend, persistência, autenticação, testes automatizados e containerização.
+## Sobre o projeto
 
----
+A proposta do DriveMatch é facilitar o encontro e o gerenciamento da relação entre alunos e instrutores autônomos.
+
+A plataforma permite que alunos encontrem instrutores compatíveis com suas necessidades, consultem horários disponíveis e solicitem aulas. Instrutores podem gerenciar sua disponibilidade, receber solicitações e acompanhar suas aulas.
+
+O fluxo de aula inclui ainda um mecanismo de check-in por QR Code para confirmação de presença antes do início da aula.
 
 ## Funcionalidades
 
 ### Aluno
 
 - Cadastro e autenticação.
-- Criação de perfil.
+- Criação e atualização de perfil.
+- Gerenciamento dos dados da conta.
+- Alteração de senha.
 - Busca de instrutores.
-- Consulta de perfis e disponibilidade.
+- Consulta de informações e disponibilidade dos instrutores.
 - Solicitação de aulas.
-- Acompanhamento das solicitações.
-- Consulta das aulas.
-- Check-in da aula.
-- Histórico de aulas.
+- Acompanhamento das solicitações realizadas.
+- Visualização das aulas.
+- Check-in de aula por QR Code.
+- Dashboard com resumo das principais informações da conta.
 
 ### Instrutor
 
 - Cadastro e autenticação.
-- Criação de perfil profissional.
-- Configuração de disponibilidade.
+- Criação e atualização de perfil profissional.
+- Gerenciamento dos dados da conta.
+- Alteração de senha.
+- Ativação e desativação da visibilidade do perfil.
+- Configuração da disponibilidade.
 - Recebimento de solicitações de aula.
 - Aceite e recusa de solicitações.
 - Gerenciamento das aulas.
-- Controle do ciclo de vida da aula.
-- Geração de QR Code para check-in.
-- Histórico de aulas.
+- Geração do QR Code para check-in.
+- Controle do fluxo da aula.
+- Dashboard com resumo de aulas, solicitações e situação do perfil.
 
----
+### Fluxo de aula
 
-## Check-in por QR Code
+O fluxo principal implementado é:
 
-Um dos principais fluxos do DriveMatch é a validação de presença na aula.
+```text
+Instrutor disponibiliza horário
+        ↓
+Aluno encontra o instrutor
+        ↓
+Aluno consulta a disponibilidade
+        ↓
+Aluno solicita uma aula
+        ↓
+Instrutor aceita a solicitação
+        ↓
+Aula é agendada
+        ↓
+Instrutor inicia o check-in
+        ↓
+QR Code temporário é gerado
+        ↓
+Aluno realiza o check-in
+        ↓
+Aula é iniciada
+        ↓
+Instrutor conclui a aula
+```
 
-O instrutor inicia o check-in e o backend gera um token temporário associado à aula. O frontend representa esse token por meio de um QR Code.
-
-O aluno utiliza o QR Code para confirmar sua presença e o backend valida:
-
-- identidade do usuário;
-- associação do aluno à aula;
-- estado atual da aula;
-- token informado;
-- validade temporal do token.
-
-Após a confirmação, o token é invalidado e a aula pode seguir seu ciclo de execução.
-
----
+O token utilizado no check-in é temporário e associado à aula correspondente.
 
 ## Arquitetura
 
-O backend utiliza uma arquitetura de **Monólito Modular**, aplicando princípios de **Clean Architecture**.
+O backend foi estruturado seguindo princípios de Clean Architecture, com separação entre domínio, aplicação, infraestrutura e camada de API.
 
 ```text
 DriveMatch.Api
-      |
-      v
+      │
+      ▼
 DriveMatch.Application
-      |
-      v
+      │
+      ▼
 DriveMatch.Domain
-
+      ▲
+      │
 DriveMatch.Infrastructure
-      |
-      +--> Application
-      |
-      +--> Domain
-```
-
-A solução está dividida em:
-
-```text
-src/
-├── DriveMatch.Api
-├── DriveMatch.Application
-├── DriveMatch.Domain
-└── DriveMatch.Infrastructure
-
-tests/
-├── DriveMatch.UnitTests
-└── DriveMatch.IntegrationTests
-
-frontend/
-└── drivematch-web
 ```
 
 ### Domain
@@ -98,21 +97,18 @@ Contém o núcleo do negócio:
 - entidades;
 - enums;
 - regras de negócio;
-- transições de estado;
-- conceitos do domínio.
+- exceções de domínio;
+- comportamento das entidades.
 
 ### Application
 
-Responsável pelos casos de uso:
+Responsável pelos casos de uso da aplicação:
 
-- autenticação;
-- perfis;
-- disponibilidade;
-- busca de instrutores;
-- solicitações de aula;
-- ciclo de vida das aulas;
-- check-in;
-- avaliações.
+- commands e handlers;
+- queries;
+- contratos de repositório;
+- DTOs;
+- validações relacionadas aos casos de uso.
 
 ### Infrastructure
 
@@ -122,21 +118,38 @@ Implementa detalhes externos:
 - PostgreSQL;
 - repositórios;
 - persistência;
-- autenticação;
-- serviços de infraestrutura.
+- migrations;
+- implementações de infraestrutura.
 
 ### API
 
-Responsável pela interface HTTP:
+Responsável pela exposição HTTP da aplicação:
 
 - endpoints REST;
-- autenticação e autorização;
-- configuração da aplicação;
-- injeção de dependência.
+- autenticação JWT;
+- autorização;
+- configuração de dependências;
+- documentação OpenAPI.
 
----
+## Frontend
 
-## Stack
+O frontend foi desenvolvido em Angular e organizado por funcionalidades.
+
+A aplicação possui áreas específicas para aluno e instrutor, além de uma página pública de apresentação do projeto.
+
+Entre as decisões adotadas estão:
+
+- standalone components;
+- lazy loading;
+- guards de autenticação, papel e perfil;
+- componentes compartilhados;
+- layout autenticado reutilizável;
+- integração com API REST;
+- persistência controlada da sessão;
+- interface responsiva para desktop e dispositivos móveis;
+- PWA.
+
+## Tecnologias
 
 ### Backend
 
@@ -145,59 +158,75 @@ Responsável pela interface HTTP:
 - ASP.NET Core
 - Entity Framework Core
 - PostgreSQL
-- JWT
+- JWT Bearer Authentication
+- OpenAPI
 
 ### Frontend
 
-- Angular 22
+- Angular
 - TypeScript
-- RxJS
+- SCSS
 - Font Awesome
-- PWA / Angular Service Worker
+- PWA
 
 ### Testes e infraestrutura
 
 - xUnit
-- Testcontainers
-- PostgreSQL 17
+- testes unitários
+- testes de integração
 - Docker
 - Docker Compose
-- Vitest
+- Git
+- GitHub
 
----
+## Estrutura do repositório
 
-## Testes automatizados
+```text
+drivematch/
+│
+├── src/
+│   ├── DriveMatch.Api/
+│   ├── DriveMatch.Application/
+│   ├── DriveMatch.Domain/
+│   └── DriveMatch.Infrastructure/
+│
+├── tests/
+│   ├── DriveMatch.UnitTests/
+│   └── DriveMatch.IntegrationTests/
+│
+├── frontend/
+│   └── drivematch-web/
+│
+├── docs/
+│   ├── architecture/
+│   ├── business-rules/
+│   ├── domain/
+│   └── use-cases/
+│
+├── docker-compose.yml
+└── README.md
+```
 
-O projeto possui testes unitários e testes de integração.
+## Testes
 
-Os testes de integração executam a API utilizando um banco PostgreSQL real e isolado por meio de **Testcontainers**, permitindo validar fluxos completos da aplicação.
+O projeto possui testes unitários e testes de integração cobrindo os principais fluxos e regras de negócio da aplicação.
 
-Entre os cenários cobertos estão:
+Os testes de integração executam a API utilizando um banco PostgreSQL real e isolado por meio de **Testcontainers**, permitindo validar os fluxos da aplicação em um ambiente próximo ao comportamento real de persistência.
 
-- autenticação;
-- autorização;
-- cadastro;
-- perfis;
+A suíte do backend possui atualmente **281 testes automatizados**, incluindo cenários relacionados a:
+
+- autenticação e autorização;
+- conta do usuário;
+- perfis de aluno e instrutor;
 - disponibilidade;
+- busca de instrutores;
 - solicitações de aula;
-- persistência;
-- ciclo de vida da aula;
-- check-in.
+- aulas;
+- check-in;
+- regras de domínio;
+- persistência e endpoints.
 
-Para executar os testes do backend:
-
-```bash
-dotnet test DriveMatch.slnx
-```
-
-Para executar os testes do frontend:
-
-```bash
-cd frontend/drivematch-web
-npm test -- --watch=false
-```
-
----
+Além dos testes automatizados, os principais fluxos do MVP foram validados manualmente de ponta a ponta no frontend, incluindo comportamento em desktop e dispositivos móveis.
 
 ## Executando o projeto
 
@@ -205,94 +234,135 @@ npm test -- --watch=false
 
 - .NET 10 SDK
 - Node.js
-- npm
-- Docker Desktop
+- Angular CLI
+- Docker
+- Docker Compose
 
-Clone o repositório e acesse a pasta:
+### Infraestrutura
 
-```bash
-git clone https://github.com/isadorasilvino/drivematch.git
-cd drivematch
-```
-
-Crie um arquivo `.env` na raiz:
-
-```env
-JWT_KEY=defina-uma-chave-segura-para-desenvolvimento
-```
-
-Inicie o PostgreSQL e a API:
+Na raiz do repositório:
 
 ```bash
-docker compose up --build
+docker compose up -d
 ```
 
-A API ficará disponível em:
+### Backend
 
-```text
-http://localhost:8080
+```bash
+dotnet restore
+dotnet build
+dotnet run --project src/DriveMatch.Api
 ```
 
 ### Frontend
 
-Em outro terminal:
-
 ```bash
 cd frontend/drivematch-web
 npm install
-npm start
+ng serve
 ```
 
----
+A aplicação estará disponível por padrão em:
 
-## Segurança
+```text
+http://localhost:4200
+```
 
-O projeto utiliza autenticação baseada em JWT e autorização no backend.
+## Executando os testes
 
-Segredos, como a chave utilizada para assinatura dos tokens, não são versionados no repositório e devem ser fornecidos através de configuração de ambiente.
+Na raiz do repositório:
 
-O arquivo `.env` local permanece ignorado pelo Git.
+```bash
+dotnet test
+```
 
----
+Para validar o build do frontend:
+
+```bash
+cd frontend/drivematch-web
+ng build
+```
+
+## Segurança e privacidade
+
+O DriveMatch utiliza autenticação baseada em JWT e autorização de acordo com o papel do usuário.
+
+Entre as medidas e decisões implementadas estão:
+
+- senhas armazenadas por meio de hash;
+- endpoints protegidos por autenticação;
+- separação de acesso entre alunos e instrutores;
+- validação da identidade do usuário autenticado nos fluxos protegidos;
+- tokens temporários para o processo de check-in;
+- armazenamento apenas dos dados necessários aos fluxos implementados no MVP.
+
+O projeto também considera princípios de minimização e uso responsável de dados pessoais. Por se tratar de um projeto de portfólio, não devem ser utilizados dados pessoais reais ou sensíveis em ambientes de demonstração.
 
 ## Documentação
 
-A documentação detalhada do projeto está disponível em [`docs/`](docs/).
+A documentação técnica detalhada está disponível em [`docs/`](docs/README.md).
 
-Principais documentos:
+Ela inclui:
 
-- [Definição do produto](docs/PRODUCT.md)
-- [Requisitos](docs/REQUIREMENTS.md)
-- [Arquitetura](docs/architecture/ARCHITECTURE.md)
-- [Regras de negócio](docs/business-rules/BUSINESS-RULES.md)
-- [Modelo de domínio](docs/domain/DOMAIN-MODEL.md)
-- [Fluxos de usuário](docs/use-cases/USER-FLOWS.md)
-- [Fluxo de aula](docs/use-cases/LESSON-FLOW.md)
+- visão do produto;
+- requisitos;
+- arquitetura;
+- regras de negócio;
+- modelo de domínio;
+- fluxos de usuário;
+- fluxo completo de aula.
 
----
+## Decisões de escopo
 
-## Decisões de engenharia
+O objetivo do MVP foi construir e validar o fluxo principal da plataforma sem introduzir complexidade desnecessária.
 
-O projeto busca evitar complexidade prematura.
+Por isso, algumas funcionalidades foram deliberadamente mantidas fora desta versão, como:
 
-Para o escopo atual, foi adotado um Monólito Modular em vez de microserviços, mantendo limites claros entre responsabilidades sem introduzir o custo operacional de uma arquitetura distribuída.
+- pagamentos;
+- carteira digital;
+- chat em tempo real;
+- videochamadas;
+- aplicativo mobile nativo;
+- integrações com órgãos de trânsito;
+- funcionalidades baseadas em IA.
 
-A arquitetura foi estruturada para permitir evolução futura caso novos requisitos justifiquem mudanças.
-
----
+Outras possibilidades de evolução, como mecanismos avançados de recomendação e compatibilidade, podem ser avaliadas em versões futuras.
 
 ## Status
 
-**MVP em fase final de desenvolvimento.**
+**MVP funcionalmente concluído.**
 
-Backend, frontend, persistência, autenticação, fluxos principais e testes automatizados já estão implementados.
+Os principais fluxos da plataforma estão implementados e foram validados por testes automatizados e testes manuais.
 
-As etapas finais incluem automação de integração contínua e preparação do projeto para publicação.
+O projeto encontra-se em etapa de fechamento técnico, documentação e publicação da versão de portfólio.
 
----
+## Objetivo profissional
+
+O DriveMatch foi desenvolvido como projeto de portfólio para demonstrar competências em engenharia e desenvolvimento de software além da experiência profissional anterior.
+
+O projeto reúne, em uma aplicação completa, práticas relacionadas a:
+
+- arquitetura de software;
+- desenvolvimento backend com .NET e C#;
+- APIs REST;
+- desenvolvimento frontend com Angular;
+- modelagem de domínio;
+- persistência com PostgreSQL;
+- autenticação e autorização;
+- testes automatizados;
+- containerização;
+- documentação técnica;
+- organização e evolução de um produto do planejamento ao MVP.
 
 ## Autora
 
 **Isadora Silvino**
 
-Software Engineer | .NET | C# | Angular
+Software Developer | .NET | C# | Angular
+
+- LinkedIn: https://www.linkedin.com/in/isadorasilvino
+- GitHub: https://github.com/isadorasilvino
+
+---
+
+Este projeto foi desenvolvido para fins de estudo, demonstração técnica e portfólio.

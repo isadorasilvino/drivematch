@@ -1,758 +1,740 @@
-\# DriveMatch — User Flows
+Segue o conteúdo em Markdown, mantendo o texto e a estrutura apresentados, apenas corrigindo a formatação para Markdown consistente.
 
+ # DriveMatch — User Flows
 
+ ## 1\. Objetivo
 
-\## 1. Objetivo
+ Este documento descreve os principais fluxos de interação dos usuários com o DriveMatch no escopo atual do MVP.
 
+ Os fluxos representam as jornadas disponíveis para os dois perfis da plataforma:
 
+ - Aluno;
+- Instrutor.
 
-Este documento descreve os principais fluxos de interação dos usuários com a plataforma DriveMatch.
+ Eles servem como referência para a implementação das interfaces, APIs, casos de uso e regras de negócio.
 
+---
 
+ ## 2\. Atores
 
-Os fluxos são utilizados como referência para definição de casos de uso, regras de negócio, APIs e interfaces.
+ O DriveMatch possui dois tipos de usuário:
 
+ ### Aluno
 
+ Usuário que procura instrutores, consulta horários disponíveis, solicita aulas, acompanha solicitações e aulas, realiza check-in e avalia aulas concluídas.
 
-\---
+ ### Instrutor
 
+ Usuário que mantém um perfil profissional, configura disponibilidade, recebe solicitações de aula e conduz o ciclo de vida das aulas.
 
+---
 
-\## 2. Atores
+ ## 3\. Fluxos de acesso e conta
 
+ ### UC-001 — Cadastro
 
+ #### Objetivo
 
-O sistema possui dois atores principales:
+ Permitir a criação de uma conta no DriveMatch.
 
+ #### Fluxo principal
 
+ 1. Usuário acessa a tela de cadastro.
+2. Informa:
+   - nome;
+   - e-mail;
+   - senha;
+   - tipo de usuário (`Student` ou `Instructor`).
+3. Sistema valida os dados.
+4. Sistema cria a conta.
+5. Cadastro é confirmado.
 
-\* \*\*Aluno\*\*
+ #### Exceções
 
-\* \*\*Instrutor\*\*
+ - E-mail já cadastrado.
+- Dados inválidos.
+- Senha incompatível com as regras de validação.
 
+---
 
+ ### UC-002 — Login
 
-\---
+ #### Objetivo
 
+ Permitir que um usuário cadastrado acesse a aplicação.
 
+ #### Fluxo principal
 
-\## 3. Fluxos do Aluno
+ 1. Usuário informa e-mail e senha.
+2. Sistema valida as credenciais.
+3. Sistema autentica o usuário.
+4. Uma sessão autenticada é criada.
+5. O usuário é direcionado para a área correspondente ao seu papel.
 
+ #### Exceções
 
+ - Credenciais inválidas.
+- Usuário inativo.
 
-\### UC-001 — Cadastro
+---
 
+ ### UC-003 — Primeiro acesso
 
+ Após a autenticação, o DriveMatch verifica se o usuário possui o perfil correspondente ao seu papel.
 
-\#### Objetivo
+ #### Aluno sem perfil
 
+ O usuário é direcionado para:
 
+ `/student/profile`
 
-Permitir que uma pessoa crie uma conta na plataforma.
+ Após criar o perfil, passa a ter acesso às demais funcionalidades destinadas ao aluno.
 
+ #### Instrutor sem perfil
 
+ O usuário é direcionado para:
 
-\#### Fluxo principal
+ `/instructor/profile`
 
+ Após criar o perfil profissional, passa a ter acesso às demais funcionalidades destinadas ao instrutor.
 
+---
 
-1\. Usuário acessa a tela de cadastro.
+ ### UC-004 — Gerenciamento da conta
 
-2\. Informa os dados necessários.
+ #### Objetivo
 
-3\. Sistema valida os dados.
+ Permitir que um usuário autenticado mantenha seus dados de conta.
 
-4\. Sistema cria a conta.
+ #### Fluxos disponíveis
 
-5\. Sistema confirma o cadastro.
+ O usuário pode:
 
+ - consultar seus dados;
+- alterar nome;
+- alterar e-mail;
+- alterar senha.
 
+ #### Alteração de nome ou e-mail
 
-\#### Exceções
+ 1. Usuário acessa seu perfil.
+2. Altera nome e/ou e-mail.
+3. Sistema valida os novos dados.
+4. Sistema atualiza a conta.
+5. Os dados da sessão são atualizados para refletir as alterações.
 
+ #### Exceções
 
+ - E-mail já utilizado por outra conta.
+- Conta não encontrada.
+- Dados inválidos.
 
-\* E-mail já cadastrado.
+ #### Alteração de senha
 
-\* Dados inválidos.
+ 1. Usuário informa a senha atual.
+2. Informa a nova senha.
+3. Sistema valida a senha atual.
+4. Sistema valida a nova senha.
+5. A senha da conta é atualizada.
 
-\* Credenciais incompatíveis com as regras de segurança.
+ #### Exceções
 
+ - Senha atual incorreta.
+- Nova senha inválida.
+- Conta não encontrada.
 
+---
 
-\---
+ ## 4\. Fluxos do aluno
 
+ ### UC-005 — Configuração do perfil
 
+ #### Objetivo
 
-\### UC-002 — Configuração do perfil
+ Permitir que o aluno informe os dados utilizados durante sua experiência na plataforma.
 
+ #### Informações
 
+ O aluno informa:
 
-\#### Objetivo
+ - cidade;
+- estado;
+- nível de experiência;
+- se possui veículo;
+- se possui veículo próprio disponível para as aulas.
 
+ #### Fluxo principal
 
+ 1. Aluno acessa seu perfil.
+2. Preenche as informações.
+3. Sistema valida os dados.
+4. Sistema cria o perfil.
 
-Permitir que o aluno configure informações utilizadas pela plataforma.
+ O aluno também poderá editar posteriormente essas informações.
 
+---
 
+ ### UC-006 — Dashboard do aluno
 
-\#### Fluxo principal
+ #### Objetivo
 
+ Apresentar uma visão resumida da situação atual do aluno na plataforma.
 
+ O dashboard disponibiliza informações rápidas sobre suas atividades e atalhos para os principais fluxos da aplicação.
 
-1\. Aluno acessa seu perfil.
+ O acesso depende da existência de um perfil de aluno.
 
-2\. Informa suas características.
+---
 
-3\. Informa preferências relacionadas às aulas.
+ ### UC-007 — Buscar instrutores
 
-4\. Sistema valida os dados.
+ #### Objetivo
 
-5\. Sistema salva as informações.
+ Permitir que o aluno encontre instrutores compatíveis com suas necessidades.
 
+ #### Fluxo principal
 
+ 1. Aluno acessa a busca de instrutores.
+2. Informa os critérios desejados.
+3. Sistema consulta os instrutores disponíveis.
+4. Apenas instrutores ativos são considerados.
+5. Sistema apresenta os resultados compatíveis.
 
-\---
+ #### Critérios utilizados
 
+ A busca considera informações como:
 
+ - cidade;
+- estado;
+- nível de experiência;
+- utilização de veículo próprio;
+- preço máximo por aula.
 
-\### UC-003 — Buscar instrutores
+---
 
+ ### UC-008 — Consultar disponibilidade do instrutor
 
+ #### Objetivo
 
-\#### Objetivo
+ Permitir que o aluno consulte datas e horários disponíveis antes de solicitar uma aula.
 
+ #### Fluxo principal
 
+ 1. Aluno seleciona um instrutor.
+2. Sistema consulta a próxima data disponível.
+3. Aluno seleciona uma data.
+4. Sistema calcula os horários disponíveis para aquela data.
+5. Os horários livres são apresentados ao aluno.
 
-Permitir que o aluno encontre instrutores compatíveis com suas necessidades.
+ A disponibilidade considera as configurações cadastradas pelo instrutor e os horários que não podem mais receber novas aulas.
 
+---
 
+ ### UC-009 — Solicitar aula
 
-\#### Fluxo principal
+ #### Objetivo
 
+ Permitir que o aluno solicite uma aula com um instrutor.
 
+ #### Fluxo principal
 
-1\. Aluno acessa a busca.
+ 1. Aluno seleciona um instrutor.
+2. Consulta sua disponibilidade.
+3. Seleciona uma data.
+4. Seleciona um horário disponível.
+5. Informa se utilizará veículo próprio.
+6. Opcionalmente adiciona uma mensagem ao instrutor.
+7. Sistema valida a solicitação.
+8. Sistema cria a solicitação de aula.
 
-2\. Informa região ou outros filtros.
+ #### Validações
 
-3\. Sistema recupera instrutores ativos.
+ O sistema verifica, entre outras regras:
 
-4\. Sistema aplica os filtros.
+ - existência do perfil do aluno;
+- existência do perfil do instrutor;
+- status ativo do instrutor;
+- disponibilidade para o horário solicitado;
+- compatibilidade com o uso de veículo próprio.
 
-5\. Sistema calcula a compatibilidade.
+---
 
-6\. Sistema ordena os resultados.
+ ### UC-010 — Acompanhar solicitações
 
-7\. Sistema apresenta os instrutores.
+ #### Objetivo
 
+ Permitir que o aluno acompanhe as solicitações de aula enviadas.
 
+ #### Fluxo principal
 
-\#### Resultado
+ 1. Aluno acessa suas solicitações.
+2. Sistema recupera as solicitações pertencentes ao aluno.
+3. Sistema apresenta seus respectivos estados.
 
+ O aluno pode acompanhar se uma solicitação ainda aguarda resposta, foi aceita, recusada ou cancelada.
 
+---
 
-O aluno recebe uma lista de instrutores que atendem aos critérios informados.
+ ### UC-011 — Cancelar solicitação
 
+ #### Objetivo
 
+ Permitir que o aluno cancele uma solicitação que ainda possa ser cancelada.
 
-\---
+ #### Fluxo principal
 
+ 1. Aluno acessa suas solicitações.
+2. Seleciona uma solicitação elegível para cancelamento.
+3. Solicita o cancelamento.
+4. Sistema valida a operação.
+5. A solicitação é cancelada.
 
+ Somente o aluno responsável pela solicitação pode realizar essa operação.
 
-\### UC-004 — Visualizar instrutor
+---
 
+ ### UC-012 — Consultar aulas
 
+ #### Objetivo
 
-\#### Objetivo
+ Permitir que o aluno acompanhe suas aulas.
 
+ #### Fluxo principal
 
+ 1. Aluno acessa a área de aulas.
+2. Sistema recupera as aulas associadas ao usuário.
+3. A aplicação apresenta as informações e ações disponíveis conforme o estado de cada aula.
 
-Permitir que o aluno analise um instrutor antes de realizar uma solicitação.
+---
 
+ ### UC-013 — Cancelar aula
 
+ #### Objetivo
 
-\#### Informações exibidas
+ Permitir o cancelamento de uma aula quando seu estado atual permitir essa operação.
 
+ #### Fluxo principal
 
+ 1. Usuário acessa uma aula elegível.
+2. Solicita o cancelamento.
+3. Sistema valida a associação do usuário com a aula.
+4. Sistema valida o estado atual.
+5. Aula é cancelada.
 
-\* Nome.
+ O cancelamento pode ser realizado pelo aluno ou pelo instrutor associado à aula, respeitando as regras de negócio.
 
-\* Foto.
+---
 
-\* Descrição.
+ ## 5\. Fluxos do instrutor
 
-\* Experiência.
+ ### UC-014 — Configuração do perfil profissional
 
-\* Regiões atendidas.
+ #### Objetivo
 
-\* Preço.
+ Permitir que o instrutor configure as informações utilizadas para apresentar seus serviços aos alunos.
 
-\* Disponibilidade.
+ #### Informações
 
-\* Características das aulas.
+ O instrutor informa:
 
-\* Avaliações.
+ - descrição profissional;
+- anos de experiência;
+- cidade;
+- estado;
+- preço por aula;
+- se aceita iniciantes;
+- se aceita alunos experientes;
+- se aceita veículo do aluno.
 
-\* Índice de compatibilidade.
+ #### Fluxo principal
 
+ 1. Instrutor acessa seu perfil.
+2. Preenche as informações obrigatórias.
+3. Sistema valida os dados.
+4. Sistema cria o perfil profissional.
 
+ O perfil poderá ser editado posteriormente.
 
-\---
+---
 
+ ### UC-015 — Ativação e desativação do perfil
 
+ #### Objetivo
 
-\### UC-005 — Solicitar aula
+ Permitir que o instrutor controle sua disponibilidade pública na plataforma.
 
+ #### Ativação
 
+ 1. Instrutor acessa seu perfil.
+2. Solicita a ativação.
+3. Sistema verifica se o perfil pode ser ativado.
+4. Perfil passa para o estado ativo.
 
-\#### Objetivo
+ Quando ativo, o instrutor pode ser encontrado pelos alunos.
 
+ #### Desativação
 
+ 1. Instrutor acessa seu perfil.
+2. Solicita a desativação.
+3. Sistema altera o estado do perfil.
 
-Permitir que um aluno solicite uma aula com um instrutor.
+ Um perfil desativado não fica disponível para novas buscas e solicitações.
 
+---
 
+ ### UC-016 — Dashboard do instrutor
 
-\#### Fluxo principal
+ #### Objetivo
 
+ Apresentar uma visão resumida da atividade do instrutor.
 
+ O dashboard disponibiliza informações rápidas sobre solicitações e aulas, além de atalhos para as principais áreas da aplicação.
 
-1\. Aluno seleciona um instrutor.
+ Também apresenta o estado atual do perfil profissional.
 
-2\. Sistema apresenta os horários disponíveis.
+ Quando o perfil está ativo, essa informação é exibida de forma informativa.
 
-3\. Aluno seleciona um horário.
+ Quando está desativado, o dashboard destaca que sua ativação é necessária para que o instrutor possa ser encontrado por novos alunos.
 
-4\. Aluno informa os dados da aula.
+---
 
-5\. Sistema valida a disponibilidade.
+ ### UC-017 — Configuração de disponibilidade
 
-6\. Sistema cria a solicitação.
+ #### Objetivo
 
-7\. Solicitação recebe o status `PENDING`.
+ Permitir que o instrutor defina os períodos em que aceita aulas.
 
+ #### Fluxo principal
 
+ 1. Instrutor acessa sua disponibilidade.
+2. Define:
+   - dia da semana;
+   - horário inicial;
+   - horário final;
+   - duração das aulas;
+   - intervalo entre aulas.
+3. Sistema valida os dados.
+4. Disponibilidade é criada.
 
-\#### Resultado
+ O instrutor também pode:
 
+ - consultar suas disponibilidades;
+- editar uma disponibilidade;
+- ativar ou desativar uma disponibilidade.
 
+---
 
-O instrutor recebe uma nova solicitação.
+ ### UC-018 — Receber solicitações
 
+ #### Objetivo
 
+ Permitir que o instrutor acompanhe solicitações enviadas pelos alunos.
 
-\---
+ #### Fluxo principal
 
+ 1. Aluno cria uma solicitação.
+2. Solicitação é registrada pelo sistema.
+3. Instrutor acessa as solicitações recebidas.
+4. Sistema apresenta as solicitações associadas ao instrutor.
+5. Instrutor pode aceitar ou recusar as solicitações elegíveis.
 
+---
 
-\### UC-006 — Acompanhar solicitação
+ ### UC-019 — Aceitar solicitação
 
+ #### Fluxo principal
 
+ 1. Instrutor seleciona uma solicitação pendente.
+2. Solicita a aceitação.
+3. Sistema valida a solicitação.
+4. Sistema verifica a disponibilidade do horário.
+5. Sistema verifica possíveis conflitos de agenda.
+6. Solicitação é aceita.
+7. A aula correspondente é disponibilizada no fluxo de aulas.
 
-O aluno poderá consultar o status de suas solicitações.
+ #### Exceções
 
+ - Solicitação inexistente.
+- Horário indisponível.
+- Conflito de agenda.
+- Operação incompatível com o estado atual da solicitação.
 
+---
 
-\#### Estados possíveis
+ ### UC-020 — Recusar solicitação
 
+ #### Fluxo principal
 
+ 1. Instrutor seleciona uma solicitação pendente.
+2. Seleciona a opção de recusa.
+3. Sistema valida a operação.
+4. Solicitação é recusada.
 
-\* `PENDING`
+ Somente o instrutor associado à solicitação pode realizar essa operação.
 
-\* `ACCEPTED`
+---
 
-\* `CONFIRMED`
+ ### UC-021 — Consultar aulas
 
-\* `REJECTED`
+ #### Objetivo
 
-\* `CANCELLED`
+ Permitir que o instrutor acompanhe suas aulas e execute as ações correspondentes ao estado de cada uma.
 
-\* `EXPIRED`
+ #### Fluxo principal
 
+ 1. Instrutor acessa a área de aulas.
+2. Sistema recupera as aulas associadas ao instrutor.
+3. Sistema apresenta as aulas e seus estados.
+4. As ações disponíveis são apresentadas conforme o estado atual da aula.
 
+---
 
-\---
+ ## 6\. Fluxos compartilhados da aula
 
+ ### UC-022 — Iniciar check-in
 
+ #### Ator
 
-\## 4. Fluxos do Instrutor
+ Instrutor.
 
+ #### Objetivo
 
+ Iniciar o processo de confirmação de presença para uma aula.
 
-\### UC-007 — Configuração do perfil profissional
+ #### Fluxo principal
 
+ 1. Instrutor acessa uma aula elegível para check-in.
+2. Seleciona a opção para iniciar o check-in.
+3. Backend valida a aula e o instrutor autenticado.
+4. Sistema gera um token temporário e único.
+5. Token recebe validade de 15 minutos.
+6. Frontend representa o token por meio de QR Code.
+7. QR Code é apresentado ao aluno.
 
+ Após o início do processo, a aula permanece aguardando a confirmação do aluno.
 
-\#### Objetivo
+---
 
+ ### UC-023 — Confirmar check-in
 
+ #### Ator
 
-Permitir que o instrutor configure seus serviços.
+ Aluno.
 
+ #### Pré-condições
 
+ - A aula deve estar no estado correspondente ao processo de check-in.
+- O aluno autenticado deve estar associado à aula.
+- Deve existir um token válido.
 
-\#### Informações
+ #### Fluxo principal
 
+ 1. Aluno realiza a leitura do QR Code.
+2. Frontend obtém o token de check-in.
+3. Token é enviado ao backend utilizando a autenticação do aluno.
+4. Backend verifica:
+   - associação do aluno à aula;
+   - estado atual da aula;
+   - correspondência do token;
+   - validade temporal do token.
+5. Sistema registra o check-in.
+6. Sistema registra o início da aula.
+7. Token utilizado é invalidado.
+8. Aula passa para `IN_PROGRESS`.
 
+ #### Token expirado
 
-\* Descrição profissional.
+ 1. Aluno tenta confirmar utilizando um token expirado.
+2. Sistema rejeita a operação.
+3. Instrutor poderá iniciar novamente o check-in.
+4. Um novo token é gerado.
+5. O token anterior deixa de ser válido.
 
-\* Experiência.
+ #### Token inválido
 
-\* Regiões atendidas.
-
-\* Preço.
-
-\* Tipos de alunos aceitos.
-
-\* Aceitação de veículo próprio.
-
-\* Disponibilidade.
-
-
-
-\---
-
-
-
-\### UC-008 — Configuração de disponibilidade
-
-
-
-\#### Objetivo
-
-
-
-Permitir que o instrutor defina os horários em que aceita aulas.
-
-
-
-\#### Exemplo
-
-
-
-\*\*Segunda-feira\*\*
-
-
-
-\* 08:00 — 12:00
-
-\* 14:00 — 18:00
-
-
-
-\*\*Terça-feira\*\*
-
-
-
-\* 08:00 — 12:00
-
-
-
-\---
-
-
-
-\### UC-009 — Recebimento de solicitação
-
-
-
-\#### Fluxo principal
-
-
-
-1\. Aluno cria uma solicitação.
-
-2\. Sistema registra a solicitação como `PENDING`.
-
-3\. Instrutor recebe a solicitação.
-
-4\. Instrutor visualiza os detalhes.
-
-5\. Instrutor decide aceitar ou recusar.
-
-
-
-\---
-
-
-
-\### UC-010 — Aceitar solicitação
-
-
-
-\#### Fluxo principal
-
-
-
-1\. Instrutor visualiza a solicitação.
-
-2\. Sistema verifica se o horário continua disponível.
-
-3\. Instrutor aceita.
-
-4\. Sistema atualiza a solicitação.
-
-5\. Sistema cria/confirma o agendamento.
-
-
-
-\#### Exceção
-
-
-
-Caso o horário não esteja mais disponível, a solicitação não poderá ser aceita.
-
-
-
-\---
-
-
-
-\### UC-011 — Recusar solicitação
-
-
-
-\#### Fluxo principal
-
-
-
-1\. Instrutor visualiza a solicitação.
-
-2\. Instrutor seleciona \*\*Recusar\*\*.
-
-3\. Sistema registra a decisão.
-
-4\. Solicitação recebe o status `REJECTED`.
-
-
-
-\---
-
-
-
-\### UC-012 — Gerenciar agenda
-
-
-
-O instrutor poderá visualizar suas aulas futuras e históricas.
-
-
-
-\#### Informações apresentadas
-
-
-
-\* Data.
-
-\* Horário.
-
-\* Aluno.
-
-\* Status.
-
-\* Duração.
-
-\* Local.
-
-
-
-\---
-
-
-
-\## 5. Fluxos compartilhados
-
-
-
-\### UC-013 — Check-in da aula
-
-
-
-\#### Ator principal
-
-Aluno.
-
-\#### Ator secundário
-
-Instrutor.
-
-\#### Pré-condições
-
-* A aula deve estar agendada.
-* O instrutor autenticado deve estar associado à aula.
-* O aluno autenticado deve estar associado à aula.
-
-\#### Fluxo principal
-
-1. O instrutor acessa uma aula agendada.
-2. O instrutor inicia o processo de check-in.
-3. O backend gera um token temporário e único associado à aula.
-4. O token recebe validade de 15 minutos.
-5. O frontend representa o token através de um QR Code apresentado pelo instrutor.
-6. O aluno realiza a leitura do QR Code.
-7. O frontend envia o token ao backend utilizando a autenticação do aluno.
-8. O backend valida:
-   * se a aula está em `CHECK_IN`;
-   * se o aluno autenticado está associado à aula;
-   * se o token corresponde ao token ativo;
-   * se o token ainda está dentro do período de validade.
-9. O sistema registra a data e hora do check-in em `CheckInAt`.
-10. O sistema registra o início da aula em `StartedAt`.
-11. O token utilizado é invalidado.
-12. A data de expiração do token é removida.
-13. A aula passa para `IN_PROGRESS`.
-
-\#### Fluxo alternativo — Token expirado
-
-1. O aluno tenta confirmar o check-in utilizando um token expirado.
-2. O backend rejeita a confirmação.
-3. A aula permanece em `CHECK_IN`.
-4. O instrutor inicia novamente o processo de check-in.
-5. O backend gera um novo token com um novo período de validade.
-6. O token anterior deixa de ser válido.
-7. O fluxo principal poderá ser retomado com o novo token.
-
-\#### Fluxo alternativo — Token inválido
-
-1. O aluno tenta confirmar o check-in utilizando um token que não corresponde ao token ativo da aula.
-2. O backend rejeita a confirmação.
-3. A presença não é registrada.
-4. A aula permanece em `CHECK_IN`.
-
-\#### Fluxo alternativo — Aluno não associado à aula
-
-1. Um aluno autenticado que não está associado à aula tenta confirmar o check-in.
-2. O backend rejeita a operação por falta de permissão.
+ 1. Aluno apresenta um token diferente do token ativo.
+2. Sistema rejeita a operação.
 3. A presença não é registrada.
 4. O estado da aula não é alterado.
 
-\#### Pós-condições
+ #### Aluno não associado
 
-Após um check-in válido:
+ 1. Outro aluno tenta confirmar o check-in.
+2. Sistema rejeita a operação por falta de permissão.
+3. Nenhuma informação da aula é alterada.
 
-* a presença do aluno estará registrada;
-* `CheckInAt` estará preenchido;
-* `StartedAt` estará preenchido;
-* o token de check-in estará invalidado;
-* a aula estará em `IN_PROGRESS`.
+---
 
+ ### UC-024 — Encerrar aula
 
+ #### Ator
 
-\---
+ Instrutor.
 
+ #### Fluxo principal
 
+ 1. Instrutor acessa uma aula em andamento.
+2. Seleciona a opção de encerramento.
+3. Sistema valida a associação do instrutor.
+4. Sistema registra a conclusão.
+5. Aula passa para `COMPLETED`.
 
-\### UC-014 — Encerramento da aula
+ Somente aulas em estado compatível podem ser concluídas.
 
+---
 
+ ### UC-025 — Registrar não comparecimento
 
-\#### Fluxo principal
+ #### Ator
 
+ Instrutor.
 
+ #### Objetivo
 
-1\. Instrutor acessa a aula em andamento.
+ Registrar que uma aula agendada não foi realizada por ausência.
 
-2\. Instrutor seleciona \*\*Encerrar aula\*\*.
+ #### Fluxo principal
 
-3\. Sistema registra o horário de encerramento.
+ 1. Instrutor acessa uma aula elegível.
+2. Seleciona a opção de não comparecimento.
+3. Sistema valida a associação do instrutor e o estado da aula.
+4. Sistema registra o não comparecimento.
+5. Aula passa para o estado correspondente à ausência.
 
-4\. Aula passa para `COMPLETED`.
+---
 
+ ### UC-026 — Avaliar aula
 
+ #### Ator
 
-\---
+ Aluno.
 
+ #### Pré-condições
 
+ - A aula deve estar concluída.
+- O aluno autenticado deve estar associado à aula.
+- A aula ainda não pode possuir avaliação do aluno.
 
-\### UC-015 — Registro de ausência
+ #### Fluxo principal
 
+ 1. Aluno acessa suas aulas.
+2. Sistema identifica uma aula concluída elegível para avaliação.
+3. Aluno informa uma nota.
+4. Opcionalmente informa um comentário.
+5. Sistema valida a avaliação.
+6. Avaliação é registrada.
 
+ #### Exceções
 
-\#### Fluxo principal
+ - Aula inexistente.
+- Aula ainda não concluída.
+- Aluno não associado à aula.
+- Aula já avaliada.
+- Nota ou dados da avaliação inválidos.
 
+---
 
+ ## 7\. Proteção dos fluxos
 
-1\. Instrutor acessa uma aula agendada.
+ As áreas internas do DriveMatch exigem autenticação.
 
-2\. Instrutor informa que a aula não foi realizada.
+ Além disso, o acesso é controlado pelo papel do usuário:
 
-3\. Sistema solicita o motivo quando aplicável.
+ - rotas de aluno exigem papel `Student`;
+- rotas de instrutor exigem papel `Instructor`.
 
-4\. Sistema registra a ocorrência.
+ As funcionalidades principais também exigem a existência do perfil correspondente.
 
-5\. Aula passa para `NOT\_ATTENDED`.
+ Um aluno autenticado sem perfil é direcionado para a criação do perfil de aluno.
 
+ Um instrutor autenticado sem perfil é direcionado para a criação do perfil profissional.
 
+ Essa separação impede que usuários acessem jornadas incompatíveis com seu papel ou utilizem funcionalidades que dependem de um perfil ainda inexistente.
 
-\---
+---
 
+ Sim. O problema está no fechamento do bloco de código do fluxo da seção 8: faltou o \`\`\` antes do `## 9`. Por isso, o Markdown interpreta a seção 9 como parte do código.
 
+ A correção é esta:
 
-\### UC-016 — Avaliação
-
-
-
-\#### Fluxo principal
-
-
-
-1\. Aula é concluída.
-
-2\. Aluno acessa o histórico.
-
-3\. Sistema identifica que a aula pode ser avaliada.
-
-4\. Aluno informa uma nota.
-
-5\. Aluno pode informar um comentário.
-
-6\. Sistema registra a avaliação.
-
-
-
-\---
-
-
-
-\## 6. Fluxo geral
-
-
-
-```text
-
-&#x20;                   ALUNO
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;                  Cadastro
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;                  Perfil
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;           Busca de instrutores
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;              Compatibilidade
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;           Visualização do perfil
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;            Escolha de horário
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;                Solicitação
-
-&#x20;                     │
-
-&#x20;                     ▼
-
-&#x20;                  PENDING
-
-&#x20;                     │
-
-&#x20;                     │
-
-&#x20;           ┌─────────┴─────────┐
-
-&#x20;           │                   │
-
-&#x20;           │     INSTRUTOR     │
-
-&#x20;           │                   │
-
-&#x20;           │                   ▼
-
-&#x20;           │          Recebe solicitação
-
-&#x20;           │                   │
-
-&#x20;           │                   ▼
-
-&#x20;           │           Aceitar / Recusar
-
-&#x20;           │                   │
-
-&#x20;           │         ┌─────────┴─────────┐
-
-&#x20;           │         │                   │
-
-&#x20;           │         ▼                   ▼
-
-&#x20;           │      REJECTED           CONFIRMED
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                           Agenda
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                      Início da aula
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                          QR Code
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                         Check-in
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                        IN\_PROGRESS
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                       Encerramento
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                         COMPLETED
-
-&#x20;           │                             │
-
-&#x20;           │                             ▼
-
-&#x20;           │                         Avaliação
-
-&#x20;           │
-
-&#x20;           └───────────────────────────────────┘
-
+ DriveMatch — User Flows
+
+## 8\. Fluxo geral do MVP
+
+```
+                         VISITANTE
+                             │
+                ┌────────────┴────────────┐
+                │                         │
+             Cadastro                   Login
+                │                         │
+                └────────────┬────────────┘
+                             │
+                             ▼
+                       Autenticação
+                             │
+                 ┌───────────┴───────────┐
+                 │                       │
+                 ▼                       ▼
+               ALUNO                 INSTRUTOR
+                 │                       │
+                 ▼                       ▼
+              Perfil                  Perfil
+                 │                       │
+                 ▼                       ▼
+             Dashboard                Dashboard
+                 │                       │
+                 ▼                       ▼
+        Buscar instrutores      Configurar disponibilidade
+                 │                       │
+                 ▼                       │
+       Consultar disponibilidade        │
+                 │                       │
+                 ▼                       │
+          Solicitar aula ────────────────┘
+                 │
+                 ▼
+             PENDENTE
+                 │
+                 ▼
+       Instrutor recebe solicitação
+                 │
+          ┌──────┴──────┐
+          │             │
+          ▼             ▼
+       Recusar         Aceitar
+          │             │
+          ▼             ▼
+      REJEITADA        Aula
+                        │
+                        ▼
+                    Check-in
+                        │
+                        ▼
+                  IN_PROGRESS
+                        │
+                        ▼
+                    Conclusão
+                        │
+                        ▼
+                    COMPLETED
+                        │
+                        ▼
+                    Avaliação
+```
+
+ ## 9\. Escopo dos fluxos
+
+ Os fluxos documentados representam o comportamento implementado no MVP atual do DriveMatch.
+
+ Funcionalidades não implementadas não devem ser interpretadas como parte destes fluxos.
+
+ O MVP não inclui:
+
+ - pagamentos;
+- repasses financeiros;
+- chat em tempo real;
+- notificações push;
+- geolocalização em tempo real;
+- integração com órgãos de trânsito;
+- recursos administrativos avançados.

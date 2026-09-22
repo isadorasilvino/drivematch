@@ -1,612 +1,909 @@
-**# DriveMatch — Modelo de Domínio**
+# DriveMatch — Modelo de Domínio
 
+## 1. Objetivo
 
+Este documento descreve o modelo de domínio implementado no DriveMatch, incluindo suas entidades, value objects, enumerações, relacionamentos e principais comportamentos.
 
-**## 1. Objetivo**
+O modelo representa os conceitos centrais utilizados pelo MVP e serve como referência para as camadas de Application, Infrastructure e API.
 
+As regras de negócio completas estão documentadas em [`../business-rules/BUSINESS-RULES.md`](../business-rules/BUSINESS-RULES.md).
 
+---
 
-**Este documento descreve os principais conceitos do domínio do DriveMatch, seus relacionamentos e responsabilidades.**
+## 2. Visão geral
 
+O domínio do DriveMatch é composto pelas seguintes entidades principais:
 
+- `User`
+- `StudentProfile`
+- `InstructorProfile`
+- `Availability`
+- `LessonRequest`
+- `Lesson`
+- `Review`
 
-**O modelo de domínio será utilizado como referência para a implementação das entidades, regras de negócio e persistência.**
+Também fazem parte do domínio:
 
+### Value objects
 
+- `Money`
+- `AvailabilitySlot`
 
-**---**
+### Enumerações
 
+- `UserRole`
+- `UserStatus`
+- `ExperienceLevel`
+- `InstructorProfileStatus`
+- `LessonRequestStatus`
+- `LessonStatus`
 
+---
 
-**## 2. Entidades**
+# 3. Entidades
 
+## 3.1 User
 
+Representa a conta de acesso de um usuário ao DriveMatch.
 
-**### User**
+A entidade concentra os dados utilizados para identificação, autenticação e autorização básica.
 
+### Atributos
 
+- `Id`
+- `Name`
+- `Email`
+- `PasswordHash`
+- `Role`
+- `Status`
+- `CreatedAt`
+- `UpdatedAt`
 
-**Representa a conta de acesso à plataforma.**
+### Papel do usuário
 
+O papel é representado por `UserRole`:
 
+- `Student`
+- `Instructor`
 
-**Responsabilidades:**
+O papel é definido na criação da conta.
 
+### Status da conta
 
+O status é representado por `UserStatus`:
 
-**\* Identificação do usuário.**
+- `Active`
+- `Inactive`
 
-**\* Autenticação.**
+Uma nova conta é criada com status `Active`.
 
-**\* Controle de papel.**
+### Comportamentos
 
-**\* Controle de status da conta.**
+A entidade permite:
 
+- atualizar nome e e-mail;
+- alterar o hash da senha;
+- ativar a conta;
+- desativar a conta.
 
+O e-mail é normalizado para letras minúsculas.
 
-**Principais atributos:**
+Na persistência, o e-mail possui índice único.
 
+---
 
+## 3.2 StudentProfile
 
-**\* Id.**
+Representa os dados específicos de um usuário com papel de aluno.
 
-**\* Name.**
+### Atributos
 
-**\* Email.**
+- `Id`
+- `UserId`
+- `City`
+- `State`
+- `ExperienceLevel`
+- `OwnsVehicle`
+- `HasOwnVehicleForLessons`
+- `CreatedAt`
+- `UpdatedAt`
 
-**\* PasswordHash.**
+### Nível de experiência
 
-**\* Role.**
+O nível de experiência é representado por `ExperienceLevel`:
 
-**\* Status.**
+- `Beginner`
+- `Experienced`
 
-**\* CreatedAt.**
+### Preferências relacionadas a veículo
 
-**\* UpdatedAt.**
+`OwnsVehicle` indica se o aluno possui veículo.
 
+`HasOwnVehicleForLessons` indica se o aluno pretende disponibilizar veículo próprio para utilização durante as aulas.
 
+Um aluno não pode informar que disponibiliza veículo próprio para as aulas quando não possui veículo.
 
-**---**
+### Comportamentos
 
+O perfil permite:
 
+- atualizar localização;
+- atualizar nível de experiência;
+- atualizar preferências relacionadas ao veículo.
 
-**### StudentProfile**
+Cidade e estado são obrigatórios.
 
+O estado é normalizado para letras maiúsculas.
 
+### Relacionamento com User
 
-**Representa as informações específicas de um aluno.**
+Cada `StudentProfile` pertence a exatamente um `User`.
 
+Um usuário pode possuir no máximo um perfil de aluno.
 
+---
 
-**Principais atributos:**
+## 3.3 InstructorProfile
 
+Representa o perfil profissional de um instrutor.
 
+### Atributos
 
-**\* Id.**
+- `Id`
+- `UserId`
+- `Description`
+- `ExperienceYears`
+- `City`
+- `State`
+- `PricePerLesson`
+- `AcceptsBeginners`
+- `AcceptsExperiencedStudents`
+- `AcceptsStudentVehicle`
+- `Status`
+- `CreatedAt`
+- `UpdatedAt`
 
-**\* UserId.**
+### Preferências de atendimento
 
-**\* City.**
+O instrutor informa se:
 
-**\* State.**
+- aceita alunos iniciantes;
+- aceita alunos experientes;
+- aceita utilização do veículo do aluno.
 
-**\* ExperienceLevel.**
+### Preço
 
-**\* OwnsVehicle.**
+O preço da aula é representado pelo value object `Money`.
 
-**\* HasOwnVehicleForLessons.**
+### Status do perfil
 
-**\* CreatedAt.**
+O status é representado por `InstructorProfileStatus`:
 
-**\* UpdatedAt.**
+- `Draft`
+- `Active`
+- `Inactive`
 
+Um novo perfil é criado inicialmente como `Draft`.
 
+O instrutor pode posteriormente ativar ou desativar o perfil.
 
-**---**
+Somente perfis ativos podem ser disponibilizados para busca pelos alunos.
 
+### Comportamentos
 
+O perfil permite:
 
-**### InstructorProfile**
+- atualizar descrição profissional;
+- atualizar anos de experiência;
+- atualizar localização;
+- atualizar preço;
+- atualizar preferências de atendimento;
+- ativar o perfil;
+- desativar o perfil.
 
+Os anos de experiência não podem ser negativos.
 
+Cidade e estado são obrigatórios.
 
-**Representa o perfil profissional de um instrutor.**
+O estado é normalizado para letras maiúsculas.
 
+### Relacionamento com User
 
+Cada `InstructorProfile` pertence a exatamente um `User`.
 
-**Principais atributos:**
+Um usuário pode possuir no máximo um perfil de instrutor.
 
+---
 
+## 3.4 Availability
 
-**\* Id.**
+Representa uma configuração recorrente de disponibilidade semanal de um instrutor.
 
-**\* UserId.**
+Uma disponibilidade define uma janela de atendimento para determinado dia da semana e as regras utilizadas para gerar os horários disponíveis dentro dessa janela.
 
-**\* Description.**
+### Atributos
 
-**\* ExperienceYears.**
+- `Id`
+- `InstructorProfileId`
+- `DayOfWeek`
+- `StartTime`
+- `EndTime`
+- `LessonDurationMinutes`
+- `BreakDurationMinutes`
+- `IsActive`
 
-**\* City.**
+### Duração da aula
 
-**\* State.**
+As durações permitidas são:
 
-**\* PricePerLesson.**
+- 30 minutos;
+- 40 minutos;
+- 45 minutos;
+- 50 minutos;
+- 60 minutos.
 
-**\* AcceptsBeginners.**
+### Intervalo entre aulas
 
-**\* AcceptsExperiencedStudents.**
+Os intervalos permitidos são:
 
-**\* AcceptsStudentVehicle.**
+- 0 minutos;
+- 5 minutos;
+- 10 minutos;
+- 15 minutos;
+- 20 minutos;
+- 30 minutos.
 
-**\* Status.**
+### Comportamentos
 
-**\* CreatedAt.**
+A disponibilidade permite:
 
-**\* UpdatedAt.**
+- atualizar sua configuração;
+- ativar;
+- desativar;
+- gerar os slots disponíveis;
+- verificar se determinado intervalo corresponde a um slot válido.
 
+### Geração de slots
 
+Os slots são calculados dinamicamente a partir de:
 
-**> \*\*Nota:\*\* Somente instrutores com status `ACTIVE` poderão aparecer nas buscas.**
+- horário inicial;
+- horário final;
+- duração da aula;
+- intervalo entre aulas.
 
+A geração continua enquanto uma aula completa puder ser encaixada dentro da janela configurada.
 
+Cada slot gerado é representado por `AvailabilitySlot`.
 
-**---**
+### Validações principais
 
+- o horário inicial deve ser anterior ao horário final;
+- a duração da aula deve utilizar um dos valores permitidos;
+- o intervalo deve utilizar um dos valores permitidos;
+- a janela configurada deve comportar pelo menos uma aula completa.
 
+### Relacionamento
 
-**### Availability**
+Cada `Availability` pertence a um `InstructorProfile`.
 
+Um instrutor pode possuir múltiplas disponibilidades.
 
+---
 
-**Representa um intervalo recorrente de disponibilidade de um instrutor.**
+## 3.5 LessonRequest
 
+Representa uma solicitação de aula criada por um aluno para um instrutor.
 
+A solicitação existe antes da criação da aula e representa a intenção de realizar um agendamento.
 
-**Principais atributos:**
+### Atributos
 
+- `Id`
+- `StudentId`
+- `InstructorId`
+- `RequestedDate`
+- `StartTime`
+- `EndTime`
+- `UsesStudentVehicle`
+- `StudentMessage`
+- `Status`
+- `CreatedAt`
+- `UpdatedAt`
 
+### Status
 
-**\* Id.**
+O ciclo de vida é representado por `LessonRequestStatus`:
 
-**\* InstructorProfileId.**
+- `Pending`
+- `Accepted`
+- `Confirmed`
+- `Rejected`
+- `Cancelled`
+- `Expired`
 
-**\* DayOfWeek.**
+Uma nova solicitação é criada como `Pending`.
 
-**\* StartTime.**
+### Transições
 
-**\* EndTime.**
+Fluxo de confirmação:
 
-**\* IsActive.**
+```text
+Pending
+   ↓
+Accepted
+   ↓
+Confirmed
+```
 
+Outras transições possíveis a partir de `Pending`:
 
+```text
+Pending → Rejected
+Pending → Cancelled
+Pending → Expired
+```
 
-**Os horários representam disponibilidade recorrente por dia da semana.**
+As transições são controladas pela própria entidade.
 
+### Comportamentos
 
+A solicitação permite:
 
-**---**
+- aceitar;
+- confirmar;
+- recusar;
+- cancelar;
+- expirar.
 
+### Informações específicas da solicitação
 
+`UsesStudentVehicle` registra se o veículo do aluno será utilizado naquela solicitação específica.
 
-**### LessonRequest**
+`StudentMessage` permite uma mensagem opcional do aluno e é normalizada antes de ser armazenada.
 
+### Relacionamentos
 
+Cada solicitação pertence a:
 
-**Representa uma solicitação de aula realizada por um aluno para um instrutor.**
+- um `StudentProfile`;
+- um `InstructorProfile`.
 
+Uma solicitação pode originar no máximo uma `Lesson`.
 
+---
 
-**Principais atributos:**
+## 3.6 Lesson
 
+Representa uma aula efetivamente agendada.
 
+A entidade possui ciclo de vida próprio, separado da solicitação que originou o agendamento.
 
-**\* Id.**
+### Atributos
 
-**\* StudentId.**
+- `Id`
+- `StudentId`
+- `InstructorId`
+- `LessonRequestId`
+- `ScheduledDate`
+- `StartTime`
+- `EndTime`
+- `Status`
+- `StartedAt`
+- `CheckInAt`
+- `CheckInToken`
+- `CheckInTokenExpiresAt`
+- `CompletedAt`
+- `CancelledAt`
+- `CreatedAt`
 
-**\* InstructorId.**
+### Status
 
-**\* RequestedDate.**
+O ciclo de vida é representado por `LessonStatus`:
 
-**\* StartTime.**
+- `Scheduled`
+- `CheckIn`
+- `InProgress`
+- `Completed`
+- `Cancelled`
+- `NotAttended`
 
-**\* EndTime.**
+Uma nova aula é criada como `Scheduled`.
 
-**\* UsesStudentVehicle.**
+### Fluxo principal
 
-**\* StudentMessage.**
+```text
+Scheduled
+    ↓
+CheckIn
+    ↓
+InProgress
+    ↓
+Completed
+```
 
-**\* Status.**
+Também existem os estados terminais:
 
-**\* CreatedAt.**
+```text
+Scheduled → Cancelled
+Scheduled → NotAttended
+```
 
-**\* UpdatedAt.**
+### Check-in
 
+O check-in ocorre em duas etapas.
 
+#### Início
 
-**Uma solicitação poderá ser aceita, recusada, cancelada ou expirar.**
+O instrutor inicia o processo.
 
+A aula passa para:
 
+```text
+CheckIn
+```
 
-**---**
+Nesse momento:
 
+- um token aleatório é gerado;
+- o token recebe validade de 15 minutos.
 
+O token é armazenado temporariamente em `CheckInToken`.
 
-**### Lesson**
+A expiração é registrada em `CheckInTokenExpiresAt`.
 
+#### Confirmação
 
+O aluno confirma o check-in utilizando o token.
 
-**Representa uma aula efetivamente agendada.**
+Para ser aceito:
 
+- o token deve ser informado;
+- deve corresponder ao token da aula;
+- não pode estar expirado.
 
+Após confirmação:
 
-**Principais atributos:**
+- `CheckInAt` recebe o horário atual;
+- `StartedAt` recebe o horário atual;
+- o token é removido;
+- a expiração é removida;
+- a aula passa para `InProgress`.
 
+### Conclusão
 
+Uma aula somente pode ser concluída quando estiver em `InProgress`.
 
-**\* Id.**
+Ao concluir:
 
-**\* StudentId.**
+- `CompletedAt` é registrado;
+- o status passa para `Completed`.
 
-**\* InstructorId.**
+### Cancelamento
 
-**\* LessonRequestId.**
+Uma aula pode ser cancelada quando estiver em `Scheduled`.
 
-**\* ScheduledDate.**
+Ao cancelar:
 
-**\* StartTime.**
+- `CancelledAt` é registrado;
+- o status passa para `Cancelled`.
 
-**\* EndTime.**
+### Não comparecimento
 
-**\* Status.**
+Uma aula em `Scheduled` pode ser marcada como `NotAttended`.
 
-**\* StartedAt.**
+### Relacionamentos
 
-**\* CheckInAt.**
+Cada `Lesson` está relacionada a:
 
-**\* CompletedAt.**
+- um `StudentProfile`;
+- um `InstructorProfile`;
+- uma `LessonRequest`.
 
-**\* CancelledAt.**
+Uma solicitação pode possuir no máximo uma aula.
 
-**\* CreatedAt.**
+Uma aula pode possuir no máximo uma avaliação.
 
+---
 
+## 3.7 Review
 
-**A aula possui ciclo de vida próprio.**
+Representa a avaliação realizada pelo aluno sobre uma aula concluída.
 
+### Atributos
 
+- `Id`
+- `LessonId`
+- `StudentId`
+- `InstructorId`
+- `Rating`
+- `Comment`
+- `CreatedAt`
 
-**---**
+### Nota
 
+A avaliação utiliza uma nota inteira entre:
 
+```text
+1 e 5
+```
 
-**### Review**
+Valores fora desse intervalo não são aceitos pelo domínio.
 
+### Comentário
 
+O comentário é opcional.
 
-**Representa a avaliação realizada por um aluno após uma aula concluída.**
+Quando informado, ele é normalizado antes de ser armazenado.
 
+### Relacionamentos
 
+Cada avaliação pertence a:
 
-**Principais atributos:**
+- uma `Lesson`;
+- um `StudentProfile`;
+- um `InstructorProfile`.
 
+Uma aula pode possuir no máximo uma avaliação.
 
+Essa unicidade também é garantida na persistência por um índice único sobre `LessonId`.
 
-**\* Id.**
+---
 
-**\* LessonId.**
+# 4. Value Objects
 
-**\* StudentId.**
+## 4.1 Money
 
-**\* InstructorId.**
+Representa um valor monetário.
 
-**\* Rating.**
+### Propriedades
 
-**\* Comment.**
+- `Amount`
+- `Currency`
 
-**\* CreatedAt.**
+### Regras
 
+- o valor não pode ser negativo;
+- a moeda deve ser informada;
+- o valor é armazenado com duas casas decimais;
+- a moeda é normalizada para letras maiúsculas.
 
+Quando nenhuma moeda é especificada, o valor padrão é:
 
-**Uma aula poderá possuir no máximo uma avaliação.**
+```text
+BRL
+```
 
+No perfil do instrutor, `Money` é utilizado para representar `PricePerLesson`.
 
+---
 
-**---**
+## 4.2 AvailabilitySlot
 
+Representa um horário de aula calculado a partir de uma disponibilidade.
 
+### Propriedades
 
-**## 3. Enumerações**
+- `StartTime`
+- `EndTime`
 
+O slot não é uma entidade persistida.
 
+Ele é calculado dinamicamente pela entidade `Availability`.
 
-**### UserRole**
+---
 
+# 5. Enumerações
 
+## 5.1 UserRole
 
-**\* `STUDENT`**
+```text
+Student
+Instructor
+```
 
-**\* `INSTRUCTOR`**
+---
 
+## 5.2 UserStatus
 
+```text
+Active
+Inactive
+```
 
-**### UserStatus**
+---
 
+## 5.3 ExperienceLevel
 
+```text
+Beginner
+Experienced
+```
 
-**\* `ACTIVE`**
+---
 
-**\* `INACTIVE`**
+## 5.4 InstructorProfileStatus
 
+```text
+Draft
+Active
+Inactive
+```
 
+---
 
-**### InstructorProfileStatus**
+## 5.5 LessonRequestStatus
 
+```text
+Pending
+Accepted
+Confirmed
+Rejected
+Cancelled
+Expired
+```
 
+---
 
-**\* `DRAFT`**
+## 5.6 LessonStatus
 
-**\* `ACTIVE`**
+```text
+Scheduled
+CheckIn
+InProgress
+Completed
+Cancelled
+NotAttended
+```
 
-**\* `INACTIVE`**
+Os enums são persistidos como texto pelo Entity Framework Core.
 
+---
 
+# 6. Relacionamentos
 
-**### LessonRequestStatus**
+A visão simplificada dos principais relacionamentos é:
 
+```text
+User
+ ├── 0..1 StudentProfile
+ └── 0..1 InstructorProfile
 
 
-**\* `PENDING`**
+InstructorProfile
+ └── 0..N Availability
 
-**\* `ACCEPTED`**
 
-**\* `CONFIRMED`**
+StudentProfile
+ ├── 0..N LessonRequest
+ ├── 0..N Lesson
+ └── 0..N Review
 
-**\* `REJECTED`**
 
-**\* `CANCELLED`**
+InstructorProfile
+ ├── 0..N LessonRequest
+ ├── 0..N Lesson
+ └── 0..N Review
 
-**\* `EXPIRED`**
 
+LessonRequest
+ └── 0..1 Lesson
 
 
-**### LessonStatus**
+Lesson
+ └── 0..1 Review
+```
 
+### Integridade dos relacionamentos
 
+A persistência utiliza chaves estrangeiras para relacionar as entidades.
 
-**\* `SCHEDULED`**
+Os perfis de aluno e instrutor possuem `UserId` único, garantindo no máximo um perfil de cada tipo por usuário.
 
-**\* `CHECK\_IN`**
+`LessonRequestId` é único em `Lesson`, garantindo que uma solicitação origine no máximo uma aula.
 
-**\* `IN\_PROGRESS`**
+`LessonId` é único em `Review`, garantindo no máximo uma avaliação por aula.
 
-**\* `COMPLETED`**
+---
 
-**\* `CANCELLED`**
+# 7. Fluxo principal do domínio
 
-**\* `NOT\_ATTENDED`**
+Uma representação simplificada do fluxo principal é:
 
+```text
+User
+ ↓
+StudentProfile
+ ↓
+Busca por InstructorProfile ativo
+ ↓
+Availability
+ ↓
+AvailabilitySlot
+ ↓
+LessonRequest
+ ↓
+Pending
+ ↓
+Accepted
+ ↓
+Confirmed
+ ↓
+Lesson
+ ↓
+Scheduled
+ ↓
+CheckIn
+ ↓
+InProgress
+ ↓
+Completed
+ ↓
+Review
+```
 
+O fluxo completo possui regras adicionais de autorização, compatibilidade, disponibilidade, conflitos e transições de estado documentadas em:
 
-**---**
+[`../business-rules/BUSINESS-RULES.md`](../business-rules/BUSINESS-RULES.md)
 
+---
 
+# 8. Decisões de modelagem
 
-**## 4. Relacionamentos**
+## 8.1 User separado dos perfis
 
+Os dados de autenticação e identificação ficam em `User`.
 
+As informações específicas de cada papel ficam em:
 
-**```text**
+- `StudentProfile`;
+- `InstructorProfile`.
 
-**User**
+Essa separação mantém responsabilidades distintas entre conta e perfil de negócio.
 
-&#x20;**├── 0..1 StudentProfile**
+---
 
-&#x20;**└── 0..1 InstructorProfile**
+## 8.2 LessonRequest separado de Lesson
 
+Uma solicitação representa uma intenção de agendamento.
 
+Uma aula representa um compromisso efetivamente criado a partir de uma solicitação confirmada.
 
-**InstructorProfile**
+Essa separação evita misturar o ciclo de aprovação de uma solicitação com o ciclo de execução de uma aula.
 
-&#x20;**└── N Availability**
+---
 
+## 8.3 Disponibilidade separada de slots
 
+`Availability` representa uma configuração recorrente.
 
-**StudentProfile**
+`AvailabilitySlot` representa um horário calculado a partir dessa configuração.
 
-&#x20;**└── N LessonRequest**
+Os slots não são persistidos como entidades independentes.
 
+Isso permite gerar os horários dinamicamente utilizando:
 
+- janela de atendimento;
+- duração da aula;
+- intervalo entre aulas.
 
-**InstructorProfile**
+---
 
-&#x20;**└── N LessonRequest**
+## 8.4 Preço representado por Money
 
+O preço da aula não é representado apenas por um `decimal`.
 
+O domínio utiliza `Money`, que agrupa:
 
-**LessonRequest**
+- valor;
+- moeda.
 
-&#x20;**└── 0..1 Lesson**
+Essa modelagem mantém explícito o significado monetário da informação.
 
+---
 
+## 8.5 Informações específicas da aula
 
-**Lesson**
+Dados que podem variar de um agendamento para outro pertencem à solicitação ou à aula, e não apenas ao perfil.
 
-&#x20;**└── 0..1 Review**
+Um exemplo é:
 
+```text
+UsesStudentVehicle
+```
 
+O perfil do aluno informa sua preferência geral relacionada ao veículo, enquanto a solicitação registra a decisão para aquele agendamento específico.
 
-**```**
+---
 
+## 8.6 Check-in pertencente à Lesson
 
+O processo de check-in faz parte do ciclo de vida da aula.
 
-**---**
+Por isso, token, expiração e registros temporais relacionados ao check-in pertencem à entidade `Lesson`.
 
+Não existe uma entidade persistida separada para check-in.
 
+---
 
-**## 5. Fluxo principal do domínio**
+# 9. Persistência e restrições relevantes
 
+Embora detalhes completos de infraestrutura estejam documentados em `ARCHITECTURE.md`, algumas restrições de persistência fazem parte da compreensão do modelo.
 
+### User
 
-**```text**
+- e-mail único;
+- `Name`: máximo de 150 caracteres;
+- `Email`: máximo de 255 caracteres;
+- `PasswordHash`: máximo de 500 caracteres.
 
-**Student**
+### StudentProfile
 
-&#x20;   **↓**
+- `UserId` único;
+- cidade: máximo de 120 caracteres;
+- estado: máximo de 2 caracteres.
 
-**Busca instrutor**
+### InstructorProfile
 
-&#x20;   **↓**
+- `UserId` único;
+- descrição: máximo de 1000 caracteres;
+- cidade: máximo de 120 caracteres;
+- estado: máximo de 2 caracteres;
+- preço persistido com precisão `10,2`;
+- moeda com máximo de 3 caracteres.
 
-**Seleciona horário**
+### LessonRequest
 
-&#x20;   **↓**
+- mensagem do aluno: máximo de 1000 caracteres;
+- índice para instrutor, data solicitada e status.
 
-**LessonRequest**
+### Lesson
 
-&#x20;   **↓**
+- `LessonRequestId` único;
+- token de check-in: máximo de 32 caracteres;
+- índice para instrutor, data agendada e status.
 
-**PENDING**
+### Review
 
-&#x20;   **↓**
+- `LessonId` único;
+- comentário: máximo de 2000 caracteres.
 
-**Instrutor aceita**
+### Availability
 
-&#x20;   **↓**
+Possui índice composto por:
 
-**CONFIRMED**
+- `InstructorProfileId`;
+- `DayOfWeek`;
+- `IsActive`.
 
-&#x20;   **↓**
+---
 
-**Lesson**
+# 10. Escopo atual
 
-&#x20;   **↓**
+O modelo do MVP não contempla:
 
-**SCHEDULED**
+- pagamentos;
+- assinaturas;
+- chat;
+- sistema próprio de mensagens;
+- cupons;
+- promoções;
+- veículos como entidade independente;
+- sistema complexo de notificações;
+- certificações;
+- favoritos.
 
-&#x20;   **↓**
+Esses conceitos podem ser incorporados futuramente caso novos requisitos justifiquem sua inclusão no domínio.
 
-**Check-in**
+---
 
-&#x20;   **↓**
+# 11. Referências
 
-**IN\_PROGRESS**
+Para uma visão complementar do sistema:
 
-&#x20;   **↓**
-
-**COMPLETED**
-
-&#x20;   **↓**
-
-**Review**
-
-
-
-**```**
-
-
-
-**---**
-
-
-
-**## 6. Regras importantes**
-
-
-
-**\* \*\*Instrutor ativo:\*\* Somente instrutores com perfil `ACTIVE` poderão ser encontrados pelos alunos.**
-
-**\* \*\*Conflito de agenda:\*\* Um instrutor não poderá possuir duas aulas confirmadas no mesmo intervalo.**
-
-**\* \*\*Disponibilidade:\*\* Uma solicitação deverá respeitar a disponibilidade configurada pelo instrutor.**
-
-**\* \*\*Check-in:\*\* Uma aula somente poderá entrar em `IN\_PROGRESS` após check-in válido.**
-
-**\* \*\*Conclusão:\*\* Uma aula somente poderá ser concluída quando estiver `IN\_PROGRESS`.**
-
-**\* \*\*Avaliação:\*\* Uma avaliação somente poderá ser criada para uma aula `COMPLETED`.**
-
-**\* \*\*Avaliação única:\*\* Uma aula poderá possuir no máximo uma avaliação.**
-
-
-
-**---**
-
-
-
-**## 7. Decisões de modelagem**
-
-
-
-**### User separado de perfil**
-
-
-
-**A conta de autenticação é separada dos dados específicos de aluno e instrutor. Isso permite manter responsabilidades distintas e possibilita evolução futura dos papéis.**
-
-
-
-**### LessonRequest separado de Lesson**
-
-
-
-**Uma solicitação representa uma intenção de agendamento. Uma aula representa um compromisso efetivamente confirmado. A separação evita misturar estados de solicitação com estados de execução da aula.**
-
-
-
-**### Informações específicas da aula**
-
-
-
-**Dados que podem variar entre aulas devem ser armazenados na solicitação ou na aula, em vez de depender exclusivamente do perfil do usuário.**
-
-
-
-**> \*\*Exemplo:\*\* `UsesStudentVehicle`. A preferência geral pode pertencer ao perfil, mas a decisão específica da aula pertence à solicitação.**
-
-
-
-**### Matching**
-
-
-
-**O cálculo de compatibilidade será inicialmente tratado como comportamento da aplicação, não como uma entidade persistida. O score poderá ser calculado dinamicamente a partir das características do aluno e dos instrutores.**
-
-
-
-**---**
-
-
-
-**## 8. Escopo inicial**
-
-
-
-**O modelo não contempla inicialmente:**
-
-
-
-**\* Pagamentos.**
-
-**\* Assinaturas.**
-
-**\* Chat.**
-
-**\* Mensagens.**
-
-**\* Cupons.**
-
-**\* Promoções.**
-
-**\* Veículos como entidade independente.**
-
-**\* Notificações complexas.**
-
-**\* Certificações.**
-
-**\* Favoritos.**
-
-
-
-**Esses conceitos poderão ser adicionados futuramente caso novos requisitos justifiquem sua existência.**
-
+- [`../PRODUCT.md`](../PRODUCT.md) — visão do produto e escopo;
+- [`../REQUIREMENTS.md`](../REQUIREMENTS.md) — requisitos funcionais e não funcionais;
+- [`../business-rules/BUSINESS-RULES.md`](../business-rules/BUSINESS-RULES.md) — regras de negócio;
+- [`../architecture/ARCHITECTURE.md`](../architecture/ARCHITECTURE.md) — arquitetura técnica;
+- [`../use-cases/USER-FLOWS.md`](../use-cases/USER-FLOWS.md) — fluxos de usuário;
+- [`../use-cases/LESSON-FLOW.md`](../use-cases/LESSON-FLOW.md) — fluxo de aulas.
